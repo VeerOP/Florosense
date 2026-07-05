@@ -264,8 +264,8 @@ function initBubblePhysicsSimulator() {
     
     function resizeCanvas() {
         width = canvas.width = canvas.parentElement.clientWidth;
-        // Maintain a neat 16:9 ratio
-        height = canvas.height = width * 9 / 16;
+        // Maintain a neat 16:9 ratio with a minimum height to prevent visual squishing on mobile
+        height = canvas.height = Math.max(width * 9 / 16, 260);
     }
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
@@ -543,28 +543,35 @@ function initBubblePhysicsSimulator() {
         ctx.setLineDash([]); // Reset
 
         // 2. Draw Simulation Headings
+        const isMobileLayout = width < 600;
+        const paddingSide = isMobileLayout ? 12 : 24;
+        
         ctx.font = "bold 11px 'Sora', sans-serif";
         ctx.fillStyle = colors.textColor;
         ctx.textBaseline = "top";
         ctx.letterSpacing = "0.08em";
 
         // Left heading
+        const leftTitle = isMobileLayout ? "TRADITIONAL MBBR" : "TRADITIONAL MBBR AERATION";
         ctx.textAlign = "left";
-        ctx.fillText("TRADITIONAL MBBR AERATION", 24, 20);
+        ctx.fillText(leftTitle, paddingSide, 20);
         
+        const leftSub = isMobileLayout ? "OTE ~15%" : "OTE ~15% | RETENTION: 3 – 5 SECONDS";
         ctx.font = "600 9px 'Sora', sans-serif";
         ctx.fillStyle = colors.subColor;
-        ctx.fillText("OTE ~15% | RETENTION: 3 – 5 SECONDS", 24, 36);
+        ctx.fillText(leftSub, paddingSide, 36);
 
         // Right heading
+        const rightTitle = isMobileLayout ? "ECOVRY HYBRID" : "ECOVRY NANOBUBBLE SYSTEM";
         ctx.font = "bold 11px 'Sora', sans-serif";
         ctx.fillStyle = colors.textColor;
         ctx.textAlign = "right";
-        ctx.fillText("ECOVRY NANOBUBBLE SYSTEM", width - 24, 20);
+        ctx.fillText(rightTitle, width - paddingSide, 20);
 
+        const rightSub = isMobileLayout ? "OTE ~85%" : "OTE ~85% | RETENTION: INDEFINITE SUSPENSION";
         ctx.font = "600 9px 'Sora', sans-serif";
         ctx.fillStyle = colors.subColor;
-        ctx.fillText("OTE ~85% | RETENTION: INDEFINITE SUSPENSION", width - 24, 36);
+        ctx.fillText(rightSub, width - paddingSide, 36);
 
         // 3. Update & Draw Macro Bubbles
         macroBubbles.forEach(b => {

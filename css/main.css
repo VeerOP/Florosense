@@ -2197,7 +2197,8 @@ body[data-theme="dark"] #split-coesc .marquee-item {
     color: var(--color-orange);
 }
 
-.footer-social-links i {
+.footer-social-links i,
+.footer-social-links svg {
     width: 16px;
     height: 16px;
 }
@@ -2813,7 +2814,6 @@ body[data-theme="light"] .video-wrapper {
 #aeration-physics-canvas {
     width: 100%;
     display: block;
-    aspect-ratio: 16/9;
     cursor: crosshair;
     touch-action: none; /* Prevents mobile page scroll when dragging on canvas */
 }

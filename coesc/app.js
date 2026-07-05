@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function initThemeManager() {
     const themeSwitcher = document.getElementById("theme-switcher-btn");
     const logoImg = document.querySelector(".navbar-logo-img");
+    const footerLogo = document.querySelector(".footer-logo-img");
 
     let activeTheme = localStorage.getItem("theme") || "light";
     setTheme(activeTheme);
@@ -33,6 +34,11 @@ function initThemeManager() {
 
         if (logoImg) {
             logoImg.src = theme === "dark" 
+                ? "../assets/logo_florosense_light.png" 
+                : "../assets/logo_florosense.png";
+        }
+        if (footerLogo) {
+            footerLogo.src = theme === "dark" 
                 ? "../assets/logo_florosense_light.png" 
                 : "../assets/logo_florosense.png";
         }

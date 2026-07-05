@@ -329,21 +329,48 @@ function initDutonScrollStory() {
                 }
             });
 
+            const updateMobileMetrics = (p) => {
+                if (widgetUptime) {
+                    const uptimeVal = (95.0 + p * 4.8).toFixed(3);
+                    widgetUptime.textContent = `${uptimeVal}%`;
+                }
+                if (widgetTemp) {
+                    const tempVal = (38.2 + p * 12.4).toFixed(1);
+                    widgetTemp.textContent = `${tempVal}°C`;
+                }
+                if (widgetAi) {
+                    if (p < 0.3) {
+                        widgetAi.textContent = "CALIBRATING";
+                        widgetAi.style.color = "#f97316";
+                    } else if (p < 0.7) {
+                        widgetAi.textContent = "TUNING";
+                        widgetAi.style.color = "#f97316";
+                    } else {
+                        widgetAi.textContent = "OPTIMAL";
+                        widgetAi.style.color = "#10b981";
+                    }
+                }
+            };
+
             ScrollTrigger.create({
                 trigger: slide,
                 start: "top center",
                 end: "bottom center",
                 onEnter: () => {
                     const step = parseInt(slide.getAttribute("data-step"));
+                    const p = step / 4.0;
                     if (window.threeState.updateDuton) {
-                        window.threeState.updateDuton(step / 4.0);
+                        window.threeState.updateDuton(p);
                     }
+                    updateMobileMetrics(p);
                 },
                 onEnterBack: () => {
                     const step = parseInt(slide.getAttribute("data-step"));
+                    const p = step / 4.0;
                     if (window.threeState.updateDuton) {
-                        window.threeState.updateDuton(step / 4.0);
+                        window.threeState.updateDuton(p);
                     }
+                    updateMobileMetrics(p);
                 }
             });
         });
