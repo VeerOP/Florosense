@@ -1,7 +1,7 @@
 /* ----------------------------------------------------
    COESC DIVISION SPECIFIC STYLE OVERRIDES
    ---------------------------------------------------- */
-@import url("../css/main.css");
+@import url("../css/main.css?v=1.0.6");
 
 :root {
     /* Blue Theme Accents */

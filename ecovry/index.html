@@ -27,7 +27,11 @@
                 <img src="../assets/logo_florosense_light.png" alt="Florosense Logo" class="navbar-logo-img">
             </a>
             
-            <div class="nav-links-wrapper">
+            <button class="mobile-toggle" aria-label="Toggle navigation" id="mobile-menu-toggle">
+                <i data-lucide="menu"></i>
+            </button>
+            
+            <div class="nav-links-wrapper" id="nav-links-menu">
                 <ul class="nav-links">
                     <li><a href="../index.html" class="nav-link">Home</a></li>
                     <li><a href="#capabilities" class="nav-link">Capabilities</a></li>
@@ -367,7 +371,7 @@
     <!-- Footer -->
     <footer class="footer" style="background: var(--bg-light); padding: 80px 0 40px; margin-top:100px; border-top:1px solid var(--color-border);">
         <div class="container">
-            <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr; gap: 48px; margin-bottom: 60px;">
+            <div class="subpage-footer-grid">
                 <div class="footer-col">
                     <img src="../assets/logo_florosense.png" alt="FLOROSENSE Logo" class="footer-logo-img" style="height: 40px; margin-bottom: 24px; object-fit: contain;">
                     <p style="color: var(--color-text-muted); font-size: 14px; line-height: 1.6;">
@@ -401,7 +405,7 @@
                     </p>
                 </div>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 30px; border-top: 1px solid var(--color-border); font-size: 13px; color: var(--color-text-muted);">
+            <div class="footer-bottom">
                 <div>&copy; 2026 Florosense Engineered Solutions Pvt. Ltd. All rights reserved. Registered in India.</div>
                 <div style="display: flex; gap: 20px;">
                     <a href="tel:+918073593961">Call: +91 8073593961</a>

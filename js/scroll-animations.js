@@ -163,8 +163,33 @@ function initEcovryScrollStory() {
             }
         });
     } else {
-        // Fallback for tablets/mobile: simple intersection updates for Three.js
+        // Fallback for tablets/mobile: simple intersection updates for Three.js + scroll animations
         slides.forEach((slide) => {
+            gsap.fromTo(slide,
+                { opacity: 0.25, scale: 0.95 },
+                {
+                    opacity: 1,
+                    scale: 1,
+                    scrollTrigger: {
+                        trigger: slide,
+                        start: "top bottom-=100",
+                        end: "top center-=50",
+                        scrub: true
+                    }
+                }
+            );
+
+            gsap.to(slide, {
+                opacity: 0.25,
+                scale: 0.95,
+                scrollTrigger: {
+                    trigger: slide,
+                    start: "bottom center+=50",
+                    end: "bottom top+=100",
+                    scrub: true
+                }
+            });
+
             ScrollTrigger.create({
                 trigger: slide,
                 start: "top center",
@@ -277,13 +302,44 @@ function initDutonScrollStory() {
             }
         });
     } else {
-        // Fallback for tablets/mobile
+        // Fallback for tablets/mobile: simple intersection updates for Three.js + scroll animations
         slides.forEach((slide) => {
+            gsap.fromTo(slide,
+                { opacity: 0.25, scale: 0.95 },
+                {
+                    opacity: 1,
+                    scale: 1,
+                    scrollTrigger: {
+                        trigger: slide,
+                        start: "top bottom-=100",
+                        end: "top center-=50",
+                        scrub: true
+                    }
+                }
+            );
+
+            gsap.to(slide, {
+                opacity: 0.25,
+                scale: 0.95,
+                scrollTrigger: {
+                    trigger: slide,
+                    start: "bottom center+=50",
+                    end: "bottom top+=100",
+                    scrub: true
+                }
+            });
+
             ScrollTrigger.create({
                 trigger: slide,
                 start: "top center",
                 end: "bottom center",
                 onEnter: () => {
+                    const step = parseInt(slide.getAttribute("data-step"));
+                    if (window.threeState.updateDuton) {
+                        window.threeState.updateDuton(step / 4.0);
+                    }
+                },
+                onEnterBack: () => {
                     const step = parseInt(slide.getAttribute("data-step"));
                     if (window.threeState.updateDuton) {
                         window.threeState.updateDuton(step / 4.0);

@@ -4,6 +4,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     initThemeManager();
+    initMobileNav();
     initThreeDModel();
     initTimeline();
     initNanobubbleSimulator();
@@ -578,5 +579,41 @@ function initScrollAnimations() {
         y: 40,
         duration: 0.8,
         ease: "power3.out"
+    });
+}
+
+/* =========================================================================
+   6. MOBILE NAVBAR MENU TOGGLE
+   ========================================================================= */
+function initMobileNav() {
+    const toggleBtn = document.getElementById("mobile-menu-toggle");
+    const navMenu = document.getElementById("nav-links-menu");
+    const navLinks = document.querySelectorAll(".nav-link");
+
+    if (!toggleBtn || !navMenu) return;
+
+    toggleBtn.addEventListener("click", () => {
+        navMenu.classList.toggle("open");
+        const isOpen = navMenu.classList.contains("open");
+        
+        // Swap menu icon to X icon
+        toggleBtn.innerHTML = isOpen 
+            ? `<i data-lucide="x"></i>` 
+            : `<i data-lucide="menu"></i>`;
+        
+        if (window.lucide) {
+            window.lucide.createIcons();
+        }
+    });
+
+    // Close menu when a link is clicked
+    navLinks.forEach(link => {
+        link.addEventListener("click", () => {
+            navMenu.classList.remove("open");
+            toggleBtn.innerHTML = `<i data-lucide="menu"></i>`;
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+        });
     });
 }

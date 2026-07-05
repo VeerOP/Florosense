@@ -54,7 +54,8 @@
 
     /* Spacing & Utilities */
     --container-max: 1280px;
-    --navbar-height: 80px;
+    --navbar-height: 96px;
+    --navbar-height-scrolled: 80px;
     --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     --transition-quick: all 0.3s ease;
 }
@@ -105,6 +106,10 @@ body[data-theme="dark"] {
 }
 
 /* Reset */
+html {
+    scroll-padding-top: var(--navbar-height-scrolled);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -240,7 +245,8 @@ h1, h2, h3, h4, h5, h6 {
     top: 0;
     left: 0;
     width: 100%;
-    height: 96px; /* Increased from 80px to be more premium and spacious */
+    --current-navbar-height: var(--navbar-height);
+    height: var(--current-navbar-height);
     z-index: 1000;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     transition: var(--transition-smooth);
@@ -255,10 +261,10 @@ body[data-theme="dark"] .navbar {
 }
 
 .navbar.scrolled {
+    --current-navbar-height: var(--navbar-height-scrolled);
     background-color: rgba(235, 234, 228, 0.95); /* Warm stone tone scrolled background */
     border-bottom: 1px solid var(--color-border);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
-    height: 80px; /* Transition to slightly tighter on scroll */
 }
 
 .nav-container {
@@ -371,6 +377,7 @@ body[data-theme="dark"] .navbar {
     position: relative;
     transition: var(--transition-quick);
     margin-right: 12px;
+    flex-shrink: 0; /* Prevent compression on mobile column layouts */
 }
 
 .navbar:not(.scrolled) .theme-switch {
@@ -440,9 +447,9 @@ body[data-theme="dark"] .theme-switch .lucide-moon {
    ---------------------------------------------------- */
 .hero-section {
     position: relative;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     background-color: var(--bg-white);
     overflow: hidden;
     padding-top: var(--navbar-height);
@@ -454,6 +461,7 @@ body[data-theme="dark"] .theme-switch .lucide-moon {
     align-items: center;
     gap: 60px;
     width: 100%;
+    margin: auto; /* Standard vertical + horizontal centering with overflow safety */
 }
 
 .hero-left-col {
@@ -2390,10 +2398,10 @@ body[data-theme="dark"] #split-coesc .marquee-item {
     
     .nav-links-wrapper {
         position: fixed;
-        top: var(--navbar-height);
+        top: var(--current-navbar-height);
         left: 0;
         width: 100%;
-        height: calc(100vh - var(--navbar-height));
+        height: calc(100vh - var(--current-navbar-height));
         background-color: var(--bg-white);
         border-top: 1px solid var(--color-border);
         padding: 40px;
@@ -2478,9 +2486,10 @@ body[data-theme="dark"] #split-coesc .marquee-item {
     }
     .story-visual-canvas {
         flex: auto;
-        height: 60vh;
+        height: 65vh;
+        min-height: 380px;
         position: sticky;
-        top: var(--navbar-height);
+        top: var(--navbar-height-scrolled);
         z-index: 10;
         background-color: var(--bg-white);
         padding: 20px 0;
@@ -2508,9 +2517,26 @@ body[data-theme="dark"] #split-coesc .marquee-item {
         border-radius: 12px;
         border: 1px solid var(--color-border);
     }
+    body[data-theme="dark"] .story-slide {
+        background-color: rgba(28, 28, 30, 0.9) !important;
+        border-color: rgba(255, 255, 255, 0.05) !important;
+    }
     .light-theme-story .story-slide {
-        background-color: rgba(15, 23, 42, 0.9);
+        background-color: rgba(255, 255, 255, 0.9);
+        border-color: var(--color-border);
+    }
+    body[data-theme="dark"] .light-theme-story .story-slide {
+        background-color: rgba(28, 28, 30, 0.9);
         border-color: rgba(255, 255, 255, 0.05);
+    }
+    body[data-theme="dark"] .light-theme-story .slide-title {
+        color: #FFFFFF !important;
+    }
+    body[data-theme="dark"] .light-theme-story .slide-text {
+        color: #E4E4E7 !important;
+    }
+    body[data-theme="dark"] .light-theme-story .spec-val {
+        color: #FFFFFF !important;
     }
     
     /* Stats Grid */
@@ -3204,4 +3230,181 @@ body[data-theme="dark"] .grid-card {
 body[data-theme="dark"] .twin-visualizer-box {
     background-color: var(--bg-white) !important;
     border-color: var(--color-border) !important;
+}
+
+/* =========================================================================
+   SUBPAGE & MOBILE RESPONSIVENESS OVERRIDES
+   ========================================================================= */
+.subpage-footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
+    gap: 48px;
+    margin-bottom: 60px;
+}
+
+@media (max-width: 992px) {
+    /* Hero section padding overlap fix */
+    .hero-section {
+        height: auto;
+        min-height: 100vh;
+        padding-top: calc(var(--navbar-height) + 40px) !important;
+        padding-bottom: 60px;
+    }
+
+    /* Division Split mobile stacked visual panel layout */
+    .split-side {
+        height: auto !important; /* Allow panels to grow based on contents */
+        padding: 56px 32px !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        border-bottom: 1px solid var(--color-border);
+    }
+    .split-side:not(:last-child) {
+        border-bottom: 1px solid var(--color-border) !important;
+    }
+    
+    /* Reveal and ensure opacity inside stacked panels */
+    .split-side .vertical-highlight-badge,
+    .split-side .split-logo-img,
+    .split-side .split-desc,
+    .split-side .split-link {
+        opacity: 1 !important; /* Ensure visibility */
+    }
+
+    /* Soft brand background colors for Mobile stack panels */
+    .left-side {
+        background-color: #FFF7ED !important;
+    }
+    body[data-theme="dark"] .left-side {
+        background-color: #201814 !important;
+    }
+    .center-side {
+        background-color: #FFFBEB !important;
+    }
+    body[data-theme="dark"] .center-side {
+        background-color: #221E14 !important;
+    }
+    .right-side {
+        background-color: #EFF6FF !important;
+    }
+    body[data-theme="dark"] .right-side {
+        background-color: #141A24 !important;
+    }
+
+    /* Brand-tinted links */
+    .left-side .split-link {
+        color: var(--color-orange) !important;
+    }
+    .center-side .split-link {
+        color: #CA8A04 !important;
+    }
+    body[data-theme="dark"] .center-side .split-link {
+        color: #FACC15 !important;
+    }
+    .right-side .split-link {
+        color: #2563eb !important;
+    }
+    body[data-theme="dark"] .right-side .split-link {
+        color: #60a5fa !important;
+    }
+
+    /* Subpage Footers grid layout responsiveness */
+    .subpage-footer-grid {
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 36px;
+        margin-bottom: 60px;
+    }
+
+    /* Interactive dashboard canvas widget scaling - Mobile Swipeable Cards Layout */
+    .dashboard-sim-container {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .dashboard-sim-header {
+        display: none !important; /* Hide dashboard header on mobile to maximize 3D model space */
+    }
+    .dashboard-sim-body {
+        padding: 0 !important;
+        gap: 12px !important;
+    }
+    .dashboard-grid {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory !important;
+        gap: 0 !important; /* Edge-to-edge layout like slide pages */
+        scrollbar-width: none !important;
+        width: 100% !important;
+    }
+    .dashboard-grid::-webkit-scrollbar {
+        display: none !important;
+    }
+    .dashboard-grid .grid-card {
+        min-width: 100% !important; /* Matches ECOVRY model width */
+        scroll-snap-align: start !important;
+        flex-shrink: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        background: transparent !important;
+        gap: 0 !important;
+    }
+    .dashboard-grid .widget-twin .widget-label {
+        display: none !important; /* Hide label inside visualizer to match clean ECOVRY style */
+    }
+    .twin-visualizer-box {
+        height: 350px !important; /* Matches visual size factor of ECOVRY model */
+        border-radius: 12px !important;
+        border: 1px solid var(--color-border) !important;
+        background-color: var(--bg-light) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .subpage-footer-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+    
+    /* 3D Canvas Box heights */
+    .canvas-card-3d {
+        height: 380px !important; /* Increased for better mobile visibility */
+    }
+    
+    /* Modal responsive scrolling and layout */
+    .modal-box {
+        max-height: calc(100vh - 40px) !important;
+        overflow-y: auto !important;
+        margin: 20px !important;
+        padding: 32px 20px !important;
+    }
+    
+    /* Mobile dashboard spacing and font sizes */
+    .dashboard-metrics-row {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 6px !important;
+    }
+    .dashboard-metrics-row .metric-widget {
+        padding: 6px 8px !important;
+        gap: 2px !important;
+        border-radius: 6px !important;
+    }
+    .dashboard-metrics-row .m-label {
+        font-size: 6px !important;
+    }
+    .dashboard-metrics-row .m-value {
+        font-size: 8px !important;
+    }
+}
+
+/* Explicit form select options styles */
+.form-group select option {
+    background-color: var(--bg-white);
+    color: var(--color-primary);
+}
+body[data-theme="dark"] .form-group select option {
+    background-color: #252528;
+    color: #FFFFFF;
 }
