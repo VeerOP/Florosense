@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COESC Clearance Hub | Pollution Consent & Liaisoning Consultancy</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Discover COESC: SPCB CTE/CTO Consent management, CGWA groundwater clearances, fire NOC liaisoning, and ESG risk audits by Florosense Group.">
+    <meta name="keywords" content="Pollution board clearance, SPCB, CTE, CTO, CGWA, green building, HSE audit, liaisoning, Florosense, Coesc">
+    <meta name="author" content="Florosense Group">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;600;700;800&family=Sora:wght@400;600;700;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Transparent Sticky Navbar -->
+    <nav class="navbar scrolled" id="main-navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo" id="nav-logo-link">
+                <img src="../assets/logo_florosense_light.png" alt="Florosense Logo" class="navbar-logo-img">
+            </a>
+            
+            <div class="nav-links-wrapper">
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">Home</a></li>
+                    <li><a href="#services" class="nav-link">Services</a></li>
+                    <li><a href="#wizard" class="nav-link">Clearance Checker</a></li>
+                </ul>
+                <button class="theme-switch" id="theme-switcher-btn" aria-label="Toggle light/dark theme">
+                    <span class="theme-switch-pill"></span>
+                    <i data-lucide="sun" class="theme-switch-icon-sun"></i>
+                    <i data-lucide="moon" class="theme-toggle-icon-moon"></i>
+                </button>
+                <a href="../index.html#contact" class="btn btn-primary btn-cta-nav">
+                    Project Discussion
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="coesc-hero">
+        <div class="container">
+            <div class="coesc-hero-grid">
+                <div class="hero-left">
+                    <span class="hero-badge">COESC Clearance Hub</span>
+                    <h1 class="hero-title">
+                        Pollution Compliance.<br>
+                        <span class="highlight-italic">Liaisoning</span> Simplified.
+                    </h1>
+                    <p class="hero-desc">
+                        Bridging the gap between state pollution mandates and industrial operations. Managing SPCB CTE/CTO consent forms, groundwater NOCs, and structural fire safety clearance processes.
+                    </p>
+                    <div class="hero-ctas">
+                        <a href="../index.html#contact" class="btn btn-primary" style="padding: 14px 28px; font-weight:600;">Request Clearance Liaison</a>
+                        <a href="#services" class="btn btn-secondary" style="margin-left:12px; border: 1.5px solid var(--color-primary); padding: 14px 28px; font-weight:600;">Explore Services</a>
+                    </div>
+                </div>
+                <div class="hero-right">
+                    <div class="canvas-card-3d">
+                        <canvas id="coesc-3d-canvas" style="width: 100%; height: 100%; display: block;"></canvas>
+                        <div class="canvas-hint">
+                            <i data-lucide="move-3d"></i> Drag to inspect frameworks 360°
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services & Liaisoning Section -->
+    <section class="serv-section" id="services">
+        <div class="container">
+            <div class="section-header" style="text-align: center; max-width: 700px; margin: 0 auto 48px;">
+                <span class="hero-badge" style="margin-bottom:12px;">Our Expertise</span>
+                <h2 style="font-family: var(--font-heading); font-size: 38px; font-weight: 800; margin-bottom: 16px;">SPCB, CGWA & HSE Approvals</h2>
+                <p style="color: var(--color-text-muted);">Offering end-to-end technical documentation preparation and liaisoning audits for quick regulatory permits.</p>
+            </div>
+            
+            <div class="serv-grid">
+                <div class="serv-card">
+                    <div class="serv-icon"><i data-lucide="file-text"></i></div>
+                    <h3 class="serv-title">SPCB Consent Management</h3>
+                    <p class="serv-desc">Filing State Pollution Control Board Consent to Establish (CTE) and Consent to Operate (CTO) permits for Red, Orange, and Green category industries, handling all clarifications.</p>
+                </div>
+                <div class="serv-card">
+                    <div class="serv-icon"><i data-lucide="droplet"></i></div>
+                    <h3 class="serv-title">Ground Water NOC (CGWA)</h3>
+                    <p class="serv-desc">Liaisoning with the Central Ground Water Authority (CGWA) to secure aquifer abstraction clearance NOCs, executing hydrogeological reports and water audits.</p>
+                </div>
+                <div class="serv-card">
+                    <div class="serv-icon"><i data-lucide="shield-check"></i></div>
+                    <h3 class="serv-title">Fire Safety & HSE Clearances</h3>
+                    <p class="serv-desc">Securing Fire Department NOC approvals, building license approvals, hazardous waste handling authorizations, and conducting structural stability checks.</p>
+                </div>
+                <div class="serv-card">
+                    <div class="serv-icon"><i data-lucide="bar-chart-3"></i></div>
+                    <h3 class="serv-title">Corporate ESG & Green Audits</h3>
+                    <p class="serv-desc">Consulting for carbon offsets planning, Extended Producer Responsibility (EPR) reporting for plastics/water, and green building certifications (LEED / IGBC).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compliance Checker Wizard Section -->
+    <section class="wizard-section" id="wizard">
+        <div class="container">
+            <div class="section-header" style="text-align: center; max-width: 700px; margin: 0 auto 48px;">
+                <span class="hero-badge" style="margin-bottom:12px;">Clearance Checker</span>
+                <h2 style="font-family: var(--font-heading); font-size: 38px; font-weight: 800; margin-bottom: 16px;">Compliance Readiness Evaluation</h2>
+                <p style="color: var(--color-text-muted);">Select your project parameters to compile a customized state compliance checklist.</p>
+            </div>
+            
+            <div class="wizard-grid">
+                <div class="wizard-interactive">
+                    <div class="wizard-card">
+                        <div class="wizard-progress">
+                            <div id="wizard-progress-bar" class="wizard-progress-bar"></div>
+                        </div>
+                        
+                        <!-- Step 1 -->
+                        <div id="step-1" class="wizard-step active">
+                            <h3 class="wizard-header">01. Industry Classification</h3>
+                            <p style="color: var(--color-text-muted); margin-bottom: 24px; font-size:14px;">Select the SPCB index rating that matches your industrial category.</p>
+                            <div class="wizard-options">
+                                <div class="wizard-option opt-cat" data-value="green">
+                                    <div class="wizard-option-radio"></div>
+                                    <span>Green Category (Low pollution score)</span>
+                                </div>
+                                <div class="wizard-option opt-cat selected" data-value="orange">
+                                    <div class="wizard-option-radio"></div>
+                                    <span>Orange Category (Medium pollution score)</span>
+                                </div>
+                                <div class="wizard-option opt-cat" data-value="red">
+                                    <div class="wizard-option-radio"></div>
+                                    <span>Red Category (High chemical / toxicity score)</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 2 -->
+                        <div id="step-2" class="wizard-step">
+                            <h3 class="wizard-header">02. Primary Water Source</h3>
+                            <p style="color: var(--color-text-muted); margin-bottom: 24px; font-size:14px;">How does your facility get or supply water?</p>
+                            <div class="wizard-options">
+                                <div class="wizard-option opt-water selected" data-value="municipal">
+                                    <div class="wizard-option-radio"></div>
+                                    <span>Municipal Water Supply / Tankers</span>
+                                </div>
+                                <div class="wizard-option opt-water" data-value="borewell">
+                                    <div class="wizard-option-radio"></div>
+                                    <span>Ground Water / Borewell Extraction</span>
+                                </div>
+                                <div class="wizard-option opt-water" data-value="recycle">
+                                    <div class="wizard-option-radio"></div>
+                                    <span>100% Recycled Water loop (ZLD)</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 3 -->
+                        <div id="step-3" class="wizard-step">
+                            <h3 class="wizard-header">03. Green & Safety Targets</h3>
+                            <p style="color: var(--color-text-muted); margin-bottom: 24px; font-size:14px;">What certification standard does your project target?</p>
+                            <div class="wizard-options">
+                                <div class="wizard-option opt-hse selected" data-value="spcb">
+                                    <div class="wizard-option-radio"></div>
+                                    <span>State SPCB CTE/CTO only</span>
+                                </div>
+                                <div class="wizard-option opt-hse" data-value="greenbuilding">
+                                    <div class="wizard-option-radio"></div>
+                                    <span>LEED / IGBC Green Rating</span>
+                                </div>
+                                <div class="wizard-option opt-hse" data-value="full">
+                                    <div class="wizard-option-radio"></div>
+                                    <span>Full HSE Fire Safety & ESG Clearance</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="wizard-buttons">
+                            <button id="wizard-btn-prev" class="btn btn-secondary" style="border: 1.5px solid var(--color-primary); padding: 8px 16px; visibility: hidden;">Back</button>
+                            <button id="wizard-btn-next" class="btn btn-primary" style="padding: 8px 20px;">Next Step</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="wizard-result">
+                    <div class="checklist-card">
+                        <div class="checklist-title">
+                            <i data-lucide="shield-check" style="width:28px; height:28px; color:var(--accent-color);"></i>
+                            <span>Required Clearances Checklist</span>
+                        </div>
+                        
+                        <div id="checklist-items" class="checklist-items">
+                            <!-- Items populated dynamically by app.js -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action Banner -->
+            <div class="cta-banner">
+                <h2>Secure Your CTE/CTO Approvals</h2>
+                <p>Avoid heavy compliance penalties or plant delays. Speak with our liaison specialists to file your applications today.</p>
+                <a href="../index.html#contact" class="btn btn-primary" style="background:#ffffff !important; color:var(--accent-color) !important;">Speak to a Liaison Specialist</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" style="background: var(--bg-light); padding: 80px 0 40px; margin-top:100px; border-top:1px solid var(--color-border);">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr; gap: 48px; margin-bottom: 60px;">
+                <div class="footer-col">
+                    <img src="../assets/logo_florosense.png" alt="FLOROSENSE Logo" class="footer-logo-img" style="height: 40px; margin-bottom: 24px; object-fit: contain;">
+                    <p style="color: var(--color-text-muted); font-size: 14px; line-height: 1.6;">
+                        A Florosense Group Venture. Engineering excellence in industrial process control, environmental compliance, and wastewater resource recovery systems.
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4 style="font-family: var(--font-heading); font-size: 16px; font-weight: 700; margin-bottom: 24px;">Divisions</h4>
+                    <ul style="display: flex; flex-direction: column; gap: 12px; font-size: 14px; color: var(--color-text-muted);">
+                        <li><a href="../ecovry/index.html">ECOVRY Sustainability</a></li>
+                        <li><a href="../duton/index.html">DUTON Automation</a></li>
+                        <li><a href="../coesc/index.html" style="color: var(--accent-color); font-weight:600;">COESC Clearance Hub</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 style="font-family: var(--font-heading); font-size: 16px; font-weight: 700; margin-bottom: 24px;">Industries</h4>
+                    <ul style="display: flex; flex-direction: column; gap: 12px; font-size: 14px; color: var(--color-text-muted);">
+                        <li><a href="../index.html#industries">Manufacturing</a></li>
+                        <li><a href="../index.html#industries">Real Estate</a></li>
+                        <li><a href="../index.html#industries">Hospitality</a></li>
+                        <li><a href="../index.html#industries">Healthcare</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 style="font-family: var(--font-heading); font-size: 16px; font-weight: 700; margin-bottom: 24px;">Offices</h4>
+                    <p style="color: var(--color-text-muted); font-size: 13px; line-height: 1.6; margin-bottom: 12px;">
+                        <strong>Mysore HQ:</strong> #435 Kubera Complex, Alanahalli Layout, Mysore 570028
+                    </p>
+                    <p style="color: var(--color-text-muted); font-size: 13px; line-height: 1.6;">
+                        <strong>Bangalore Office:</strong> #109/A Nagarbhavi 1st Stage, Bengaluru 560072
+                    </p>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 30px; border-top: 1px solid var(--color-border); font-size: 13px; color: var(--color-text-muted);">
+                <div>&copy; 2026 Florosense Engineered Solutions Pvt. Ltd. All rights reserved. Registered in India.</div>
+                <div style="display: flex; gap: 20px;">
+                    <a href="tel:+918073593961">Call: +91 8073593961</a>
+                    <a href="mailto:info@florosense.com">Email: info@florosense.com</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CDN Libraries Import -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- App Script -->
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

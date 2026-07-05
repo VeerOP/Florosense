@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECOVRY Sustainability | Wastewater & Turnkey Compliance Engineering</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Discover ECOVRY: turn-key environmental engineering, Sewage & Effluent Treatment Plants (STP/ETP), Zero Liquid Discharge (ZLD), and Nanobubble physics by Florosense Group.">
+    <meta name="keywords" content="Wastewater treatment, STP, ETP, ZLD, Nanobubble, environmental compliance, Florosense, Ecovry">
+    <meta name="author" content="Florosense Group">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;600;700;800&family=Sora:wght@400;600;700;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Transparent Sticky Navbar -->
+    <nav class="navbar scrolled" id="main-navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo" id="nav-logo-link">
+                <img src="../assets/logo_florosense_light.png" alt="Florosense Logo" class="navbar-logo-img">
+            </a>
+            
+            <div class="nav-links-wrapper">
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">Home</a></li>
+                    <li><a href="#capabilities" class="nav-link">Capabilities</a></li>
+                    <li><a href="#simulator" class="nav-link">Physics Sim</a></li>
+                    <li><a href="#calculator" class="nav-link">Calculator</a></li>
+                </ul>
+                <button class="theme-switch" id="theme-switcher-btn" aria-label="Toggle light/dark theme">
+                    <span class="theme-switch-pill"></span>
+                    <i data-lucide="sun" class="theme-switch-icon-sun"></i>
+                    <i data-lucide="moon" class="theme-toggle-icon-moon"></i>
+                </button>
+                <a href="../index.html#contact" class="btn btn-primary btn-cta-nav">
+                    Project Discussion
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="ecovry-hero">
+        <div class="container">
+            <div class="ecovry-hero-grid">
+                <div class="hero-left">
+                    <span class="hero-badge">ECOVRY | MANAGED TURNKEY SERVICES</span>
+                    <h1 class="hero-title">
+                        Wastewater Services.<br>
+                        <span class="highlight-italic">Fully Managed</span> Circularity.
+                    </h1>
+                    <p class="hero-desc">
+                        End-to-end site water audits, civil construction, chemical engineering, remote telemetry, and SPCB compliance liaison services. We build and operate your treatment plants (STP/ETP/ZLD) under strict SLA-backed service contracts.
+                    </p>
+                    <div class="hero-ctas">
+                        <a href="../index.html#contact" class="btn btn-primary" style="padding: 14px 28px; font-weight:600;">Inquire About Managed Services</a>
+                        <a href="#capabilities" class="btn btn-secondary" style="margin-left:12px; border: 1.5px solid var(--color-primary); padding: 14px 28px; font-weight:600;">Explore Service Lifecycle</a>
+                    </div>
+                </div>
+                <div class="hero-right">
+                    <div class="canvas-card-3d">
+                        <!-- Glassmorphic Service Telemetry Dashboard -->
+                        <div class="reactor-telemetry-overlay">
+                            <div class="telemetry-badge"><span class="pulse-dot"></span> Service Operations Active</div>
+                            <div class="telemetry-grid">
+                                <div class="telemetry-item">
+                                    <span class="telemetry-lbl">DO Saturation</span>
+                                    <span class="telemetry-val" id="telemetry-do">4.2 mg/L</span>
+                                </div>
+                                <div class="telemetry-item">
+                                    <span class="telemetry-lbl">Treatment Flow</span>
+                                    <span class="telemetry-val" id="telemetry-flow">100 KLD</span>
+                                </div>
+                                <div class="telemetry-item">
+                                    <span class="telemetry-lbl">SLA Compliance</span>
+                                    <span class="telemetry-val" id="telemetry-sla">100.0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <canvas id="ecovry-3d-canvas" style="width: 100%; height: 100%; display: block;"></canvas>
+                        <div class="canvas-hint">
+                            <i data-lucide="move-3d"></i> Drag to inspect bioreactor 360°
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Service Timeline Section -->
+    <section class="cap-section" id="capabilities">
+        <div class="container">
+            <div class="section-header" style="text-align: center; max-width: 700px; margin: 0 auto 48px;">
+                <span class="hero-badge" style="margin-bottom:12px;">Service Model</span>
+                <h2 style="font-family: var(--font-heading); font-size: 38px; font-weight: 800; margin-bottom: 16px;">Turn-Key Managed Service Lifecycle</h2>
+                <p style="color: var(--color-text-muted);">We assume complete ownership of your water loop. Click any phase below to explore deliverables, timelines, and operational metrics.</p>
+            </div>
+            
+            <div class="timeline-container">
+                <div class="timeline-navigation">
+                    <button class="timeline-nav-btn active" data-phase="1">
+                        <span class="nav-btn-num">01</span>
+                        <span class="nav-btn-lbl">Site Audit & Design</span>
+                    </button>
+                    <button class="timeline-nav-btn" data-phase="2">
+                        <span class="nav-btn-num">02</span>
+                        <span class="nav-btn-lbl">Civil & Rigging</span>
+                    </button>
+                    <button class="timeline-nav-btn" data-phase="3">
+                        <span class="nav-btn-num">03</span>
+                        <span class="nav-btn-lbl">Aeration Physics</span>
+                    </button>
+                    <button class="timeline-nav-btn" data-phase="4">
+                        <span class="nav-btn-num">04</span>
+                        <span class="nav-btn-lbl">Managed Operations</span>
+                    </button>
+                    <button class="timeline-nav-btn" data-phase="5">
+                        <span class="nav-btn-num">05</span>
+                        <span class="nav-btn-lbl">Liaison & Audit</span>
+                    </button>
+                </div>
+
+                <div class="timeline-content-panel">
+                    <!-- Phase 1 Content -->
+                    <div class="timeline-phase-content active" id="phase-1-content">
+                        <div class="phase-info-grid">
+                            <div class="phase-text">
+                                <h3 class="phase-title">Phase 01: Comprehensive Water Auditing & Engineering Design</h3>
+                                <p class="phase-desc">Before breaking ground, our certified environmental engineers analyze your facility's raw water properties, biological oxygen demand (BOD), chemical oxygen demand (COD), and total suspended solids (TSS). We map flow paths and model bespoke CAD blueprints designed to optimize space and circular reuse index.</p>
+                                <ul class="phase-deliverables">
+                                    <li><i data-lucide="check-circle-2"></i> Hydraulic & chemical profiling reports</li>
+                                    <li><i data-lucide="check-circle-2"></i> Custom CAD civil & piping layout designs</li>
+                                    <li><i data-lucide="check-circle-2"></i> ROI projections & CAPEX/OPEX budgets</li>
+                                </ul>
+                            </div>
+                            <div class="phase-metrics">
+                                <div class="p-metric-card">
+                                    <span class="p-metric-val">3-5 Days</span>
+                                    <span class="p-metric-lbl">Typical Assessment Window</span>
+                                </div>
+                                <div class="p-metric-card">
+                                    <span class="p-metric-val">100% Free</span>
+                                    <span class="p-metric-lbl">Initial Site Feasibility</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 2 Content -->
+                    <div class="timeline-phase-content" id="phase-2-content">
+                        <div class="phase-info-grid">
+                            <div class="phase-text">
+                                <h3 class="phase-title">Phase 02: Civil Construction, Plumbing, & Mechanical Rigging</h3>
+                                <p class="phase-desc">We assume complete ownership of construction. Our civil crews execute excavation, construct high-grade concrete reactor walls, place heavy containerized setups, install stainless/PVC piping manifolds, and rig chemical storage assemblies with strict adherence to ISO 9001 quality guidelines.</p>
+                                <ul class="phase-deliverables">
+                                    <li><i data-lucide="check-circle-2"></i> Reactor tank foundations & structural pours</li>
+                                    <li><i data-lucide="check-circle-2"></i> Containerized/modular plant placement</li>
+                                    <li><i data-lucide="check-circle-2"></i> Pumps, blowers, and plumbing arrays manifold routing</li>
+                                </ul>
+                            </div>
+                            <div class="phase-metrics">
+                                <div class="p-metric-card">
+                                    <span class="p-metric-val">30-45 Days</span>
+                                    <span class="p-metric-lbl">Procure-to-Construct SLA</span>
+                                </div>
+                                <div class="p-metric-card">
+                                    <span class="p-metric-val">ISO 9001</span>
+                                    <span class="p-metric-lbl">Structural Certification</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 3 Content -->
+                    <div class="timeline-phase-content" id="phase-3-content">
+                        <div class="phase-info-grid">
+                            <div class="phase-text">
+                                <h3 class="phase-title">Phase 03: Nanobubble Aeration Commissioning & Physics Integration</h3>
+                                <p class="phase-desc">We integrate our core physics technology: ECOVRY Nanobubble Generator units. Standard aeration devices consume substantial power and lose active oxygen. We calibrate nanobubble reactors (under 200nm) to maximize gas dissolution, accelerating organic breakdown kinetics and boosting energy efficiency.</p>
+                                <ul class="phase-deliverables">
+                                    <li><i data-lucide="check-circle-2"></i> Nanobubble generator installation & calibration</li>
+                                    <li><i data-lucide="check-circle-2"></i> Dissolved oxygen (DO) saturation testing</li>
+                                    <li><i data-lucide="check-circle-2"></i> Blower loop synchronization and power verification</li>
+                                </ul>
+                            </div>
+                            <div class="phase-metrics">
+                                <div class="p-metric-card">
+                                    <span class="p-metric-val">Up to 88%</span>
+                                    <span class="p-metric-lbl">Oxygen Transfer Efficiency</span>
+                                </div>
+                                <div class="p-metric-card">
+                                    <span class="p-metric-val">-35%</span>
+                                    <span class="p-metric-lbl">Blower Energy Offsets</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 4 Content -->
+                    <div class="timeline-phase-content" id="phase-4-content">
+                        <div class="phase-info-grid">
+                            <div class="phase-text">
+                                <h3 class="phase-title">Phase 04: Managed Plant Operations & Remote SCADA Supervision</h3>
+                                <p class="phase-desc">We handle ongoing operations. We deploy licensed environmental operators on-site to handle daily chemical dosages, sludge management, and machine upkeep. Concurrently, remote telemetry sensors push sub-second metrics to our central dashboard, ensuring we proactively flag maintenance needs.</p>
+                                <ul class="phase-deliverables">
+                                    <li><i data-lucide="check-circle-2"></i> 24/7 Qualified operator staffing</li>
+                                    <li><i data-lucide="check-circle-2"></i> Real-time telemetry monitoring (DO, pH, TSS, Flow)</li>
+                                    <li><i data-lucide="check-circle-2"></i> Contractual SLA output metrics guarantee</li>
+                                </ul>
+                            </div>
+                            <div class="phase-metrics">
+                                <div class="p-metric-card">
+                                    <span class="p-metric-val">99.8%</span>
+                                    <span class="p-metric-lbl">Operational Plant Uptime</span>
+                                </div>
+                                <div class="p-metric-card">
+                                    <span class="p-metric-val">SLA-Backed</span>
+                                    <span class="p-metric-lbl">Discharge Compliance Guarantee</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 5 Content -->
+                    <div class="timeline-phase-content" id="phase-5-content">
+                        <div class="phase-info-grid">
+                            <div class="phase-text">
+                                <h3 class="phase-title">Phase 05: SPCB Clearances, Green Audits, & Compliance Liaisoning</h3>
+                                <p class="phase-desc">Operations and clearances are integrated. As part of our managed service, we compile lab water test certificates, prepare regulatory consent forms, and handle liaisoning with State Pollution Control Boards (SPCB) to secure CTE/CTO renewals seamlessly, eliminating regulatory risk for your team.</p>
+                                <ul class="phase-deliverables">
+                                    <li><i data-lucide="check-circle-2"></i> Turnkey CTE & CTO SPCB liaison management</li>
+                                    <li><i data-lucide="check-circle-2"></i> Monthly environmental audit reporting</li>
+                                    <li><i data-lucide="check-circle-2"></i> Extended Producer Responsibility (EPR) certification</li>
+                                </ul>
+                            </div>
+                            <div class="phase-metrics">
+                                <div class="p-metric-card">
+                                    <span class="p-metric-val">100%</span>
+                                    <span class="p-metric-lbl">Regulatory Compliance History</span>
+                                </div>
+                                <div class="p-metric-card">
+                                    <span class="p-metric-val">Zero</span>
+                                    <span class="p-metric-lbl">Compliance Fines for Partners</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nanobubble Physics Simulator Section -->
+    <section class="sim-section" id="simulator">
+        <div class="container">
+            <div class="sim-grid">
+                <div class="sim-left-interactive">
+                    <div class="sim-card">
+                        <div class="bubble-canvas-container">
+                            <canvas id="bubble-canvas" class="bubble-canvas"></canvas>
+                        </div>
+                        <div class="control-panel">
+                            <div class="control-group">
+                                <div class="control-label">
+                                    <span>Bubble Diameter</span>
+                                    <span id="bubbleSizeVal" class="accent-text">200 nm</span>
+                                </div>
+                                <input type="range" id="bubble-size" min="100" max="10000" step="100" value="200" class="range-slider">
+                            </div>
+                            <div class="control-group">
+                                <div class="control-label">
+                                    <span>Retention / Suspension Time</span>
+                                    <span id="retentionVal" class="accent-text">Indefinite</span>
+                                </div>
+                                <input type="range" id="retention-time" min="5" max="3600" step="5" value="3600" class="range-slider">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sim-right-text" style="padding-left: 20px;">
+                    <span class="hero-badge" style="margin-bottom:12px;">Fluid Dynamics</span>
+                    <h2 style="font-family: var(--font-heading); font-size: 34px; font-weight: 800; margin-bottom: 20px; line-height: 1.2;">Nanobubble Gas Solubility Engineering</h2>
+                    <p style="color: var(--color-text-muted); margin-bottom: 24px; font-size: 15px;">
+                        Standard MBBR systems generate bubble sizes exceeding 2mm, rising rapidly and losing 85% of active oxygen to the atmosphere. ECOVRY's Nanobubble generators inject gas cores under 200nm. Driven by Brownian motion, these bubbles remain suspended indefinitely, scaling oxygen transfer efficiency (OTE) up to 88% and cutting blower power requirements by 35%.
+                    </p>
+                    
+                    <div class="metrics-row">
+                        <div class="metric-box">
+                            <div id="ote-val" class="metric-val">88%</div>
+                            <div class="metric-lbl">Oxygen Transfer (OTE)</div>
+                        </div>
+                        <div class="metric-box">
+                            <div id="energy-save-val" class="metric-val">35%</div>
+                            <div class="metric-lbl">Blower Energy Saved</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Water Balance & Payback Calculator -->
+    <section class="calc-section" id="calculator">
+        <div class="container">
+            <div class="section-header" style="text-align: center; max-width: 700px; margin: 0 auto 48px;">
+                <span class="hero-badge" style="margin-bottom:12px;">Financial Payback</span>
+                <h2 style="font-family: var(--font-heading); font-size: 38px; font-weight: 800; margin-bottom: 16px;">Water Balance & TCO Calculator</h2>
+                <p style="color: var(--color-text-muted);">Adjust your facility metrics to estimate water recycling yields and yearly expenditure offsets.</p>
+            </div>
+            
+            <div class="calc-grid">
+                <div class="calc-inputs">
+                    <h3 class="calc-header">Facility Inputs</h3>
+                    <div class="control-group" style="margin-bottom:32px;">
+                        <div class="control-label">
+                            <span>Plant Treatment Capacity</span>
+                            <span id="lbl-capacity" class="accent-text">100 KLD</span>
+                        </div>
+                        <input type="range" id="calc-capacity" min="10" max="1000" step="10" value="100" class="range-slider">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Grid Electricity Tariff</span>
+                            <span id="lbl-opex" class="accent-text">₹ 8 / kWh</span>
+                        </div>
+                        <input type="range" id="calc-opex" min="5" max="15" step="0.5" value="8.0" class="range-slider">
+                    </div>
+                </div>
+                
+                <div class="calc-results">
+                    <div>
+                        <h3 class="calc-header">Calculated Returns (Yearly)</h3>
+                        <div class="result-card">
+                            <div class="result-card-lbl">Total Recycled Water Yield</div>
+                            <div id="res-recycled" class="result-card-val">35,770,000 L</div>
+                        </div>
+                        <div class="result-card highlighted">
+                            <div class="result-card-lbl">Net Expenditure Savings</div>
+                            <div id="res-savings" class="result-card-val">₹ 4,324,000</div>
+                        </div>
+                    </div>
+                    <div class="result-card" style="margin-bottom:0; background: var(--bg-light); text-align:center;">
+                        <div class="result-card-lbl" style="font-size:12px; font-weight:700; text-transform:uppercase;">Estimated Premium Breakeven Period</div>
+                        <div id="res-payback" class="result-card-val" style="color: var(--color-primary); font-size:36px; margin-top:8px;">12 Months</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action Banner -->
+            <div class="cta-banner">
+                <div class="cta-banner-bg"></div>
+                <h2>Ready to Engineer Circularity?</h2>
+                <p>Consult our structural and environmental clearance team to design custom recycling pathways for your facility today.</p>
+                <a href="../index.html#contact" class="btn btn-primary">Schedule a Detailed Discussion</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" style="background: var(--bg-light); padding: 80px 0 40px; margin-top:100px; border-top:1px solid var(--color-border);">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr; gap: 48px; margin-bottom: 60px;">
+                <div class="footer-col">
+                    <img src="../assets/logo_florosense.png" alt="FLOROSENSE Logo" class="footer-logo-img" style="height: 40px; margin-bottom: 24px; object-fit: contain;">
+                    <p style="color: var(--color-text-muted); font-size: 14px; line-height: 1.6;">
+                        A Florosense Group Venture. Engineering excellence in industrial process control, environmental compliance, and wastewater resource recovery systems.
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4 style="font-family: var(--font-heading); font-size: 16px; font-weight: 700; margin-bottom: 24px;">Divisions</h4>
+                    <ul style="display: flex; flex-direction: column; gap: 12px; font-size: 14px; color: var(--color-text-muted);">
+                        <li><a href="../ecovry/index.html" style="color: var(--accent-color); font-weight:600;">ECOVRY Sustainability</a></li>
+                        <li><a href="../duton/index.html">DUTON Automation</a></li>
+                        <li><a href="../coesc/index.html">COESC Clearance Hub</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 style="font-family: var(--font-heading); font-size: 16px; font-weight: 700; margin-bottom: 24px;">Industries</h4>
+                    <ul style="display: flex; flex-direction: column; gap: 12px; font-size: 14px; color: var(--color-text-muted);">
+                        <li><a href="../index.html#industries">Manufacturing</a></li>
+                        <li><a href="../index.html#industries">Real Estate</a></li>
+                        <li><a href="../index.html#industries">Hospitality</a></li>
+                        <li><a href="../index.html#industries">Healthcare</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 style="font-family: var(--font-heading); font-size: 16px; font-weight: 700; margin-bottom: 24px;">Offices</h4>
+                    <p style="color: var(--color-text-muted); font-size: 13px; line-height: 1.6; margin-bottom: 12px;">
+                        <strong>Mysore HQ:</strong> #435 Kubera Complex, Alanahalli Layout, Mysore 570028
+                    </p>
+                    <p style="color: var(--color-text-muted); font-size: 13px; line-height: 1.6;">
+                        <strong>Bangalore Office:</strong> #109/A Nagarbhavi 1st Stage, Bengaluru 560072
+                    </p>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 30px; border-top: 1px solid var(--color-border); font-size: 13px; color: var(--color-text-muted);">
+                <div>&copy; 2026 Florosense Engineered Solutions Pvt. Ltd. All rights reserved. Registered in India.</div>
+                <div style="display: flex; gap: 20px;">
+                    <a href="tel:+918073593961">Call: +91 8073593961</a>
+                    <a href="mailto:info@florosense.com">Email: info@florosense.com</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CDN Libraries Import -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- App Script -->
+    <script src="app.js"></script>
+    <script>
+        // Init Lucide Icons
+        document.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

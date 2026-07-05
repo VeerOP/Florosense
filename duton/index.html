@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUTON Automation | Industry 4.0 PLC, SCADA & Sound Instrumentation</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Discover DUTON: Program PLC logic systems (Siemens, Schneider), deploy HTML5 WebSCADA, integrate edge IoT, and deploy IEC 61672 sound level meters by Florosense Group.">
+    <meta name="keywords" content="Industrial automation, SCADA, PLC programming, sound meter, edge IoT, telemetry, Florosense, Duton">
+    <meta name="author" content="Florosense Group">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;600;700;800&family=Sora:wght@400;600;700;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Transparent Sticky Navbar -->
+    <nav class="navbar scrolled" id="main-navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo" id="nav-logo-link">
+                <img src="../assets/logo_florosense_light.png" alt="Florosense Logo" class="navbar-logo-img">
+            </a>
+            
+            <div class="nav-links-wrapper">
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">Home</a></li>
+                    <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
+                    <li><a href="#scada-sim" class="nav-link">SCADA Control</a></li>
+                    <li><a href="#sound-meters" class="nav-link">Sound Meters</a></li>
+                </ul>
+                <button class="theme-switch" id="theme-switcher-btn" aria-label="Toggle light/dark theme">
+                    <span class="theme-switch-pill"></span>
+                    <i data-lucide="sun" class="theme-switch-icon-sun"></i>
+                    <i data-lucide="moon" class="theme-toggle-icon-moon"></i>
+                </button>
+                <a href="../index.html#contact" class="btn btn-primary btn-cta-nav">
+                    Project Discussion
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="duton-hero">
+        <div class="container">
+            <div class="duton-hero-grid">
+                <div class="hero-left">
+                    <span class="hero-badge">DUTON AUTOMATION: ENTERPRISE PRODUCTS</span>
+                    <h1 class="hero-title">
+                        Industrial Hardware.<br>
+                        <span class="highlight-italic">Edge-Native</span> SCADA.
+                    </h1>
+                    <p class="hero-desc">
+                        Off-the-shelf and custom modular controller units, sound level meters, and enterprise HMI software licenses. Engineered to feed sub-second plant diagnostics directly to your operations.
+                    </p>
+                    <div class="hero-ctas">
+                         <a href="../index.html#contact" class="btn btn-primary" style="padding: 14px 28px; font-weight:600; color: #121212 !important;">Request Product Quote</a>
+                        <a href="#portfolio" class="btn btn-secondary" style="margin-left:12px; border: 1.5px solid var(--color-primary); padding: 14px 28px; font-weight:600;">Explore Product Line</a>
+                    </div>
+                </div>
+                <div class="hero-right">
+                    <div class="canvas-card-3d">
+                        <!-- Click Hotspot Specs Tooltip Overlay -->
+                        <div class="plc-hotspot-tooltip" id="plc-tooltip">
+                            <div class="tooltip-header">
+                                <span class="tooltip-badge">Product Module</span>
+                                <button class="tooltip-close" id="tooltip-close-btn">&times;</button>
+                            </div>
+                            <h4 id="tooltip-title">DUTON CPU-800 Module</h4>
+                            <p id="tooltip-desc">Enterprise PLC controller node supporting native Modbus, OPC UA and MQTT protocols. IP67 cast aluminium enclosure.</p>
+                            <table class="tooltip-specs-table">
+                                <tr><td>Processor</td><td>120 MHz ARM Cortex-M7</td></tr>
+                                <tr><td>Memory</td><td>16MB Flash, 8MB SRAM</td></tr>
+                                <tr><td>Power</td><td>24V DC / 1.2A Max</td></tr>
+                            </table>
+                            <div style="margin-top:12px; display:flex; gap:8px;">
+                                <button class="btn btn-primary spec-add-bom" style="padding:6px 12px; font-size:11px; color:#121212 !important;">Add to Spec BOM</button>
+                                <a href="#portfolio" class="btn btn-secondary spec-view-catalog" style="padding:6px 12px; font-size:11px;">View in Catalog</a>
+                            </div>
+                        </div>
+                        <canvas id="duton-3d-canvas" style="width: 100%; height: 100%; display: block;"></canvas>
+                        <div class="canvas-hint">
+                            <i data-lucide="move-3d"></i> Click PLC Modules to inspect specs
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Product Spec Catalog Section -->
+    <section class="prod-section" id="portfolio">
+        <div class="container">
+            <div class="section-header" style="text-align: center; max-width: 700px; margin: 0 auto 48px;">
+                <span class="hero-badge" style="margin-bottom:12px;">Enterprise Products</span>
+                <h2 style="font-family: var(--font-heading); font-size: 38px; font-weight: 800; margin-bottom: 16px;">Product Catalog & Spec Sheets</h2>
+                <p style="color: var(--color-text-muted);">Explore our hardware products and software licenses. Configure your bill of materials and download datasheet specs directly.</p>
+            </div>
+            
+            <div class="catalog-container">
+                <div class="catalog-tabs">
+                    <button class="catalog-tab-btn active" data-prod="cpu">
+                        <i data-lucide="cpu"></i>
+                        <span>CPU-800 Controller</span>
+                    </button>
+                    <button class="catalog-tab-btn" data-prod="scada">
+                        <i data-lucide="monitor"></i>
+                        <span>WebSCADA License</span>
+                    </button>
+                    <button class="catalog-tab-btn" data-prod="nodex">
+                        <i data-lucide="activity"></i>
+                        <span>Node-X Edge AI</span>
+                    </button>
+                    <button class="catalog-tab-btn" data-prod="nos3">
+                        <i data-lucide="volume-2"></i>
+                        <span>NOS-3 Sound Meter</span>
+                    </button>
+                </div>
+
+                <div class="catalog-content-panel">
+                    <!-- CPU-800 Module Product Details -->
+                    <div class="catalog-product-details active" id="prod-cpu-content">
+                        <div class="prod-details-grid">
+                            <div class="prod-illustration-box">
+                                <div class="prod-img-mock cpu-mock">
+                                    <div class="rack-indicator-leds">
+                                        <span class="led-dot green active"></span>
+                                        <span class="led-dot green active"></span>
+                                        <span class="led-dot amber"></span>
+                                    </div>
+                                    <span class="mock-device-lbl">DUTON CPU-800</span>
+                                </div>
+                            </div>
+                             <div class="prod-specs-box">
+                                <h3 class="prod-title">DUTON CPU-800 Programmable Controller</h3>
+                                <p class="prod-desc">Our flagship industrial hardware controller designed for custom automation panels. Featuring high-speed backplane integration, native MQTT & Modbus communication, and zero-touch configuration. Ideal for water treatment loops, boiler controls, and regional distribution grids.</p>
+                                <table class="specs-table">
+                                    <tr><td>Form Factor</td><td>35mm DIN-rail Mount Modular Rack</td></tr>
+                                    <tr><td>Communications</td><td>Modbus TCP/RTU, OPC UA, MQTT, CANopen</td></tr>
+                                    <tr><td>Processor Core</td><td>Dual-core 32-bit ARM Cortex-M7 @ 120MHz</td></tr>
+                                    <tr><td>Enclosure Class</td><td>IP65 Dustproof, Anodized Aluminium casing</td></tr>
+                                </table>
+                                <div class="prod-actions">
+                                    <button class="btn btn-primary btn-inquire" data-item="CPU-800 Controller" style="color: #121212 !important;">Request Pricing Quote</button>
+                                    <button class="btn btn-secondary btn-add-bom" data-item="CPU-800 Controller">Add to Spec BOM</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- WebSCADA HMI Hidelity Product Details -->
+                    <div class="catalog-product-details" id="prod-scada-content">
+                        <div class="prod-details-grid">
+                            <div class="prod-illustration-box">
+                                <div class="prod-img-mock scada-mock">
+                                    <div class="chart-line-mock"></div>
+                                    <span class="mock-device-lbl">WebSCADA LICENSE</span>
+                                </div>
+                            </div>
+                            <div class="prod-specs-box">
+                                <h3 class="prod-title">DUTON HTML5 WebSCADA Portal (Software License)</h3>
+                                <p class="prod-desc">Deploy responsive dark-mode monitoring dashboards directly to your local server. Our WebSCADA engine leverages modern HTML5 sockets to feed plant metrics in sub-second intervals, supporting authorization groups, alerts, and remote triggers. Desktop, tablet, and mobile interface optimized.</p>
+                                <table class="specs-table">
+                                    <tr><td>License Model</td><td>Perpetual License / Yearly maintenance option</td></tr>
+                                    <tr><td>Tag Capacity</td><td>Unlimited process value tag configuration</td></tr>
+                                    <tr><td>Authentication</td><td>JWT Session tokens, Active Directory & OAuth support</td></tr>
+                                    <tr><td>Reporting</td><td>Automated PDF log exports, MQTT payload broker</td></tr>
+                                </table>
+                                <div class="prod-actions">
+                                    <button class="btn btn-primary btn-inquire" data-item="WebSCADA License" style="color: #121212 !important;">Request Pricing Quote</button>
+                                    <button class="btn btn-secondary btn-add-bom" data-item="WebSCADA License">Add to Spec BOM</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Node-X Edge AI Product Details -->
+                    <div class="catalog-product-details" id="prod-nodex-content">
+                        <div class="prod-details-grid">
+                            <div class="prod-illustration-box">
+                                <div class="prod-img-mock nodex-mock">
+                                    <div class="node-sensor-head"></div>
+                                    <span class="mock-device-lbl">NODE-X AI BOX</span>
+                                </div>
+                            </div>
+                            <div class="prod-specs-box">
+                                <h3 class="prod-title">DUTON Node-X Edge Diagnostics Box</h3>
+                                <p class="prod-desc">An off-the-shelf industrial IoT edge node with built-in artificial intelligence. Node-X attaches directly to mechanical casings (motors, turbines, pumps) and processes 3-axis vibration FFT frequency spectra to forecast failures before they interrupt production lines.</p>
+                                <table class="specs-table">
+                                    <tr><td>Sensor Array</td><td>3-Axis accelerometer, infrared temperature sensor</td></tr>
+                                    <tr><td>FFT Resolution</td><td>up to 8,000 spectral lines (Vibration frequency)</td></tr>
+                                    <tr><td>Connectivity</td><td>WiFi 802.11 b/g/n, Bluetooth LE, Modbus RS485</td></tr>
+                                    <tr><td>Power Feed</td><td>Lithium battery (5-yr life) or 12V DC input</td></tr>
+                                </table>
+                                <div class="prod-actions">
+                                    <button class="btn btn-primary btn-inquire" data-item="Node-X Edge AI" style="color: #121212 !important;">Request Pricing Quote</button>
+                                    <button class="btn btn-secondary btn-add-bom" data-item="Node-X Edge AI">Add to Spec BOM</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NOS-3 Class 1 Sound Level Meter Details -->
+                    <div class="catalog-product-details" id="prod-nos3-content">
+                        <div class="prod-details-grid">
+                            <div class="prod-illustration-box">
+                                <div class="prod-img-mock nos3-mock">
+                                    <div class="nos-mic-element"></div>
+                                    <span class="mock-device-lbl">NOS-3 SOUND METER</span>
+                                </div>
+                            </div>
+                            <div class="prod-specs-box">
+                                <h3 class="prod-title">DUTON NOS-3 Sound Level Meter Terminal</h3>
+                                <p class="prod-desc">IEC 61672 Class 1 regulatory sound level measurement instrument. Built inside an anti-corrosive, weatherproof aluminium enclosure, the NOS-3 processes boundary noise levels (Leq, Lmax, Lmin, L90) and publishes compliant telemetry over MQTT directly to control rooms.</p>
+                                <table class="specs-table">
+                                    <tr><td>Accuracy Standard</td><td>IEC 61672-1 Class 1, ANSI S1.43 Class 1</td></tr>
+                                    <tr><td>Dynamic Range</td><td>30 dB to 130 dB (Dynamic Range > 100 dB)</td></tr>
+                                    <tr><td>Data Protocols</td><td>MQTT over WiFi/RJ45, Modbus RTU, RS485</td></tr>
+                                    <tr><td>Casting Spec</td><td>IP65 Weatherproof anti-corrosive shell</td></tr>
+                                </table>
+                                <div class="prod-actions">
+                                    <button class="btn btn-primary btn-inquire" data-item="NOS-3 Sound Meter" style="color: #121212 !important;">Request Pricing Quote</button>
+                                    <button class="btn btn-secondary btn-add-bom" data-item="NOS-3 Sound Meter">Add to Spec BOM</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live SCADA Control Room Simulation Section -->
+    <section class="scada-section" id="scada-sim">
+        <div class="container">
+            <div class="scada-grid">
+                <div class="scada-left-interactive">
+                    <div class="scada-dashboard">
+                        <div class="dashboard-header">
+                            <span class="dashboard-title"><i data-lucide="terminal" style="width:18px; height:18px; color:var(--accent-color);"></i> DUTON SCADA FEED v4.0.2</span>
+                            <span id="scada-status" class="dashboard-status">
+                                <span style="background:#10B981; width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:6px;"></span>ACTIVE
+                            </span>
+                        </div>
+                        
+                        <div class="scada-chart-container">
+                            <canvas id="scada-chart" class="scada-chart"></canvas>
+                        </div>
+                        
+                        <div class="scada-grid-layout">
+                            <div class="scada-widget">
+                                <div class="scada-widget-lbl">System Uptime</div>
+                                <div id="scada-uptime" class="scada-widget-val">99.821%</div>
+                            </div>
+                            <div class="scada-widget">
+                                <div class="scada-widget-lbl">AI Diagnostic State</div>
+                                <div id="scada-state" class="scada-widget-val">OPTIMAL</div>
+                            </div>
+                            <div class="scada-widget">
+                                <div class="scada-widget-lbl">Thermal Core</div>
+                                <div id="scada-temp" class="scada-widget-val">42.6°C</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scada-right-text" style="padding-left: 20px;">
+                    <span class="hero-badge" style="margin-bottom:12px;">Live Simulation</span>
+                    <h2 style="font-family: var(--font-heading); font-size: 34px; font-weight: 800; margin-bottom: 20px; line-height: 1.2;">Interactive PLC Stress Tester</h2>
+                    <p style="color: var(--color-text-muted); margin-bottom: 24px; font-size: 15px;">
+                        DUTON's edge AI modules monitor machine stress factors in real time. Standard motors emit specific vibration peaks and heat profiles prior to catastrophic structural failure. Use the simulator panel to trigger system parameters, and watch how our edge diagnostics flag warnings and identify mechanical anomalies instantly.
+                    </p>
+                    
+                    <div class="scada-widget" style="background: var(--bg-white); border-color: var(--color-border); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; padding: 20px;">
+                        <div>
+                            <div class="scada-widget-lbl" style="color: var(--color-text-muted);">Telemetry Vibration (FFT)</div>
+                            <div id="scada-vibration" class="scada-widget-val" style="color: var(--color-primary); font-size: 26px; margin-top:4px;">12 Hz</div>
+                        </div>
+                        <i data-lucide="gauge" style="width:40px; height:40px; color:var(--accent-color); opacity: 0.8;"></i>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                        <button id="scada-btn-normal" class="btn btn-primary" style="flex: 1; min-width: 140px; color: #121212 !important;">Reset (Optimal)</button>
+                        <button id="scada-btn-spike" class="btn btn-outline-accent" style="flex: 1; min-width: 140px;">Simulate Spike</button>
+                        <button id="scada-btn-anomaly" class="btn btn-outline-accent" style="flex: 1; min-width: 140px;">Trigger Anomaly</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sound Meter Specification Section -->
+    <section class="sound-section" id="sound-meters">
+        <div class="container">
+            <div class="sound-grid">
+                <div class="sound-left">
+                    <span class="hero-badge" style="margin-bottom:12px;">Noise Compliance</span>
+                    <h2 style="font-family: var(--font-heading); font-size: 36px; font-weight: 800; margin-bottom: 20px; line-height: 1.2;">NOS Series Sound Level Meters</h2>
+                    <p style="color: var(--color-text-muted); margin-bottom: 24px; font-size: 15.5px;">
+                        Verify plant boundary noise compliance and workplace HSE compliance. The NOS Series represents our proprietary line of high-accuracy noise measurement systems designed to process real-time sound pressure readings (Leq, Lmax, Lmin, L90) and emit alerts over MQTT to control rooms.
+                    </p>
+                    <a href="../index.html#contact" class="btn btn-secondary" style="border: 1.5px solid var(--color-primary); padding: 12px 24px; font-weight: 600;">Request Sound Demo</a>
+                </div>
+                
+                <div class="sound-right">
+                    <div style="background: var(--bg-light); border: 1px solid var(--color-border); padding: 40px; border-radius: 24px;">
+                        <h3 style="font-family: var(--font-heading); font-size: 20px; font-weight:700; margin-bottom: 24px; color: var(--color-primary);">Technical Specifications</h3>
+                        <table class="sound-spec-table">
+                            <tr>
+                                <td>Compliance Standard</td>
+                                <td>IEC 61672-1 Class 1 / Class 2, ANSI S1.43</td>
+                            </tr>
+                            <tr>
+                                <td>Measurement Range</td>
+                                <td>30 dB to 130 dB (Dynamic Range > 100 dB)</td>
+                            </tr>
+                            <tr>
+                                <td>Frequency Weightings</td>
+                                <td>A, C, and Z Weighting (Real-time parallel)</td>
+                            </tr>
+                            <tr>
+                                <td>Data Protocols</td>
+                                <td>Modbus RTU, MQTT over WiFi/RJ45, RS485</td>
+                            </tr>
+                            <tr>
+                                <td>Physical Casting</td>
+                                <td>IP65 Weatherproof, anti-corrosive aluminium shell</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action Banner -->
+            <div class="cta-banner">
+                <h2>Deploy Smart Control Loops Today</h2>
+                <p>Discuss your machine vibration profiles, sound compliance constraints, or factory PLC specifications with our engineers.</p>
+                <a href="../index.html#contact" class="btn btn-primary" style="background:#121212 !important; color:#ffffff !important;">Connect with Automation Experts</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" style="background: var(--bg-light); padding: 80px 0 40px; margin-top:100px; border-top:1px solid var(--color-border);">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr; gap: 48px; margin-bottom: 60px;">
+                <div class="footer-col">
+                    <img src="../assets/logo_florosense.png" alt="FLOROSENSE Logo" class="footer-logo-img" style="height: 40px; margin-bottom: 24px; object-fit: contain;">
+                    <p style="color: var(--color-text-muted); font-size: 14px; line-height: 1.6;">
+                        A Florosense Group Venture. Engineering excellence in industrial process control, environmental compliance, and wastewater resource recovery systems.
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4 style="font-family: var(--font-heading); font-size: 16px; font-weight: 700; margin-bottom: 24px;">Divisions</h4>
+                    <ul style="display: flex; flex-direction: column; gap: 12px; font-size: 14px; color: var(--color-text-muted);">
+                        <li><a href="../ecovry/index.html">ECOVRY Sustainability</a></li>
+                        <li><a href="../duton/index.html" style="color: var(--accent-color); font-weight:600;">DUTON Automation</a></li>
+                        <li><a href="../coesc/index.html">COESC Clearance Hub</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 style="font-family: var(--font-heading); font-size: 16px; font-weight: 700; margin-bottom: 24px;">Industries</h4>
+                    <ul style="display: flex; flex-direction: column; gap: 12px; font-size: 14px; color: var(--color-text-muted);">
+                        <li><a href="../index.html#industries">Manufacturing</a></li>
+                        <li><a href="../index.html#industries">Real Estate</a></li>
+                        <li><a href="../index.html#industries">Hospitality</a></li>
+                        <li><a href="../index.html#industries">Healthcare</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 style="font-family: var(--font-heading); font-size: 16px; font-weight: 700; margin-bottom: 24px;">Offices</h4>
+                    <p style="color: var(--color-text-muted); font-size: 13px; line-height: 1.6; margin-bottom: 12px;">
+                        <strong>Mysore HQ:</strong> #435 Kubera Complex, Alanahalli Layout, Mysore 570028
+                    </p>
+                    <p style="color: var(--color-text-muted); font-size: 13px; line-height: 1.6;">
+                        <strong>Bangalore Office:</strong> #109/A Nagarbhavi 1st Stage, Bengaluru 560072
+                    </p>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 30px; border-top: 1px solid var(--color-border); font-size: 13px; color: var(--color-text-muted);">
+                <div>&copy; 2026 Florosense Engineered Solutions Pvt. Ltd. All rights reserved. Registered in India.</div>
+                <div style="display: flex; gap: 20px;">
+                    <a href="tel:+918073593961">Call: +91 8073593961</a>
+                    <a href="mailto:info@florosense.com">Email: info@florosense.com</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CDN Libraries Import -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- App Script -->
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
