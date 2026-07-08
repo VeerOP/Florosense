@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECOVRY Presentation Hub | Wastewater Physics Showcase</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="ECOVRY Presentation Hub showcasing advanced wastewater physics simulations: 2D nanobubble dynamics, 3D digestion race, 3D MBBR bio-multiplier, and circular bioreactor models.">
+    <meta name="keywords" content="Wastewater treatment, STP, ETP, ZLD, Nanobubble, 3D simulation, environmental compliance, Florosense, Ecovry">
+    <meta name="author" content="Florosense Group">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&family=Sora:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Rajdhani:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../css/main.css?v=1.0.8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<!-- Strictly Dark Mode Page -->
+<body data-theme="dark" style="background-color: #050810; color: #e4e4e7;">
+
+    <!-- Transparent Sticky Navbar -->
+    <nav class="navbar scrolled" id="main-navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo" id="nav-logo-link">
+                <!-- Using Ecovry Logo as requested -->
+                <img src="../assets/logo_ecovry.png" alt="ECOVRY Logo" class="navbar-logo-img" style="height: 38px; width: auto; object-fit: contain;">
+            </a>
+            
+            <button class="mobile-toggle" aria-label="Toggle navigation" id="mobile-menu-toggle">
+                <i data-lucide="menu"></i>
+            </button>
+            
+            <div class="nav-links-wrapper" id="nav-links-menu">
+                <ul class="nav-links">
+                    <li><a href="#nanobubble-section" class="nav-link">Nanobubbles & ROI</a></li>
+                    <li><a href="#digestion-section" class="nav-link">Digestion Race</a></li>
+                    <li><a href="#mbbr-section" class="nav-link">MBBR Multiplier</a></li>
+                    <li><a href="#circular-section" class="nav-link">Bioreactor System</a></li>
+                </ul>
+                <button class="btn btn-primary btn-cta-nav">
+                    Project Showcase
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hub-hero">
+        <div class="container hero-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding-top: 140px; padding-bottom: 50px; gap: 0;">
+            <div class="hero-content" style="text-align: center; max-width: 800px; margin: 0 auto; width: 100%;">
+                <span class="section-tag" style="background: rgba(16, 185, 129, 0.1); color: var(--color-green); padding: 6px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 16px; display: inline-block;">ECOVRY Animation Hub</span>
+                <h1 class="hero-title reveal-text" style="font-size: 46px; margin-bottom: 20px; line-height: 1.2; text-align: center; width: 100%;">
+                    Wastewater Physics & <span class="highlight-italic">Simulation Showcase</span>
+                </h1>
+                <p class="hero-subtitle stagger-reveal" style="color: var(--color-text-muted); font-size: 16px; margin-bottom: 30px; line-height: 1.6; text-align: center;">
+                    Explore real-time interactive models demonstrating our core chemical kinetics, fluid mechanics, and biological colonization engineering. Optimized strictly for dark mode presentations.
+                </p>
+                <div class="hero-ctas stagger-reveal" style="display: flex; gap: 16px; justify-content: center; width: 100%;">
+                    <a href="#nanobubble-section" class="btn btn-primary">Start Presentation</a>
+                    <a href="#circular-section" class="btn btn-secondary">Circular Bioreactor</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Section 1: Nanobubble Gas Solubility & Payback Simulator -->
+    <section class="hub-section" id="nanobubble-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="hub-badge">Fluid Dynamics</span>
+                <h2>1. Nanobubble Physics & ROI Calculator</h2>
+                <p>Compare standard cylindrical media surface area vs. ECOVRY's engineered active colonization fins inside identical volumes.</p>
+            </div>
+            
+            <div class="animation-grid shadow-grid">
+                <!-- Left: 2D Canvas Simulator -->
+                <div class="left-column">
+                    <div class="grid-card canvas-card">
+                        <div class="card-header">
+                            <span class="status-dot green-dot"></span>
+                            <span>AERATION PHYSICS SIMULATOR</span>
+                        </div>
+                        <div class="canvas-wrapper">
+                            <!-- Canvas ID matched to original homepage -->
+                            <canvas id="aeration-physics-canvas"></canvas>
+                        </div>
+                        <div class="canvas-footer-hint">
+                            <span>🔥 Interactive: Move your cursor or touch to create fluid currents and perturb the bubbles.</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Underneath Cards -->
+                    <div class="bottom-compare-row">
+                        <!-- Traditional card -->
+                        <div class="compare-card compare-trad">
+                            <h3>TRADITIONAL MBBR</h3>
+                            <ul class="compare-list">
+                                <li>
+                                    <span class="lbl">BUBBLE DIAMETER</span>
+                                    <span class="val">2.0 – 5.0 mm</span>
+                                </li>
+                                <li>
+                                    <span class="lbl">OXYGEN TRANSFER (OTE)</span>
+                                    <span class="val" style="color: #3b82f6;">~15%</span>
+                                </li>
+                                <li>
+                                    <span class="lbl">FLUID RETENTION TIME</span>
+                                    <span class="val">3 – 5 Seconds</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Ecovry card -->
+                        <div class="compare-card compare-eco">
+                            <h3>ECOVRY NANOBUBBLE</h3>
+                            <ul class="compare-list">
+                                <li>
+                                    <span class="lbl">BUBBLE DIAMETER</span>
+                                    <span class="val">&lt;200 nm (Dense Core)</span>
+                                </li>
+                                <li>
+                                    <span class="lbl">OXYGEN TRANSFER (OTE)</span>
+                                    <span class="val" style="color: #10b981;">~85%</span>
+                                </li>
+                                <li>
+                                    <span class="lbl">FLUID RETENTION TIME</span>
+                                    <span class="val">Indefinite suspension</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: TCO & Payback Simulator -->
+                <div class="right-column">
+                    <div class="grid-card payback-card">
+                        <div class="card-header">
+                            <i data-lucide="calculator" class="calc-icon" style="color: var(--color-orange);"></i>
+                            <span>TCO & Payback Simulator</span>
+                        </div>
+                        
+                        <div class="payback-slider-panel">
+                            <!-- Slider 1: ID capacity matching original -->
+                            <div class="slider-group">
+                                <div class="slider-header">
+                                    <span class="slider-title">Plant Capacity (KLD)</span>
+                                    <span id="capacityVal" class="slider-display">100 KLD</span>
+                                </div>
+                                <input type="range" id="capacity" min="10" max="500" step="10" value="100" class="range-slider">
+                                <div class="slider-ticks">
+                                    <span>10 KLD</span>
+                                    <span>250 KLD</span>
+                                    <span>500 KLD</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Slider 2: ID tariff matching original -->
+                            <div class="slider-group">
+                                <div class="slider-header">
+                                    <span class="slider-title">Commercial Power Tariff (₹/kWh)</span>
+                                    <span id="tariffVal" class="slider-display">₹ 10 / kWh</span>
+                                </div>
+                                <input type="range" id="tariff" min="5" max="15" step="1" value="10" class="range-slider">
+                                <div class="slider-ticks">
+                                    <span>₹ 5</span>
+                                    <span>₹ 10</span>
+                                    <span>₹ 15</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payback Notice Banner -->
+                        <div class="notice-banner-wrapper">
+                            <div id="breakevenNotice" class="breakeven-banner">
+                                Calculating system dynamics...
+                            </div>
+                        </div>
+
+                        <!-- CAPEX / OPEX Bottom row -->
+                        <div class="payback-results-row">
+                            <!-- Traditional opex card -->
+                            <div class="payback-res-card res-trad">
+                                <div class="res-item">
+                                    <span class="res-lbl">TRADITIONAL MBBR CAPEX</span>
+                                    <span id="tradCapex" class="res-val">₹ 0</span>
+                                </div>
+                                <div class="res-item" style="margin-top: 12px;">
+                                    <span class="res-lbl">YEARLY ENERGY OPEX</span>
+                                    <span id="tradOpex" class="res-val" style="color: #3b82f6;">₹ 0</span>
+                                </div>
+                            </div>
+                            <!-- Ecovry opex card -->
+                            <div class="payback-res-card res-eco">
+                                <div class="res-item">
+                                    <span class="res-lbl">ECOVRY HYBRID CAPEX</span>
+                                    <span id="hybCapex" class="res-val">₹ 0</span>
+                                </div>
+                                <div class="res-item" style="margin-top: 12px;">
+                                    <span class="res-lbl">YEARLY ENERGY OPEX</span>
+                                    <span id="hybOpex" class="res-val" style="color: #10b981;">₹ 0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lifecycle chart exactly like the homepage -->
+                        <div class="chart-wrapper" style="padding: 0 28px 24px 28px; border-top: 1px solid var(--color-border); padding-top: 20px;">
+                            <canvas id="tcoChart" height="135" style="width: 100%; display: block;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: The Digestion Race (3D Simulation) -->
+    <section class="hub-section section-alt" id="digestion-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="hub-badge">Biological Kinetics</span>
+                <h2>2. The Digestion Race: Culture Multiplier</h2>
+                <p>Toggle between standard and engineered Omni-Vorx™ biological cultures. Observe the breakdown speed of complex recalcitrant pollutants.</p>
+            </div>
+
+            <div class="single-card-showcase">
+                <!-- 3D Interactive Simulation -->
+                <div class="grid-card canvas-card-3d" style="max-width: 900px; margin: 0 auto;">
+                    <div class="card-header">
+                        <span class="status-dot green-dot"></span>
+                        <span>3D Digestion Tank Simulator (Interactive)</span>
+                    </div>
+                    
+                    <!-- Master State Toggle -->
+                    <div class="toggle-container" style="padding: 16px; display: flex; justify-content: center; background: rgba(0,0,0,0.25);">
+                        <div class="toggle-wrapper" onclick="toggleDigestionSystem()" style="cursor: pointer; display: flex; position: relative; background: rgba(255,255,255,0.05); padding: 6px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.08); width: 440px;">
+                            <div id="digestion-slider" class="toggle-slider slider-trad" style="position: absolute; top: 6px; left: 6px; width: 209px; height: calc(100% - 12px); border-radius: 99px; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), background 0.4s ease; z-index: 1;"></div>
+                            <div id="dig-text-trad" class="toggle-option active-trad" style="z-index: 2; width: 209px; text-align: center; padding: 10px 0; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s;">Standard (24h)</div>
+                            <div id="dig-text-eco" class="toggle-option inactive" style="z-index: 2; width: 209px; text-align: center; padding: 10px 0; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s;">Omni-Vorx™ (8h)</div>
+                        </div>
+                    </div>
+
+                    <div class="canvas-3d-wrapper" style="height: 420px; position: relative;">
+                        <div id="digestion-3d-canvas" style="width: 100%; height: 100%;"></div>
+                        <div class="canvas-3d-hint"><i data-lucide="move-3d"></i> Drag to inspect 3D chamber</div>
+                    </div>
+
+                    <!-- Live Dashboard overlays -->
+                    <div class="digestion-dashboard" style="display: flex; gap: 12px; padding: 16px; background: rgba(0,0,0,0.3); border-top: 1px solid var(--color-border);">
+                        <!-- Culture Dynamics Panel -->
+                        <div class="glass-panel p-4 rounded-xl flex-1 border-t-4" id="dig-border-culture" style="border-color: #ff416c; background: rgba(11, 15, 25, 0.65); border-top-width: 4px; border-top-style: solid;">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center justify-between" style="font-size: 10px; margin-bottom: 8px;">
+                                <span>Microbial Dynamics</span>
+                                <span id="dig-icon-container">
+                                    <i data-lucide="circle-slash" style="width: 14px; height: 14px; color: #ff416c;"></i>
+                                </span>
+                            </h4>
+                            <div id="dig-culture-desc" class="text-xs text-slate-300 min-h-[48px]" style="font-size: 12px; line-height: 1.4;">
+                                <strong style="color: #ff416c;">Sluggish Cow-Dung Culture.</strong> Floats aimlessly. Can only digest simple organics (green). Complex, recalcitrant pollutants (red) remain untouched.
+                            </div>
+                        </div>
+
+                        <!-- HRT Panel -->
+                        <div class="glass-panel p-4 rounded-xl border-t-4" id="dig-border-hrt" style="border-color: #ff416c; width: 150px; background: rgba(11, 15, 25, 0.65); border-top-width: 4px; border-top-style: solid; text-align: center;">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1" style="font-size: 10px;">Required HRT</h4>
+                            <p class="text-[9px] text-slate-500 mb-1 uppercase" style="font-size: 9px; margin-bottom: 4px;">Hydraulic Retention</p>
+                            <div class="counter-font text-3xl font-black text-white flex items-baseline justify-center" style="font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 900;">
+                                <span id="dig-counter-hrt">24.0</span><span class="text-xs font-medium text-slate-500 ml-1" style="font-size: 12px; margin-left: 4px;">Hrs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: MBBR Bio-Multiplier Lens (3D Simulation) -->
+    <section class="hub-section" id="mbbr-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="hub-badge">Surface Physics</span>
+                <h2>3. MBBR Bio-Multiplier: Active Colonization Lens</h2>
+                <p>Compare standard cylindrical media surface area vs. ECOVRY's engineered active colonization fins inside identical volumes.</p>
+            </div>
+
+            <div class="single-card-showcase">
+                <!-- 3D Interactive Simulation -->
+                <div class="grid-card canvas-card-3d" style="max-width: 900px; margin: 0 auto;">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="flex items-center gap-2">
+                            <span class="status-dot green-dot"></span>
+                            <span>3D Colonization Lens Simulator (Interactive)</span>
+                        </div>
+                        <button id="mbbr-btn-volume" class="mbbr-toggle-btn" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 6px 12px; font-size: 11px; cursor: pointer; color: var(--color-text); transition: all 0.3s;">
+                            Toggle Volume Match (1m³)
+                        </button>
+                    </div>
+
+                    <div class="canvas-3d-wrapper" style="height: 380px; position: relative;">
+                        <div id="mbbr-3d-canvas" style="width: 100%; height: 100%;"></div>
+                        <div class="canvas-3d-hint"><i data-lucide="move-3d"></i> Drag to inspect carriers 360°</div>
+                        
+                        <!-- Mini data overlay columns -->
+                        <div class="mbbr-mini-overlay std-data-overlay">
+                            <span class="overlay-lbl">Standard Media</span>
+                            <span class="overlay-val"><span id="mbbr-counter-std">0</span> <small>m²/m³</small></span>
+                        </div>
+                        <div class="mbbr-mini-overlay eco-data-overlay">
+                            <span class="overlay-lbl" style="color: #ff6b00;">ECOVRY Fins</span>
+                            <span class="overlay-val" style="color: #00ffaa;"><span id="mbbr-counter-eco">0</span> <small>m²/m³</small></span>
+                        </div>
+                    </div>
+
+                    <!-- Interactive control range -->
+                    <div class="mbbr-slider-panel" style="padding: 20px; background: rgba(0,0,0,0.3); border-top: 1px solid var(--color-border);">
+                        <div class="flex justify-between items-center mb-2" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <div>
+                                <h4 class="text-xs font-semibold text-white" style="font-size: 13px; margin: 0;">Media Density & Swarm Colonization</h4>
+                                <p class="text-[10px] text-slate-400" style="font-size: 11px; color: var(--color-text-muted); margin: 2px 0 0 0;">Drag slider to generate fin complexity and attract microbe carrier attachment.</p>
+                            </div>
+                            <div class="text-xs font-bold" id="mbbr-density-label" style="font-size: 12px; font-weight: 700; color: #ff6b00;">Low Density</div>
+                        </div>
+                        <input type="range" id="mbbr-density-slider" min="0" max="100" value="0" class="range-slider" style="width: 100%;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Bioreactor Aeration System (3D Sketchfab Iframe) -->
+    <section class="hub-section section-alt" id="circular-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="hub-badge">Core Architecture</span>
+                <h2>4. Bioreactor Aeration System Design</h2>
+                <p>Engineered for high biological efficiency. Inspect the circular concrete tank design with modular aeration layouts.</p>
+            </div>
+
+            <div class="bioreactor-showcase-card" style="background: #141821; border-color: rgba(255, 255, 255, 0.08); padding: 30px; border-radius: 20px;">
+                <div class="bioreactor-layout-grid" style="display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 40px;">
+                    <!-- Left: 3D interactive model -->
+                    <div class="bioreactor-canvas-col">
+                        <div class="canvas-3d-wrapper" style="height: 480px; position: relative; background: #000; border-radius: 12px;">
+                            <!-- Sketchfab Iframe Overlay to replace branding -->
+                            <div class="model-info-overlay" style="position: absolute; top: 16px; left: 16px; display: flex; align-items: center; gap: 10px; background: rgba(11, 15, 25, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); padding: 8px 16px; border-radius: 8px; z-index: 5;">
+                                <div class="model-info-avatar" style="width: 32px; height: 32px; background: #ff6b00; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; font-family: 'Rajdhani', sans-serif;">FS</div>
+                                <div class="model-info-text" style="display: flex; flex-direction: column;">
+                                    <span class="model-info-title" style="font-size: 11px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2;">Advanced Aeration System</span>
+                                    <span class="model-info-author" style="font-size: 9px; color: #a1a1aa; line-height: 1.2;">by Florosense Engineering</span>
+                                </div>
+                            </div>
+                            
+
+                            
+                            <!-- Sketchfab model iframe -->
+                            <iframe id="ecovry-3d-model" loading="lazy" src="https://sketchfab.com/models/dda3705ada194001b52eb04aee788035/embed?autostart=0&theme=dark&ui_annotations=0&annotations_visible=0&ui_infos=0&ui_watermark=0&ui_settings=0&ui_vr=0&ui_help=0" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share style="width: 100%; height: 100%; border-radius: 12px; border: 0;"></iframe>
+                            
+                            <div class="canvas-drag-hint" style="position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; background: rgba(11, 15, 25, 0.8); border: 1px solid rgba(255,255,255,0.08); padding: 6px 16px; border-radius: 99px; font-size: 11px; color: rgba(255,255,255,0.7); pointer-events: none; z-index: 5;">
+                                <i data-lucide="move-3d"></i> Drag to inspect circular bioreactor 360°
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Specs and descriptions inside an interactive slide deck widget -->
+                    <div class="bioreactor-info-col" style="display: flex; flex-direction: column; justify-content: center;">
+                        <!-- Story Slide tabs selector -->
+                        <div class="story-tabs-row" style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+                            <button id="story-btn-0" class="story-tab-btn active-tab" onclick="setStorySlide(0)">01 Core</button>
+                            <button id="story-btn-1" class="story-tab-btn" onclick="setStorySlide(1)">02 Aeration</button>
+                            <button id="story-btn-2" class="story-tab-btn" onclick="setStorySlide(2)">03 Recovery</button>
+                            <button id="story-btn-3" class="story-tab-btn" onclick="setStorySlide(3)">04 IoT</button>
+                        </div>
+
+                        <!-- Active Text block wrapper -->
+                        <div class="info-header" style="margin-bottom: 24px; min-height: 190px;">
+                            <span class="slide-num" id="bioreactor-slide-num" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-orange); font-weight: 700; display: block; margin-bottom: 4px;">01 / ECOVRY Core</span>
+                            <h3 id="bioreactor-slide-title" style="font-family: var(--font-heading); font-size: 30px; font-weight: 800; margin-bottom: 12px; line-height: 1.2; color: #fff;">
+                                Bioreactor Aeration System Design
+                            </h3>
+                            <p id="bioreactor-slide-text" style="color: var(--color-text-muted); font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+                                Engineered for compactness and high operational flexibility. Our modular wastewater treatment units scale seamlessly from commercial developments to heavy industrial complexes.
+                            </p>
+                        </div>
+                        
+                        <!-- Specifications list -->
+                        <div class="slide-specs" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 30px; min-height: 70px;">
+                            <div class="spec-item" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px; display: flex; flex-direction: column;">
+                                <span class="spec-label" id="bioreactor-spec-lbl-1" style="font-size: 9px; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 4px;">AREA FOOTPRINT</span>
+                                <span class="spec-val" id="bioreactor-spec-val-1" style="font-size: 13px; font-weight: 700; color: #fff;">40% Reduced</span>
+                            </div>
+                            <div class="spec-item" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px; display: flex; flex-direction: column;">
+                                <span class="spec-label" id="bioreactor-spec-lbl-2" style="font-size: 9px; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 4px;">CONFIGURATION</span>
+                                <span class="spec-val" id="bioreactor-spec-val-2" style="font-size: 13px; font-weight: 700; color: #fff;">Modular Pre-Fabricated / Civil</span>
+                            </div>
+                        </div>
+
+                        <!-- Slide Navigation controls -->
+                        <div class="slide-nav-buttons-row" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px;">
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-secondary" onclick="prevStorySlide()" style="padding: 8px 16px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; border-radius: 6px;">
+                                    <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i> Prev
+                                </button>
+                                <button class="btn btn-secondary" onclick="nextStorySlide()" style="padding: 8px 16px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; border-radius: 6px;">
+                                    Next <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i>
+                                </button>
+                            </div>
+                            <span class="slide-indicator-num" id="bioreactor-page-indicator" style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: var(--color-text-muted); font-weight: 600;">1 / 4</span>
+                        </div>
+
+                        <!-- Local showcase actions -->
+                        <div class="bio-actions-buttons" style="display: flex; gap: 12px;">
+                            <a href="#nanobubble-section" class="btn btn-primary" style="padding: 12px 24px; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px;">
+                                Try the Free Simulator <i data-lucide="calculator" style="width: 14px; height: 14px;"></i>
+                            </a>
+                            <a href="#" class="btn btn-secondary" onclick="alert('ECOVRY Portal showcase mode active')" style="padding: 12px 24px; font-size: 13px; font-weight: 700;">
+                                Explore ECOVRY Portal
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" style="background: #141821; padding: 60px 0 30px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 80px;">
+        <div class="container">
+            <div class="subpage-footer-grid" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px;">
+                <div class="footer-col">
+                    <img src="../assets/logo_ecovry.png" alt="ECOVRY Logo" class="footer-logo-img" style="height: 38px; margin-bottom: 18px; object-fit: contain;">
+                    <p style="color: var(--color-text-muted); font-size: 14px; line-height: 1.6; max-width: 420px; margin: 0;">
+                        ECOVRY is a division of the Florosense Group. We provide sustainable, turn-key environmental engineering, sewage & effluent treatment plants, and compliance clearances.
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4 style="font-family: var(--font-heading); font-size: 15px; font-weight: 700; margin-bottom: 18px; color: #fff;">Navigations</h4>
+                    <ul style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: var(--color-text-muted); padding: 0; list-style: none; margin: 0;">
+                        <li><a href="#nanobubble-section" style="color: inherit; text-decoration: none;">Nanobubble Simulator</a></li>
+                        <li><a href="#digestion-section" style="color: inherit; text-decoration: none;">Digestion Race</a></li>
+                        <li><a href="#mbbr-section" style="color: inherit; text-decoration: none;">MBBR Bio-Multiplier</a></li>
+                        <li><a href="#circular-section" style="color: inherit; text-decoration: none;">Circular Bioreactor</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 style="font-family: var(--font-heading); font-size: 15px; font-weight: 700; margin-bottom: 18px; color: #fff;">Contact Info</h4>
+                    <p style="color: var(--color-text-muted); font-size: 13px; line-height: 1.6; margin: 0 0 10px 0;">
+                        <strong>Mysore HQ:</strong> #435 Kubera Complex, Alanahalli Layout, Mysore 570028
+                    </p>
+                    <p style="color: var(--color-text-muted); font-size: 13px; line-height: 1.6; margin: 0;">
+                        <strong>Email:</strong> info@florosense.com
+                    </p>
+                </div>
+            </div>
+            <div class="footer-bottom" style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; display: flex; justify-content: space-between; font-size: 12px; color: var(--color-text-muted);">
+                <div>&copy; 2026 Florosense Engineered Solutions Pvt. Ltd. All rights reserved.</div>
+                <div style="display: flex; gap: 20px;">
+                    <a href="tel:+918073593961" style="color: inherit; text-decoration: none;">Call: +91 8073593961</a>
+                    <a href="mailto:info@florosense.com" style="color: inherit; text-decoration: none;">Email: info@florosense.com</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CDN Libraries Import -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js imported as requested for the TCO line graph -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- App Script -->
+    <script src="app.js"></script>
+    <script>
+        // Init Lucide Icons
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        });
+    </script>
+</body>
+</html>

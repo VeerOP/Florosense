@@ -1,0 +1,527 @@
+/* ----------------------------------------------------
+   ECOVRY ANIMATION SHOWCASE - DARK THEME SPECIFIC STYLES
+   ---------------------------------------------------- */
+
+/* Force strictly dark mode styling */
+:root {
+    --bg-white: #050810;
+    --bg-light: #0b0f19;
+    --color-primary: #FFFFFF;
+    --color-text: #E4E4E7;
+    --color-text-muted: #8E9BAE;
+    --color-border: rgba(255, 255, 255, 0.08);
+    --color-orange: #F97316;
+    --color-green: #10B981;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-white);
+    color: var(--color-text);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Navbar branding overrides */
+.navbar {
+    background-color: rgba(5, 8, 16, 0.8) !important;
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
+}
+
+/* Showcase layout headings */
+.hub-section {
+    padding: 90px 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.section-alt {
+    background-color: var(--bg-light);
+}
+
+.section-header {
+    max-width: 700px;
+    margin: 0 auto 50px;
+    text-align: center;
+}
+
+.section-header h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 34px;
+    font-weight: 800;
+    margin: 12px 0 16px;
+    color: #fff;
+}
+
+.section-header p {
+    color: var(--color-text-muted);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.hub-badge {
+    display: inline-block;
+    background: rgba(249, 115, 22, 0.1);
+    color: var(--color-orange);
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+/* Grids & Cards matching 1st Mockup layout */
+.animation-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 30px;
+    margin-top: 30px;
+    align-items: start;
+}
+
+@media (max-width: 1024px) {
+    .animation-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.grid-card {
+    background: #141821;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+}
+
+.card-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--color-border);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.green-dot {
+    background-color: #10b981;
+    box-shadow: 0 0 8px #10b981;
+}
+
+/* 2D Canvas simulator styling */
+.canvas-wrapper {
+    height: 380px;
+    background: radial-gradient(circle at center, #0a1122 0%, #050810 100%);
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--color-border);
+}
+
+#bubble-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.canvas-footer-hint {
+    padding: 12px 20px;
+    background: rgba(0, 0, 0, 0.2);
+    font-size: 11px;
+    color: var(--color-text-muted);
+}
+
+/* Comparison Cards underneath canvas matching the mockup */
+.bottom-compare-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 24px;
+}
+
+@media (max-width: 580px) {
+    .bottom-compare-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.compare-card {
+    background: #141821;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.compare-card h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    color: #fff;
+}
+
+.compare-trad {
+    border-left: 4px solid #3b82f6;
+}
+
+.compare-eco {
+    border-left: 4px solid #10b981;
+}
+
+.compare-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.compare-list li {
+    display: flex;
+    flex-direction: column;
+}
+
+.compare-list .lbl {
+    font-size: 8px;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.compare-list .val {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+}
+
+/* TCO & Payback sliders card */
+.payback-card {
+    padding: 0;
+}
+
+.payback-slider-panel {
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.slider-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.slider-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+.slider-display {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-orange);
+    background: rgba(249, 115, 22, 0.1);
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(249, 115, 22, 0.15);
+}
+
+/* Range input layout matches the mockup */
+.range-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: #272c38;
+    border-radius: 99px;
+    outline: none;
+}
+
+.range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--color-orange);
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
+    border: 0;
+}
+
+.slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.35);
+    font-weight: 500;
+}
+
+/* Notice banner exactly as in mockup image */
+.notice-banner-wrapper {
+    padding: 0 28px;
+}
+
+.breakeven-banner {
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    color: #00ffaa;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    padding: 12px 18px;
+    border-radius: 8px;
+    line-height: 1.4;
+    text-shadow: 0 0 8px rgba(0, 255, 170, 0.2);
+}
+
+/* CAPEX/OPEX results cards matching mockup row */
+.payback-results-row {
+    padding: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 580px) {
+    .payback-results-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.payback-res-card {
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 18px;
+}
+
+.res-trad {
+    border-left: 3px solid #3b82f6;
+}
+
+.res-eco {
+    border-left: 3px solid #10b981;
+}
+
+.res-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.res-lbl {
+    font-size: 8px;
+    color: var(--color-text-muted);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.res-val {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    color: #fff;
+}
+
+/* 3D Simulation styling */
+.single-card-showcase {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.canvas-3d-wrapper {
+    background: radial-gradient(circle at center, #0c1221 0%, #050810 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.canvas-3d-hint {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(11, 15, 25, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 6px 16px;
+    border-radius: 99px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.65);
+    pointer-events: none;
+    backdrop-filter: blur(4px);
+}
+
+/* Digestion race slider details */
+.slider-trad {
+    background: linear-gradient(135deg, #ff4b2b, #ff416c);
+    transform: translateX(0);
+    box-shadow: 0 0 15px rgba(255, 65, 108, 0.4);
+}
+
+.slider-eco {
+    background: linear-gradient(135deg, #00ffaa, #00cc88);
+    transform: translateX(219px);
+    box-shadow: 0 0 15px rgba(0, 255, 170, 0.4);
+}
+
+.active-trad {
+    color: #fff !important;
+    text-shadow: 0 0 8px rgba(255, 65, 108, 0.5);
+}
+
+.active-eco {
+    color: #050810 !important;
+    font-weight: 800 !important;
+}
+
+.toggle-option.inactive {
+    color: var(--color-text-muted) !important;
+}
+
+/* MBBR carrier active area counters */
+.mbbr-mini-overlay {
+    position: absolute;
+    top: 20px;
+    background: rgba(11, 15, 25, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 10px 16px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+    backdrop-filter: blur(6px);
+}
+
+.std-data-overlay {
+    left: 20px;
+    border-left: 3px solid #64748b;
+}
+
+.eco-data-overlay {
+    right: 20px;
+    border-right: 3px solid #ff6b00;
+    text-align: right;
+}
+
+.overlay-lbl {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+}
+
+.overlay-val {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.overlay-val small {
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.mbbr-toggle-btn:hover {
+    background: rgba(255,255,255,0.1) !important;
+}
+
+.mbbr-toggle-btn.active-match {
+    background: rgba(249, 115, 22, 0.15) !important;
+    border-color: rgba(249, 115, 22, 0.5) !important;
+    color: var(--color-orange) !important;
+    font-weight: 700;
+}
+
+/* Model Info overlays to cover Sketchfab title cards (from 2nd image) */
+.model-info-overlay {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Hero accent highlights */
+.hub-hero {
+    position: relative;
+    background: radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(249, 115, 22, 0.03) 0%, transparent 50%);
+    border-bottom: 1px solid var(--color-border);
+}
+.highlight-italic {
+    font-style: italic;
+    font-family: 'Sora', sans-serif;
+    background: linear-gradient(120deg, #ff6b00, #ff8c00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* TCO Chart Wrapper */
+.chart-wrapper {
+    width: 100%;
+    margin-top: 24px;
+    border-top: 1px solid var(--color-border);
+    padding-top: 20px;
+    box-sizing: border-box;
+}
+
+/* Story Slide Tab Selection buttons */
+.story-tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 4px;
+    transition: all 0.3s;
+    border-bottom: 2px solid transparent;
+}
+
+.story-tab-btn:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.03);
+}
+
+.story-tab-btn.active-tab {
+    color: var(--color-orange);
+    border-bottom: 2px solid var(--color-orange);
+    border-radius: 4px 4px 0 0;
+}
