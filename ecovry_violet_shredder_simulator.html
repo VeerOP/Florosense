@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECOVRY™ Violet Shredder Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #05050A; /* Deep space black */
+            color: white;
+            font-family: 'Inter', sans-serif;
+            user-select: none;
+        }
+
+        #simulation-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .ui-layer {
+            position: absolute;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .interactive {
+            pointer-events: auto;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        @media (min-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(4, 1fr);
+                max-width: 900px;
+            }
+        }
+
+        .metric-card {
+            background: rgba(10, 10, 15, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .counter-font {
+            font-family: 'Rajdhani', sans-serif;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Toggle Switch Styles */
+        .toggle-container {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 99px;
+            padding: 6px;
+            display: flex;
+            position: relative;
+            width: 360px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            width: calc(50% - 6px);
+            height: calc(100% - 12px);
+            border-radius: 99px;
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.4s, box-shadow 0.4s;
+            z-index: 1;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            text-align: center;
+            padding: 14px 0;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 2;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        /* State A: Standard UV (Pale Blue) */
+        .state-a .toggle-slider { 
+            background: #1a365d; 
+            transform: translateX(0); 
+            box-shadow: 0 0 15px rgba(26, 54, 93, 0.5);
+        }
+        
+        /* State B: Violet Shredder (Neon Violet) */
+        .state-b .toggle-slider { 
+            background: #8a2be2; 
+            transform: translateX(100%); 
+            box-shadow: 0 0 25px rgba(138, 43, 226, 0.8); 
+        }
+        
+        .state-a .btn-a { color: white; text-shadow: 0 0 8px rgba(255,255,255,0.5); }
+        .state-a .btn-b { color: #555; }
+        .state-b .btn-a { color: #555; }
+        .state-b .btn-b { color: white; text-shadow: 0 0 10px rgba(255,255,255,0.8); }
+
+        /* Typography Colors */
+        .status-danger { color: #ff3333; text-shadow: 0 0 10px rgba(255, 51, 51, 0.4); }
+        .status-safe { color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.4); }
+        .status-violet { color: #d494ff; text-shadow: 0 0 15px rgba(138, 43, 226, 0.6); }
+        .status-off { color: #666; }
+
+        .glow-text {
+            text-shadow: 0 0 20px rgba(138, 43, 226, 0.8);
+        }
+    </style>
+</head>
+<body class="state-a">
+
+    <!-- 2D Particle Engine Canvas -->
+    <canvas id="simulation-canvas"></canvas>
+
+    <!-- Header & Titles -->
+    <div class="ui-layer w-full top-0 left-0 p-8 flex flex-col items-center">
+        <h1 class="text-4xl font-black tracking-tight uppercase mb-2 text-white">The <span class="text-[#b026ff] glow-text">Violet Shredder</span></h1>
+        <p class="text-slate-400 text-sm text-center max-w-2xl">Photocatalytic Advanced Oxidation Process (AOP). Observe how standard UV fails against complex industrial molecules, while ECOVRY™ $TiO_2$ excitation instantly shatters carbon bonds.</p>
+    </div>
+
+    <!-- Live Metrics Dashboard -->
+    <div class="ui-layer w-full top-32 left-0 flex justify-center px-4">
+        <div class="dashboard-grid">
+            <div class="metric-card" id="card-breakdown">
+                <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Complex Organics Destruction</div>
+                <div class="counter-font text-3xl font-bold status-danger" id="val-breakdown">0%</div>
+            </div>
+            <div class="metric-card" id="card-radicals">
+                <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Hydroxyl Radical ($OH^\bullet$) Generation</div>
+                <div class="counter-font text-3xl font-bold status-off" id="val-radicals">INACTIVE</div>
+            </div>
+            <div class="metric-card" id="card-spectrum">
+                <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Photonic Interaction</div>
+                <div class="counter-font text-3xl font-bold text-[#60a5fa]" id="val-spectrum">Standard 254nm</div>
+            </div>
+            <div class="metric-card border-t-2 border-[#ff3333]" id="card-effluent">
+                <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Effluent Toxicity Profile</div>
+                <div class="counter-font text-3xl font-bold status-danger" id="val-effluent">Contaminated</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Toggle -->
+    <div class="ui-layer w-full bottom-10 left-0 flex justify-center">
+        <div class="toggle-container interactive" id="mode-toggle">
+            <div class="toggle-slider"></div>
+            <div class="toggle-btn btn-a">Standard UV Filtration</div>
+            <div class="toggle-btn btn-b">ECOVRY™ Violet Shredder</div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('simulation-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // State Management
+        let isEcovry = false;
+        let transitionT = 0; // 0 = Standard UV, 1 = Violet Shredder
+        
+        // Dimensions
+        let W = window.innerWidth;
+        let H = window.innerHeight;
+        let reactorBounds = { x1: 0, x2: 0, y1: 0, y2: 0 };
+
+        // Entities
+        let molecules = [];
+        let particles = [];
+        let radicals = [];
+
+        // Colors
+        const C_BG = '#05050A';
+        const C_UV_STD = 'rgba(100, 180, 255, 0.15)'; // Pale blue UV
+        const C_UV_ECO = 'rgba(176, 38, 255, 0.4)';  // Intense Violet
+        const C_TIO2 = 'rgba(255, 255, 255, 0.3)';   // Grid lines
+        const C_DUST = '#00ffff';                    // Destroyed remnants
+        
+        const TOXIN_COLORS = ['#ff3366', '#ff9900', '#ccff00', '#ff00cc'];
+
+        // Init Canvas & Resize
+        function resize() {
+            W = canvas.width = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+            
+            // Define Reactor Zone (Center 40% of screen)
+            reactorBounds.x1 = W * 0.3;
+            reactorBounds.x2 = W * 0.7;
+            reactorBounds.y1 = H * 0.25;
+            reactorBounds.y2 = H * 0.75;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Molecule {
+            constructor() {
+                this.reset();
+                // Randomize starting x so they don't all spawn at once
+                this.x = Math.random() * W * 0.3 - 100; 
+            }
+
+            reset() {
+                this.x = -100; // Start off-screen left
+                this.y = reactorBounds.y1 + 50 + Math.random() * (reactorBounds.y2 - reactorBounds.y1 - 100);
+                this.vx = Math.random() * 1.5 + 1.0; // Flow speed
+                this.vy = (Math.random() - 0.5) * 0.5;
+                
+                this.size = Math.random() * 15 + 15; // Large, complex molecules
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotSpeed = (Math.random() - 0.5) * 0.05;
+                
+                this.points = Math.floor(Math.random() * 4) + 5; // 5 to 8 sided polygons
+                this.color = TOXIN_COLORS[Math.floor(Math.random() * TOXIN_COLORS.length)];
+                
+                this.shattered = false;
+            }
+
+            update() {
+                if (this.shattered) return;
+
+                this.x += this.vx;
+                this.y += this.vy;
+                this.rotation += this.rotSpeed;
+
+                // Check if in Reactor Zone
+                let inReactor = this.x > reactorBounds.x1 && this.x < reactorBounds.x2;
+                
+                if (inReactor && isEcovry) {
+                    // Trigger Photocatalytic Destruction!
+                    this.shatter();
+                }
+
+                // Reset if it goes off screen (Standard mode)
+                if (this.x > W + 100) {
+                    this.reset();
+                }
+            }
+
+            shatter() {
+                this.shattered = true;
+                // Create dust/remnants
+                for (let i = 0; i < 20; i++) {
+                    particles.push(new Particle(this.x, this.y, this.color));
+                }
+                // Schedule respawn
+                setTimeout(() => this.reset(), Math.random() * 2000 + 500);
+            }
+
+            draw() {
+                if (this.shattered) return;
+
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                
+                ctx.beginPath();
+                for (let i = 0; i < this.points; i++) {
+                    let angle = (i / this.points) * Math.PI * 2;
+                    // Add some jaggedness
+                    let rad = this.size * (0.8 + Math.random() * 0.4); 
+                    let px = Math.cos(angle) * rad;
+                    let py = Math.sin(angle) * rad;
+                    if (i === 0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                }
+                ctx.closePath();
+                
+                // Styling
+                ctx.fillStyle = 'rgba(10, 10, 10, 0.8)';
+                ctx.fill();
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 3;
+                
+                // Add glow to toxins
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 10;
+                ctx.stroke();
+                
+                // Draw inner complex bonds (lines)
+                ctx.beginPath();
+                ctx.moveTo(-this.size/2, 0);
+                ctx.lineTo(this.size/2, 0);
+                ctx.moveTo(0, -this.size/2);
+                ctx.lineTo(0, this.size/2);
+                ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+                ctx.lineWidth = 1;
+                ctx.shadowBlur = 0;
+                ctx.stroke();
+
+                ctx.restore();
+            }
+        }
+
+        class Particle {
+            constructor(x, y, origColor) {
+                this.x = x;
+                this.y = y;
+                // Explosive velocity
+                this.vx = (Math.random() - 0.5) * 8 + 2; // Keep moving right generally
+                this.vy = (Math.random() - 0.5) * 8;
+                this.life = 1.0;
+                this.decay = Math.random() * 0.02 + 0.01;
+                
+                // Starts as toxin color, rapidly turns into harmless pure cyan/white (CO2/H2O)
+                this.color = Math.random() > 0.5 ? origColor : C_DUST;
+                this.size = Math.random() * 3 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= this.decay;
+                
+                // Add fluid drag
+                this.vx *= 0.95;
+                this.vy *= 0.95;
+            }
+
+            draw() {
+                if (this.life <= 0) return;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.life;
+                // Add high glow to particles
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 10;
+                ctx.fill();
+                ctx.globalAlpha = 1.0;
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        class Radical {
+            constructor() {
+                this.spawn();
+            }
+            spawn() {
+                this.x = reactorBounds.x1 + Math.random() * (reactorBounds.x2 - reactorBounds.x1);
+                this.y = reactorBounds.y1 + Math.random() * (reactorBounds.y2 - reactorBounds.y1);
+                this.life = 1.0;
+                this.decay = Math.random() * 0.05 + 0.05; // Very short lived
+                this.size = Math.random() * 2 + 1;
+            }
+            update() {
+                this.life -= this.decay;
+                // Jitter
+                this.x += (Math.random() - 0.5) * 4;
+                this.y += (Math.random() - 0.5) * 4;
+                if (this.life <= 0) this.spawn();
+            }
+            draw() {
+                if (this.life <= 0) return;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.globalAlpha = this.life;
+                ctx.shadowColor = '#8a2be2';
+                ctx.shadowBlur = 15;
+                ctx.fill();
+                ctx.globalAlpha = 1.0;
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        for (let i = 0; i < 25; i++) molecules.push(new Molecule());
+        for (let i = 0; i < 60; i++) radicals.push(new Radical());
+
+        function drawReactor() {
+            // Tube Walls
+            ctx.strokeStyle = '#222';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(0, reactorBounds.y1);
+            ctx.lineTo(W, reactorBounds.y1);
+            ctx.moveTo(0, reactorBounds.y2);
+            ctx.lineTo(W, reactorBounds.y2);
+            ctx.stroke();
+
+            // Reactor Core Glow (Background)
+            let coreW = reactorBounds.x2 - reactorBounds.x1;
+            let coreH = reactorBounds.y2 - reactorBounds.y1;
+            
+            // Interpolate colors based on transitionT
+            let opacityStd = 0.15 * (1 - transitionT);
+            let opacityEco = 0.4 * transitionT;
+
+            // Standard Light (Pale Blue)
+            if (transitionT < 1) {
+                ctx.fillStyle = `rgba(100, 180, 255, ${opacityStd})`;
+                ctx.fillRect(reactorBounds.x1, reactorBounds.y1, coreW, coreH);
+            }
+
+            // Violet Light (Intense Violet)
+            if (transitionT > 0) {
+                ctx.fillStyle = `rgba(138, 43, 226, ${opacityEco})`;
+                ctx.fillRect(reactorBounds.x1, reactorBounds.y1, coreW, coreH);
+                
+                // TiO2 Hexagonal Grid Overlay
+                ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 * transitionT})`;
+                ctx.lineWidth = 1;
+                let hexSize = 20;
+                ctx.beginPath();
+                for (let x = reactorBounds.x1; x < reactorBounds.x2; x += hexSize * 1.5) {
+                    for (let y = reactorBounds.y1; y < reactorBounds.y2; y += hexSize * Math.sqrt(3)) {
+                        // Rough hex pattern logic for visual effect
+                        ctx.moveTo(x, y);
+                        ctx.lineTo(x + hexSize/2, y - hexSize);
+                        ctx.lineTo(x + hexSize*1.5, y - hexSize);
+                        ctx.lineTo(x + hexSize*2, y);
+                        ctx.lineTo(x + hexSize*1.5, y + hexSize);
+                        ctx.lineTo(x + hexSize/2, y + hexSize);
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+
+                // Draw bounding box for the grid
+                ctx.strokeStyle = `rgba(176, 38, 255, ${0.8 * transitionT})`;
+                ctx.lineWidth = 3;
+                ctx.strokeRect(reactorBounds.x1, reactorBounds.y1, coreW, coreH);
+                
+                // Add intense bloom effect to the edges
+                ctx.shadowColor = '#8a2be2';
+                ctx.shadowBlur = 40 * transitionT;
+                ctx.strokeRect(reactorBounds.x1, reactorBounds.y1, coreW, coreH);
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        function animate() {
+            // Trail effect background
+            ctx.fillStyle = `rgba(5, 5, 10, 0.3)`;
+            ctx.fillRect(0, 0, W, H);
+
+            // Smooth transition interpolation
+            let targetT = isEcovry ? 1.0 : 0.0;
+            transitionT += (targetT - transitionT) * 0.08;
+
+            // Draw Environment
+            drawReactor();
+
+            // Update & Draw Radicals (Only visible in ECOVRY mode)
+            if (transitionT > 0.01) {
+                radicals.forEach(r => {
+                    r.update();
+                    // Fade radical visibility based on transition
+                    ctx.globalAlpha = transitionT;
+                    r.draw();
+                    ctx.globalAlpha = 1.0;
+                });
+            }
+
+            // Update & Draw Molecules
+            molecules.forEach(m => { m.update(); m.draw(); });
+
+            // Update & Draw Particles (Shattered dust)
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.update();
+                p.draw();
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // UI Integration
+        const modeToggle = document.getElementById('mode-toggle');
+        const vBreakdown = document.getElementById('val-breakdown');
+        const vRadicals = document.getElementById('val-radicals');
+        const vSpectrum = document.getElementById('val-spectrum');
+        const vEffluent = document.getElementById('val-effluent');
+        const cardEffluent = document.getElementById('card-effluent');
+
+        modeToggle.addEventListener('click', () => {
+            isEcovry = !isEcovry;
+            
+            if(isEcovry) {
+                document.body.className = 'state-b';
+                
+                // Dashboard -> ECOVRY Mode
+                vBreakdown.innerText = '99.9%';
+                vBreakdown.className = 'counter-font text-3xl font-bold status-violet';
+                
+                vRadicals.innerText = 'HYPER-ACTIVE';
+                vRadicals.className = 'counter-font text-3xl font-bold status-safe';
+                
+                vSpectrum.innerText = 'UV + TiO2 Catalysis';
+                vSpectrum.className = 'counter-font text-3xl font-bold status-violet';
+                
+                vEffluent.innerText = 'H₂O + CO₂ (Pure)';
+                vEffluent.className = 'counter-font text-3xl font-bold status-safe';
+                cardEffluent.className = 'metric-card border-t-2 border-[#00ffff]';
+
+                // Instantly shatter any molecule currently inside the reactor
+                molecules.forEach(m => {
+                    if (m.x > reactorBounds.x1 && m.x < reactorBounds.x2 && !m.shattered) {
+                        m.shatter();
+                    }
+                });
+
+            } else {
+                document.body.className = 'state-a';
+                
+                // Dashboard -> Standard Mode
+                vBreakdown.innerText = '0% (Pass-through)';
+                vBreakdown.className = 'counter-font text-3xl font-bold status-danger';
+                
+                vRadicals.innerText = 'INACTIVE';
+                vRadicals.className = 'counter-font text-3xl font-bold status-off';
+                
+                vSpectrum.innerText = 'Standard 254nm';
+                vSpectrum.className = 'counter-font text-3xl font-bold text-[#60a5fa]';
+                
+                vEffluent.innerText = 'Toxic Organics Remain';
+                vEffluent.className = 'counter-font text-3xl font-bold status-danger';
+                cardEffluent.className = 'metric-card border-t-2 border-[#ff3333]';
+            }
+        });
+
+        // Start Loop
+        animate();
+
+    </script>
+</body>
+</html>

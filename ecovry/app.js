@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initTimeline();
     initNanobubbleSimulator();
     initRoiCalculator();
+    initVioletShredderSimulator();
     initScrollAnimations();
 });
 
@@ -59,8 +60,9 @@ function initThreeDModel() {
     const canvas = document.getElementById("ecovry-3d-canvas");
     if (!canvas) return;
 
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
+    const parent = canvas.parentElement;
+    const width = parent ? parent.clientWidth : canvas.clientWidth;
+    const height = parent ? parent.clientHeight : canvas.clientHeight;
 
     const scene = new THREE.Scene();
     scene.background = null;
@@ -261,10 +263,12 @@ function initThreeDModel() {
         }
     });
 
-    // Handle Resize
+    // Handle Resize using parent element to prevent layout locking
     window.addEventListener("resize", () => {
-        const w = canvas.clientWidth;
-        const h = canvas.clientHeight;
+        const parent = canvas.parentElement;
+        if (!parent) return;
+        const w = parent.clientWidth;
+        const h = parent.clientHeight;
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
         renderer.setSize(w, h);
@@ -277,26 +281,91 @@ function initThreeDModel() {
 function initTimeline() {
     const navButtons = document.querySelectorAll(".timeline-nav-btn");
     const phaseContents = document.querySelectorAll(".timeline-phase-content");
+    if (navButtons.length === 0) return;
 
+    let currentPhase = 1;
+    let isScrollingProgrammatic = false;
+
+    function setActivePhase(phaseNum) {
+        if (currentPhase === phaseNum) return;
+        currentPhase = phaseNum;
+
+        navButtons.forEach(b => {
+            if (parseInt(b.getAttribute("data-phase")) === phaseNum) {
+                b.classList.add("active");
+            } else {
+                b.classList.remove("active");
+            }
+        });
+
+        phaseContents.forEach(content => {
+            content.classList.remove("active");
+        });
+
+        const activeContent = document.getElementById(`phase-${phaseNum}-content`);
+        if (activeContent) {
+            activeContent.classList.add("active");
+        }
+
+        // Dispatch event to affect Three.js particles speed/color
+        const event = new CustomEvent("phasechange", { detail: { phase: phaseNum } });
+        document.dispatchEvent(event);
+    }
+
+    // Register ScrollTrigger and ScrollToPlugin inside GSAP context
+    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+    let pinTrigger = null;
+
+    // Responsive Scroll-Pinning design: only enable on desktop screens where viewport height is comfortable
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 992px) and (min-height: 750px)", () => {
+        pinTrigger = ScrollTrigger.create({
+            trigger: "#capabilities",
+            start: "top 80px", // Pin below the sticky header
+            end: "+=1800",
+            pin: true,
+            scrub: true,
+            onUpdate: (self) => {
+                const p = self.progress;
+                let phase = 1;
+                if (p < 0.2) phase = 1;
+                else if (p < 0.4) phase = 2;
+                else if (p < 0.6) phase = 3;
+                else if (p < 0.8) phase = 4;
+                else phase = 5;
+
+                if (!isScrollingProgrammatic) {
+                    setActivePhase(phase);
+                }
+            }
+        });
+
+        return () => {
+            if (pinTrigger) pinTrigger.kill();
+        };
+    });
+
+    // Handle manual tab clicks with programmatic scrolling to matching scroll percentage
     navButtons.forEach(btn => {
         btn.addEventListener("click", () => {
-            const phase = btn.getAttribute("data-phase");
+            const phaseNum = parseInt(btn.getAttribute("data-phase"));
+            setActivePhase(phaseNum);
 
-            navButtons.forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
+            if (pinTrigger) {
+                isScrollingProgrammatic = true;
+                const scrollStep = (pinTrigger.end - pinTrigger.start) / 4;
+                const targetScroll = pinTrigger.start + (phaseNum - 1) * scrollStep + 15;
 
-            phaseContents.forEach(content => {
-                content.classList.remove("active");
-            });
-
-            const activeContent = document.getElementById(`phase-${phase}-content`);
-            if (activeContent) {
-                activeContent.classList.add("active");
+                gsap.to(window, {
+                    scrollTo: targetScroll,
+                    duration: 0.8,
+                    ease: "power2.out",
+                    onComplete: () => {
+                        isScrollingProgrammatic = false;
+                    }
+                });
             }
-
-            // Dispatch event to affect Three.js particles speed/color
-            const event = new CustomEvent("phasechange", { detail: { phase: parseInt(phase) } });
-            document.dispatchEvent(event);
         });
     });
 }
@@ -317,10 +386,10 @@ function initNanobubbleSimulator() {
     const oteVal = document.getElementById("ote-val");
     const energySaveVal = document.getElementById("energy-save-val");
 
-    // Canvas size sync
+    // Canvas size sync using parent boundaries to prevent static size clamping
     function resizeCanvas() {
         canvas.width = canvas.parentElement.clientWidth;
-        canvas.height = canvas.parentElement.clientHeight;
+        canvas.height = canvas.parentElement.clientHeight || 380;
     }
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
@@ -338,72 +407,152 @@ function initNanobubbleSimulator() {
                 ? Math.random() * canvas.height 
                 : canvas.height + Math.random() * 20;
             
-            // Traditional bubbles rise fast, Nanobubbles drift horizontally (Brownian)
             if (this.isNanobubble) {
-                this.r = 0.5 + Math.random() * 1.2;
-                this.vx = (Math.random() - 0.5) * 0.6;
-                this.vy = (Math.random() - 0.5) * 0.2 - 0.05; // tiny upward bias
+                this.r = 0.5 + Math.random() * 1.0;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.15 - 0.05; // tiny upward bias
+                
+                // Track dynamic suspension lifespan based on retention slider
+                const retention = parseFloat(retentionSlider.value);
+                if (retention === 3600) {
+                    this.maxLifespan = Infinity;
+                    this.lifespan = Infinity;
+                } else {
+                    this.maxLifespan = 120 + (retention * 0.4) + Math.random() * 180;
+                    this.lifespan = Math.random() * this.maxLifespan;
+                }
             } else {
-                this.r = 3 + Math.random() * 6;
+                // Scale bubble radius dynamically based on size slider
+                const sliderVal = parseFloat(bubbleSizeSlider.value);
+                const scale = (sliderVal - 1000) / 9000;
+                this.r = 3 + scale * 8 + Math.random() * 2;
                 this.vx = (Math.random() - 0.5) * 0.4;
-                this.vy = -(1.5 + Math.random() * 2.5); // fast rise
+                this.vy = -(1.2 + scale * 2.8 + Math.random() * 1.5); // Fast rise for macro
+                this.maxLifespan = Infinity;
+                this.lifespan = Infinity;
             }
         }
 
         update(time, flowStrength) {
             if (this.isNanobubble) {
+                // Sync lifespan limits if slider changes dynamically
+                const retention = parseFloat(retentionSlider.value);
+                const wantsInfinity = (retention === 3600);
+                const isCurrentlyInfinity = (this.maxLifespan === Infinity);
+
+                if (wantsInfinity !== isCurrentlyInfinity) {
+                    if (wantsInfinity) {
+                        this.maxLifespan = Infinity;
+                        this.lifespan = Infinity;
+                    } else {
+                        this.maxLifespan = 120 + (retention * 0.4) + Math.random() * 180;
+                        this.lifespan = Math.random() * this.maxLifespan;
+                    }
+                }
+
+                // Decrement lifespan if finite
+                if (this.maxLifespan !== Infinity) {
+                    this.lifespan--;
+                    if (this.lifespan <= 0) {
+                        this.reset();
+                        return;
+                    }
+                }
+
                 // Brownian random walk
-                this.vx += (Math.random() - 0.5) * 0.1;
-                this.vy += (Math.random() - 0.5) * 0.05;
+                this.vx += (Math.random() - 0.5) * 0.08;
+                this.vy += (Math.random() - 0.5) * 0.04;
                 
                 // Clamp velocities
-                this.vx = Math.max(-0.8, Math.min(0.8, this.vx));
-                this.vy = Math.max(-0.6, Math.min(0.6, this.vy));
+                this.vx = Math.max(-0.6, Math.min(0.6, this.vx));
+                this.vy = Math.max(-0.5, Math.min(0.5, this.vy));
             }
 
-            // Apply fluid current based on mouse drag/move
+            // Apply fluid current based on mouse/touch drag
             this.x += this.vx + flowStrength.x;
             this.y += this.vy + flowStrength.y;
 
             // Boundaries
-            if (this.x < 0) this.x = canvas.width;
-            if (this.x > canvas.width) this.x = 0;
+            if (this.x < -10) this.x = canvas.width + 10;
+            if (this.x > canvas.width + 10) this.x = -10;
 
             if (this.isNanobubble) {
-                if (this.y < 0) this.y = canvas.height;
-                if (this.y > canvas.height) this.y = 0;
+                if (this.y < -10) this.y = canvas.height + 10;
+                if (this.y > canvas.height + 10) this.y = -10;
             } else {
-                if (this.y < -10) this.reset();
+                if (this.y < -15) this.reset();
             }
         }
 
         draw() {
+            let drawRadius = this.r;
+            let alpha = 0.5;
+
+            if (this.isNanobubble && this.maxLifespan !== Infinity) {
+                const ratio = Math.max(0, Math.min(1, this.lifespan / this.maxLifespan));
+                alpha = ratio * 0.5;
+                drawRadius = this.r * (0.3 + 0.7 * ratio); // shrink as it dissolves
+            }
+
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+            ctx.arc(this.x, this.y, drawRadius, 0, Math.PI * 2);
+            
             if (this.isNanobubble) {
-                ctx.fillStyle = "rgba(14, 165, 233, 0.6)"; // Sky blue
+                ctx.fillStyle = `rgba(14, 165, 233, ${alpha})`; // Sky blue with alpha
                 ctx.fill();
             } else {
-                ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
-                ctx.lineWidth = 1;
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+                ctx.lineWidth = 1.2;
                 ctx.stroke();
-                ctx.fillStyle = "rgba(255, 255, 255, 0.1)";
+                ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+                ctx.fill();
+                
+                // highlight spot
+                ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+                ctx.beginPath();
+                ctx.arc(this.x - drawRadius * 0.3, this.y - drawRadius * 0.3, drawRadius * 0.15, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
     }
 
-    // Fluid current controller
+    // Interactive mouse/touch fluid current perturbation
     let flowStrength = { x: 0, y: 0 };
-    canvas.addEventListener("mousemove", (e) => {
+    let lastMouse = { x: 0, y: 0 };
+
+    function trackMovement(clientX, clientY) {
         const rect = canvas.getBoundingClientRect();
-        const mx = e.clientX - rect.left;
-        // Generate current relative to canvas center
-        flowStrength.x = (mx - canvas.width / 2) * 0.005;
+        const mx = clientX - rect.left;
+        const my = clientY - rect.top;
+        if (lastMouse.x !== 0) {
+            flowStrength.x += (mx - lastMouse.x) * 0.15;
+            flowStrength.y += (my - lastMouse.y) * 0.15;
+            // Clamp strength
+            flowStrength.x = Math.max(-5, Math.min(5, flowStrength.x));
+            flowStrength.y = Math.max(-5, Math.min(5, flowStrength.y));
+        }
+        lastMouse.x = mx;
+        lastMouse.y = my;
+    }
+
+    canvas.addEventListener("mousemove", (e) => {
+        trackMovement(e.clientX, e.clientY);
     });
 
     canvas.addEventListener("mouseleave", () => {
         gsap.to(flowStrength, { x: 0, y: 0, duration: 1.5 });
+        lastMouse = { x: 0, y: 0 };
+    });
+
+    canvas.addEventListener("touchmove", (e) => {
+        if (e.touches.length > 0) {
+            trackMovement(e.touches[0].clientX, e.touches[0].clientY);
+        }
+    }, { passive: true });
+
+    canvas.addEventListener("touchend", () => {
+        gsap.to(flowStrength, { x: 0, y: 0, duration: 1.5 });
+        lastMouse = { x: 0, y: 0 };
     });
 
     const particles = [];
@@ -413,8 +562,12 @@ function initNanobubbleSimulator() {
     function loop(time) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Determine fraction of nanobubbles based on slider
-        const sizeMicrons = parseFloat(bubbleSizeSlider.value);
+        // Natural decay of fluid current
+        flowStrength.x *= 0.95;
+        flowStrength.y *= 0.95;
+
+        // Correct size microns conversion (slider value is nm, 1.0 micron is 1000 nm)
+        const sizeMicrons = parseFloat(bubbleSizeSlider.value) / 1000.0;
         const isNano = sizeMicrons <= 1.0;
 
         // Maintain particle counts
@@ -449,17 +602,17 @@ function initNanobubbleSimulator() {
             ? `${(size/1000).toFixed(1)} mm` 
             : `${size.toFixed(0)} nm`;
 
-        retentionVal.innerText = retention >= 60 
-            ? `${(retention/60).toFixed(1)} Hours` 
-            : `${retention.toFixed(0)} Mins`;
+        retentionVal.innerText = retention === 3600
+            ? "Indefinite suspension"
+            : (retention >= 60 
+                ? `${(retention/60).toFixed(1)} Hours` 
+                : `${retention.toFixed(0)} Mins`);
 
         // Calculate OTE% (Oxygen Transfer Efficiency)
-        // Drops exponentially from 88% down to 15% as size increases
         let ote = 15;
         if (size <= 200) {
             ote = 88;
         } else if (size <= 1000) {
-            // interpolation
             ote = 88 - ((size - 200) / 800) * 45;
         } else {
             ote = 43 - ((size - 1000) / 9000) * 28;
@@ -496,27 +649,27 @@ function initRoiCalculator() {
         const tariff = parseFloat(inputOpex.value);
 
         valCapacity.innerText = `${cap.toLocaleString('en-IN')} KLD`;
-        valOpex.innerText = `₹ ${tariff}/kWh`;
+        valOpex.innerText = `₹ ${tariff} / kWh`;
 
         // Math Formulas
         const waterRecycledPerDay = cap * 0.98; // 98% efficiency
-        const waterRecycledPerYear = waterRecycledPerDay * 365;
+        const waterRecycledPerYear = waterRecycledPerDay * 365; // in KL per year
 
-        // Savings model: Water cost savings + energy savings
-        // Typical cost of buying tanker water is Rs 100 per KL
+        // Savings model: Water purchase cost savings + energy savings
+        // Typical cost of buying tanker water is Rs 110 per KL
         const waterPurchaseCostSaved = waterRecycledPerYear * 110; 
         
-        // Energy saved vs traditional treatment
-        const energySavedPerYear = cap * 1.2 * 365 * (tariff * 0.35); // 35% savings
+        // Energy saved per year (35% energy offset)
+        const energySavedPerYear = cap * 1.2 * 365 * (tariff * 0.35); 
 
         const totalYearlySavings = waterPurchaseCostSaved + energySavedPerYear;
 
-        // Payback timeline
-        const extraCapex = cap * 3500; // premium cost of modular nanobubble unit
-        const paybackMonths = Math.max(6, Math.ceil((extraCapex / totalYearlySavings) * 12));
+        // Premium Capex: base equipment setup + volume scaling cost
+        const extraCapex = 400000 + (cap * 36000); 
+        const paybackMonths = Math.max(3, Math.ceil((extraCapex / totalYearlySavings) * 12));
 
-        // Format UI
-        resRecycled.innerText = `${Math.round(waterRecycledPerYear).toLocaleString('en-IN')} L`;
+        // Format UI (Convert KL to Liters by multiplying by 1000)
+        resRecycled.innerText = `${Math.round(waterRecycledPerYear * 1000).toLocaleString('en-IN')} L`;
         resSavings.innerText = `₹ ${Math.round(totalYearlySavings).toLocaleString('en-IN')}`;
         resCapexPayback.innerText = `${paybackMonths} Months`;
     }
@@ -622,4 +775,367 @@ function initMobileNav() {
             }
         });
     });
+}
+
+/* =========================================================================
+   7. INTERACTIVE VIOLET SHREDDER AOP SIMULATOR
+   ========================================================================= */
+function initVioletShredderSimulator() {
+    const canvas = document.getElementById('shredder-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    // State Management
+    let isEcovry = false;
+    let transitionT = 0; // 0 = Standard UV, 1 = Violet Shredder
+    
+    // Dimensions
+    let W = canvas.width = canvas.parentElement.clientWidth;
+    let H = canvas.height = canvas.parentElement.clientHeight || 380;
+    let reactorBounds = { x1: 0, x2: 0, y1: 0, y2: 0 };
+
+    // Entities
+    let molecules = [];
+    let particles = [];
+    let radicals = [];
+
+    // Colors
+    const C_BG = '#05050A';
+    const C_UV_STD = 'rgba(59, 130, 246, 0.15)'; // Pale blue UV
+    const C_UV_ECO = 'rgba(139, 92, 246, 0.4)';  // Intense Violet
+    const C_TIO2 = 'rgba(255, 255, 255, 0.3)';   // Grid lines
+    const C_DUST = '#00ffff';                    // Destroyed remnants
+    
+    const TOXIN_COLORS = ['#ef4444', '#f97316', '#a3e635', '#ec4899'];
+
+    // Init Canvas & Resize
+    function resize() {
+        if (!canvas.parentElement) return;
+        W = canvas.width = canvas.parentElement.clientWidth;
+        H = canvas.height = canvas.parentElement.clientHeight || 380;
+        
+        // Define Reactor Zone (Center 40% of screen)
+        reactorBounds.x1 = W * 0.3;
+        reactorBounds.x2 = W * 0.7;
+        reactorBounds.y1 = H * 0.15;
+        reactorBounds.y2 = H * 0.85;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Molecule {
+        constructor() {
+            this.reset();
+            // Randomize starting x so they don't all spawn at once
+            this.x = Math.random() * W * 0.3 - 100; 
+        }
+
+        reset() {
+            this.x = -100; // Start off-screen left
+            this.y = reactorBounds.y1 + 30 + Math.random() * (reactorBounds.y2 - reactorBounds.y1 - 60);
+            this.vx = Math.random() * 1.2 + 0.8; // Flow speed
+            this.vy = (Math.random() - 0.5) * 0.3;
+            
+            this.size = Math.random() * 10 + 10; // Large, complex molecules
+            this.rotation = Math.random() * Math.PI * 2;
+            this.rotSpeed = (Math.random() - 0.5) * 0.04;
+            
+            this.points = Math.floor(Math.random() * 4) + 5; // 5 to 8 sided polygons
+            this.color = TOXIN_COLORS[Math.floor(Math.random() * TOXIN_COLORS.length)];
+            
+            this.shattered = false;
+        }
+
+        update() {
+            if (this.shattered) return;
+
+            this.x += this.vx;
+            this.y += this.vy;
+            this.rotation += this.rotSpeed;
+
+            // Check if in Reactor Zone
+            let inReactor = this.x > reactorBounds.x1 && this.x < reactorBounds.x2;
+            
+            if (inReactor && isEcovry) {
+                // Trigger Photocatalytic Destruction!
+                this.shatter();
+            }
+
+            // Reset if it goes off screen (Standard mode)
+            if (this.x > W + 100) {
+                this.reset();
+            }
+        }
+
+        shatter() {
+            this.shattered = true;
+            // Create dust/remnants
+            for (let i = 0; i < 15; i++) {
+                particles.push(new Particle(this.x, this.y, this.color));
+            }
+            // Schedule respawn
+            setTimeout(() => this.reset(), Math.random() * 1500 + 400);
+        }
+
+        draw() {
+            if (this.shattered) return;
+
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotation);
+            
+            ctx.beginPath();
+            for (let i = 0; i < this.points; i++) {
+                let angle = (i / this.points) * Math.PI * 2;
+                let rad = this.size * (0.8 + Math.random() * 0.3); 
+                let px = Math.cos(angle) * rad;
+                let py = Math.sin(angle) * rad;
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            
+            ctx.fillStyle = 'rgba(10, 10, 10, 0.85)';
+            ctx.fill();
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = 2.5;
+            
+            ctx.shadowColor = this.color;
+            ctx.shadowBlur = 8;
+            ctx.stroke();
+            
+            // Draw inner complex bonds (lines)
+            ctx.beginPath();
+            ctx.moveTo(-this.size/2, 0);
+            ctx.lineTo(this.size/2, 0);
+            ctx.moveTo(0, -this.size/2);
+            ctx.lineTo(0, this.size/2);
+            ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+            ctx.lineWidth = 1;
+            ctx.shadowBlur = 0;
+            ctx.stroke();
+
+            ctx.restore();
+        }
+    }
+
+    class Particle {
+        constructor(x, y, origColor) {
+            this.x = x;
+            this.y = y;
+            this.vx = (Math.random() - 0.5) * 6 + 1.5; // Keep moving right generally
+            this.vy = (Math.random() - 0.5) * 6;
+            this.life = 1.0;
+            this.decay = Math.random() * 0.03 + 0.015;
+            
+            this.color = Math.random() > 0.5 ? origColor : C_DUST;
+            this.size = Math.random() * 2.5 + 1;
+        }
+
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.life -= this.decay;
+            
+            this.vx *= 0.96;
+            this.vy *= 0.96;
+        }
+
+        draw() {
+            if (this.life <= 0) return;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.globalAlpha = this.life;
+            ctx.shadowColor = this.color;
+            ctx.shadowBlur = 8;
+            ctx.fill();
+            ctx.globalAlpha = 1.0;
+            ctx.shadowBlur = 0;
+        }
+    }
+
+    class Radical {
+        constructor() {
+            this.spawn();
+        }
+        spawn() {
+            this.x = reactorBounds.x1 + Math.random() * (reactorBounds.x2 - reactorBounds.x1);
+            this.y = reactorBounds.y1 + Math.random() * (reactorBounds.y2 - reactorBounds.y1);
+            this.life = 1.0;
+            this.decay = Math.random() * 0.06 + 0.04;
+            this.size = Math.random() * 2 + 0.8;
+        }
+        update() {
+            this.life -= this.decay;
+            this.x += (Math.random() - 0.5) * 3;
+            this.y += (Math.random() - 0.5) * 3;
+            if (this.life <= 0) this.spawn();
+        }
+        draw() {
+            if (this.life <= 0) return;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.globalAlpha = this.life;
+            ctx.shadowColor = '#8b5cf6';
+            ctx.shadowBlur = 12;
+            ctx.fill();
+            ctx.globalAlpha = 1.0;
+            ctx.shadowBlur = 0;
+        }
+    }
+
+    for (let i = 0; i < 20; i++) molecules.push(new Molecule());
+    for (let i = 0; i < 40; i++) radicals.push(new Radical());
+
+    function drawReactor() {
+        // Tube Walls
+        ctx.strokeStyle = '#27272a';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(0, reactorBounds.y1);
+        ctx.lineTo(W, reactorBounds.y1);
+        ctx.moveTo(0, reactorBounds.y2);
+        ctx.lineTo(W, reactorBounds.y2);
+        ctx.stroke();
+
+        // Reactor Core Glow (Background)
+        let coreW = reactorBounds.x2 - reactorBounds.x1;
+        let coreH = reactorBounds.y2 - reactorBounds.y1;
+        
+        let opacityStd = 0.12 * (1 - transitionT);
+        let opacityEco = 0.35 * transitionT;
+
+        // Standard Light (Pale Blue)
+        if (transitionT < 1) {
+            ctx.fillStyle = `rgba(59, 130, 246, ${opacityStd})`;
+            ctx.fillRect(reactorBounds.x1, reactorBounds.y1, coreW, coreH);
+        }
+
+        // Violet Light (Intense Violet)
+        if (transitionT > 0) {
+            ctx.fillStyle = `rgba(139, 92, 246, ${opacityEco})`;
+            ctx.fillRect(reactorBounds.x1, reactorBounds.y1, coreW, coreH);
+            
+            // TiO2 Hexagonal Grid Overlay
+            ctx.strokeStyle = `rgba(255, 255, 255, ${0.08 * transitionT})`;
+            ctx.lineWidth = 1;
+            let hexSize = 16;
+            ctx.beginPath();
+            for (let x = reactorBounds.x1; x < reactorBounds.x2; x += hexSize * 1.5) {
+                for (let y = reactorBounds.y1; y < reactorBounds.y2; y += hexSize * Math.sqrt(3)) {
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + hexSize/2, y - hexSize);
+                    ctx.lineTo(x + hexSize*1.5, y - hexSize);
+                    ctx.lineTo(x + hexSize*2, y);
+                    ctx.lineTo(x + hexSize*1.5, y + hexSize);
+                    ctx.lineTo(x + hexSize/2, y + hexSize);
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+
+            // Draw bounding box for the grid
+            ctx.strokeStyle = `rgba(139, 92, 246, ${0.7 * transitionT})`;
+            ctx.lineWidth = 2.5;
+            ctx.strokeRect(reactorBounds.x1, reactorBounds.y1, coreW, coreH);
+            
+            ctx.shadowColor = '#8b5cf6';
+            ctx.shadowBlur = 30 * transitionT;
+            ctx.strokeRect(reactorBounds.x1, reactorBounds.y1, coreW, coreH);
+            ctx.shadowBlur = 0;
+        }
+    }
+
+    function animate() {
+        ctx.fillStyle = `rgba(5, 5, 10, 0.25)`;
+        ctx.fillRect(0, 0, W, H);
+
+        let targetT = isEcovry ? 1.0 : 0.0;
+        transitionT += (targetT - transitionT) * 0.08;
+
+        drawReactor();
+
+        if (transitionT > 0.01) {
+            radicals.forEach(r => {
+                r.update();
+                ctx.globalAlpha = transitionT;
+                r.draw();
+                ctx.globalAlpha = 1.0;
+            });
+        }
+
+        molecules.forEach(m => { m.update(); m.draw(); });
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+            let p = particles[i];
+            p.update();
+            p.draw();
+            if (p.life <= 0) {
+                particles.splice(i, 1);
+            }
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    // UI Integration
+    const modeToggle = document.getElementById('shredder-mode-toggle');
+    const vBreakdown = document.getElementById('shredder-val-breakdown');
+    const vRadicals = document.getElementById('shredder-val-radicals');
+    const vSpectrum = document.getElementById('shredder-val-spectrum');
+    const vEffluent = document.getElementById('shredder-val-effluent');
+    const cardEffluent = document.getElementById('shredder-card-effluent');
+
+    if (modeToggle) {
+        modeToggle.addEventListener('click', () => {
+            isEcovry = !isEcovry;
+            
+            if (isEcovry) {
+                modeToggle.className = 'shredder-toggle-container state-b';
+                
+                vBreakdown.innerText = '99.9%';
+                vBreakdown.className = 'shredder-metric-val status-violet';
+                
+                vRadicals.innerText = 'HYPER-ACTIVE';
+                vRadicals.className = 'shredder-metric-val status-safe';
+                
+                vSpectrum.innerText = 'UV + TiO2 Catalysis';
+                vSpectrum.className = 'shredder-metric-val status-violet';
+                
+                vEffluent.innerText = 'H₂O + CO₂ (Pure)';
+                vEffluent.className = 'shredder-metric-val status-safe';
+                if (cardEffluent) {
+                    cardEffluent.className = 'shredder-metric-card border-safe';
+                }
+
+                molecules.forEach(m => {
+                    if (m.x > reactorBounds.x1 && m.x < reactorBounds.x2 && !m.shattered) {
+                        m.shatter();
+                    }
+                });
+
+            } else {
+                modeToggle.className = 'shredder-toggle-container state-a';
+                
+                vBreakdown.innerText = '0% (Pass-through)';
+                vBreakdown.className = 'shredder-metric-val status-danger';
+                
+                vRadicals.innerText = 'INACTIVE';
+                vRadicals.className = 'shredder-metric-val status-off';
+                
+                vSpectrum.innerText = 'Standard 254nm';
+                vSpectrum.className = 'shredder-metric-val text-blue';
+                
+                vEffluent.innerText = 'Toxic Organics Remain';
+                vEffluent.className = 'shredder-metric-val status-danger';
+                if (cardEffluent) {
+                    cardEffluent.className = 'shredder-metric-card border-danger';
+                }
+            }
+        });
+    }
+
+    animate();
 }

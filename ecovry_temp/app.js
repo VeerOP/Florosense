@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initMbbr3D();
     initMobileNav();
     initBioreactorSlider();
+    initVioletShredderSimulator();
 });
 
 /* =========================================================================
@@ -1385,4 +1386,368 @@ function initMobileNav() {
             }
         });
     });
+}
+
+/* =========================================================================
+   7. INTERACTIVE VIOLET SHREDDER AOP SIMULATOR
+   ========================================================================= */
+function initVioletShredderSimulator() {
+    const canvas = document.getElementById('shredder-physics-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    // State Management
+    let isEcovry = false;
+    let transitionT = 0; // 0 = Standard UV, 1 = Violet Shredder
+    
+    // Dimensions
+    let W = canvas.width = canvas.parentElement.clientWidth;
+    let H = canvas.height = canvas.parentElement.clientHeight || 380;
+    let reactorBounds = { x1: 0, x2: 0, y1: 0, y2: 0 };
+
+    // Entities
+    let molecules = [];
+    let particles = [];
+    let radicals = [];
+
+    // Colors
+    const C_BG = '#05050A';
+    const C_UV_STD = 'rgba(59, 130, 246, 0.15)'; // Pale blue UV
+    const C_UV_ECO = 'rgba(139, 92, 246, 0.4)';  // Intense Violet
+    const C_TIO2 = 'rgba(255, 255, 255, 0.3)';   // Grid lines
+    const C_DUST = '#00ffff';                    // Destroyed remnants
+    
+    const TOXIN_COLORS = ['#ef4444', '#f97316', '#a3e635', '#ec4899'];
+
+    // Init Canvas & Resize
+    function resize() {
+        if (!canvas.parentElement) return;
+        W = canvas.width = canvas.parentElement.clientWidth;
+        H = canvas.height = canvas.parentElement.clientHeight || 380;
+        
+        // Define Reactor Zone (Center 40% of screen)
+        reactorBounds.x1 = W * 0.3;
+        reactorBounds.x2 = W * 0.7;
+        reactorBounds.y1 = H * 0.15;
+        reactorBounds.y2 = H * 0.85;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Molecule {
+        constructor() {
+            this.reset();
+            // Randomize starting x so they don't all spawn at once
+            this.x = Math.random() * W * 0.3 - 100; 
+        }
+
+        reset() {
+            this.x = -100; // Start off-screen left
+            this.y = reactorBounds.y1 + 30 + Math.random() * (reactorBounds.y2 - reactorBounds.y1 - 60);
+            this.vx = Math.random() * 1.2 + 0.8; // Flow speed
+            this.vy = (Math.random() - 0.5) * 0.3;
+            
+            this.size = Math.random() * 10 + 10; // Large, complex molecules
+            this.rotation = Math.random() * Math.PI * 2;
+            this.rotSpeed = (Math.random() - 0.5) * 0.04;
+            
+            this.points = Math.floor(Math.random() * 4) + 5; // 5 to 8 sided polygons
+            this.color = TOXIN_COLORS[Math.floor(Math.random() * TOXIN_COLORS.length)];
+            
+            this.shattered = false;
+        }
+
+        update() {
+            if (this.shattered) return;
+
+            this.x += this.vx;
+            this.y += this.vy;
+            this.rotation += this.rotSpeed;
+
+            // Check if in Reactor Zone
+            let inReactor = this.x > reactorBounds.x1 && this.x < reactorBounds.x2;
+            
+            if (inReactor && isEcovry) {
+                // Trigger Photocatalytic Destruction!
+                this.shatter();
+            }
+
+            // Reset if it goes off screen (Standard mode)
+            if (this.x > W + 100) {
+                this.reset();
+            }
+        }
+
+        shatter() {
+            this.shattered = true;
+            // Create dust/remnants
+            for (let i = 0; i < 15; i++) {
+                particles.push(new Particle(this.x, this.y, this.color));
+            }
+            // Schedule respawn
+            setTimeout(() => this.reset(), Math.random() * 1500 + 400);
+        }
+
+        draw() {
+            if (this.shattered) return;
+
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotation);
+            
+            ctx.beginPath();
+            for (let i = 0; i < this.points; i++) {
+                let angle = (i / this.points) * Math.PI * 2;
+                let rad = this.size * (0.8 + Math.random() * 0.3); 
+                let px = Math.cos(angle) * rad;
+                let py = Math.sin(angle) * rad;
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            
+            ctx.fillStyle = 'rgba(10, 10, 10, 0.85)';
+            ctx.fill();
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = 2.5;
+            
+            ctx.shadowColor = this.color;
+            ctx.shadowBlur = 8;
+            ctx.stroke();
+            
+            // Draw inner complex bonds (lines)
+            ctx.beginPath();
+            ctx.moveTo(-this.size/2, 0);
+            ctx.lineTo(this.size/2, 0);
+            ctx.moveTo(0, -this.size/2);
+            ctx.lineTo(0, this.size/2);
+            ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+            ctx.lineWidth = 1;
+            ctx.shadowBlur = 0;
+            ctx.stroke();
+
+            ctx.restore();
+        }
+    }
+
+    class Particle {
+        constructor(x, y, origColor) {
+            this.x = x;
+            this.y = y;
+            this.vx = (Math.random() - 0.5) * 6 + 1.5; // Keep moving right generally
+            this.vy = (Math.random() - 0.5) * 6;
+            this.life = 1.0;
+            this.decay = Math.random() * 0.03 + 0.015;
+            
+            this.color = Math.random() > 0.5 ? origColor : C_DUST;
+            this.size = Math.random() * 2.5 + 1;
+        }
+
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.life -= this.decay;
+            
+            this.vx *= 0.96;
+            this.vy *= 0.96;
+        }
+
+        draw() {
+            if (this.life <= 0) return;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.globalAlpha = this.life;
+            ctx.shadowColor = this.color;
+            ctx.shadowBlur = 8;
+            ctx.fill();
+            ctx.globalAlpha = 1.0;
+            ctx.shadowBlur = 0;
+        }
+    }
+
+    class Radical {
+        constructor() {
+            this.spawn();
+        }
+        spawn() {
+            this.x = reactorBounds.x1 + Math.random() * (reactorBounds.x2 - reactorBounds.x1);
+            this.y = reactorBounds.y1 + Math.random() * (reactorBounds.y2 - reactorBounds.y1);
+            this.life = 1.0;
+            this.decay = Math.random() * 0.06 + 0.04;
+            this.size = Math.random() * 2 + 0.8;
+        }
+        update() {
+            this.life -= this.decay;
+            this.x += (Math.random() - 0.5) * 3;
+            this.y += (Math.random() - 0.5) * 3;
+            if (this.life <= 0) this.spawn();
+        }
+        draw() {
+            if (this.life <= 0) return;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.globalAlpha = this.life;
+            ctx.shadowColor = '#8b5cf6';
+            ctx.shadowBlur = 12;
+            ctx.fill();
+            ctx.globalAlpha = 1.0;
+            ctx.shadowBlur = 0;
+        }
+    }
+
+    for (let i = 0; i < 20; i++) molecules.push(new Molecule());
+    for (let i = 0; i < 40; i++) radicals.push(new Radical());
+
+    function drawReactor() {
+        // Tube Walls
+        ctx.strokeStyle = '#27272a';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(0, reactorBounds.y1);
+        ctx.lineTo(W, reactorBounds.y1);
+        ctx.moveTo(0, reactorBounds.y2);
+        ctx.lineTo(W, reactorBounds.y2);
+        ctx.stroke();
+
+        // Reactor Core Glow (Background)
+        let coreW = reactorBounds.x2 - reactorBounds.x1;
+        let coreH = reactorBounds.y2 - reactorBounds.y1;
+        
+        let opacityStd = 0.12 * (1 - transitionT);
+        let opacityEco = 0.35 * transitionT;
+
+        // Standard Light (Pale Blue)
+        if (transitionT < 1) {
+            ctx.fillStyle = `rgba(59, 130, 246, ${opacityStd})`;
+            ctx.fillRect(reactorBounds.x1, reactorBounds.y1, coreW, coreH);
+        }
+
+        // Violet Light (Intense Violet)
+        if (transitionT > 0) {
+            ctx.fillStyle = `rgba(139, 92, 246, ${opacityEco})`;
+            ctx.fillRect(reactorBounds.x1, reactorBounds.y1, coreW, coreH);
+            
+            // TiO2 Hexagonal Grid Overlay
+            ctx.strokeStyle = `rgba(255, 255, 255, ${0.08 * transitionT})`;
+            ctx.lineWidth = 1;
+            let hexSize = 16;
+            ctx.beginPath();
+            for (let x = reactorBounds.x1; x < reactorBounds.x2; x += hexSize * 1.5) {
+                for (let y = reactorBounds.y1; y < reactorBounds.y2; y += hexSize * Math.sqrt(3)) {
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + hexSize/2, y - hexSize);
+                    ctx.lineTo(x + hexSize*1.5, y - hexSize);
+                    ctx.lineTo(x + hexSize*2, y);
+                    ctx.lineTo(x + hexSize*1.5, y + hexSize);
+                    ctx.lineTo(x + hexSize/2, y + hexSize);
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+
+            // Draw bounding box for the grid
+            ctx.strokeStyle = `rgba(139, 92, 246, ${0.7 * transitionT})`;
+            ctx.lineWidth = 2.5;
+            ctx.strokeRect(reactorBounds.x1, reactorBounds.y1, coreW, coreH);
+            
+            ctx.shadowColor = '#8b5cf6';
+            ctx.shadowBlur = 30 * transitionT;
+            ctx.strokeRect(reactorBounds.x1, reactorBounds.y1, coreW, coreH);
+            ctx.shadowBlur = 0;
+        }
+    }
+
+    function animate() {
+        ctx.fillStyle = `rgba(5, 5, 10, 0.25)`;
+        ctx.fillRect(0, 0, W, H);
+
+        let targetT = isEcovry ? 1.0 : 0.0;
+        transitionT += (targetT - transitionT) * 0.08;
+
+        drawReactor();
+
+        if (transitionT > 0.01) {
+            radicals.forEach(r => {
+                r.update();
+                ctx.globalAlpha = transitionT;
+                r.draw();
+                ctx.globalAlpha = 1.0;
+            });
+        }
+
+        molecules.forEach(m => { m.update(); m.draw(); });
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+            let p = particles[i];
+            p.update();
+            p.draw();
+            if (p.life <= 0) {
+                particles.splice(i, 1);
+            }
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    // UI Integration
+    const modeToggle = document.getElementById('shredder-mode-toggle');
+    const vBreakdown = document.getElementById('shredder-val-breakdown');
+    const vRadicals = document.getElementById('shredder-val-radicals');
+    const vSpectrum = document.getElementById('shredder-val-spectrum');
+    const vEffluent = document.getElementById('shredder-val-effluent');
+
+    if (modeToggle) {
+        modeToggle.addEventListener('click', () => {
+            isEcovry = !isEcovry;
+            
+            if (isEcovry) {
+                modeToggle.className = 'shredder-toggle-container state-b interactive';
+                
+                vBreakdown.innerText = '99.9%';
+                vBreakdown.className = 'val status-violet';
+                document.getElementById('shredder-card-breakdown').style.borderLeftColor = '#c084fc';
+                
+                vRadicals.innerText = 'HYPER-ACTIVE';
+                vRadicals.className = 'val status-safe';
+                document.getElementById('shredder-card-radicals').style.borderLeftColor = '#10b981';
+                
+                vSpectrum.innerText = 'UV + TiO2 Catalysis';
+                vSpectrum.className = 'val status-violet';
+                document.getElementById('shredder-card-spectrum').style.borderLeftColor = '#c084fc';
+                
+                vEffluent.innerText = 'H₂O + CO₂ (Pure)';
+                vEffluent.className = 'val status-safe';
+                document.getElementById('shredder-card-effluent').style.borderLeftColor = '#10b981';
+
+                molecules.forEach(m => {
+                    if (m.x > reactorBounds.x1 && m.x < reactorBounds.x2 && !m.shattered) {
+                        m.shatter();
+                    }
+                });
+
+            } else {
+                modeToggle.className = 'shredder-toggle-container state-a interactive';
+                
+                vBreakdown.innerText = '0% (Pass-through)';
+                vBreakdown.className = 'val status-danger';
+                document.getElementById('shredder-card-breakdown').style.borderLeftColor = '#ef4444';
+                
+                vRadicals.innerText = 'INACTIVE';
+                vRadicals.className = 'val status-off';
+                document.getElementById('shredder-card-radicals').style.borderLeftColor = 'var(--color-border)';
+                
+                vSpectrum.innerText = 'Standard 254nm';
+                vSpectrum.className = 'val text-blue';
+                document.getElementById('shredder-card-spectrum').style.borderLeftColor = '#3b82f6';
+                
+                vEffluent.innerText = 'Toxic Organics Remain';
+                vEffluent.className = 'val status-danger';
+                document.getElementById('shredder-card-effluent').style.borderLeftColor = '#ef4444';
+            }
+        });
+    }
+
+    animate();
 }

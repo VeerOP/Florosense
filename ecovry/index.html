@@ -24,7 +24,7 @@
     <nav class="navbar scrolled" id="main-navbar">
         <div class="nav-container">
             <a href="../index.html" class="nav-logo" id="nav-logo-link">
-                <img src="../assets/logo_florosense_light.png" alt="Florosense Logo" class="navbar-logo-img">
+                <img src="../assets/logo_ecovry.png" alt="ECOVRY Logo" class="navbar-logo-img">
             </a>
             
             <button class="mobile-toggle" aria-label="Toggle navigation" id="mobile-menu-toggle">
@@ -36,6 +36,7 @@
                     <li><a href="../index.html" class="nav-link">Home</a></li>
                     <li><a href="#capabilities" class="nav-link">Capabilities</a></li>
                     <li><a href="#simulator" class="nav-link">Physics Sim</a></li>
+                    <li><a href="#aop-shredder" class="nav-link">AOP Shredder</a></li>
                     <li><a href="#calculator" class="nav-link">Calculator</a></li>
                 </ul>
                 <button class="theme-switch" id="theme-switcher-btn" aria-label="Toggle light/dark theme">
@@ -289,21 +290,76 @@
                     </div>
                 </div>
                 
-                <div class="sim-right-text" style="padding-left: 20px;">
-                    <span class="hero-badge" style="margin-bottom:12px;">Fluid Dynamics</span>
-                    <h2 style="font-family: var(--font-heading); font-size: 34px; font-weight: 800; margin-bottom: 20px; line-height: 1.2;">Nanobubble Gas Solubility Engineering</h2>
-                    <p style="color: var(--color-text-muted); margin-bottom: 24px; font-size: 15px;">
-                        Standard MBBR systems generate bubble sizes exceeding 2mm, rising rapidly and losing 85% of active oxygen to the atmosphere. ECOVRY's Nanobubble generators inject gas cores under 200nm. Driven by Brownian motion, these bubbles remain suspended indefinitely, scaling oxygen transfer efficiency (OTE) up to 88% and cutting blower power requirements by 35%.
-                    </p>
-                    
-                    <div class="metrics-row">
-                        <div class="metric-box">
-                            <div id="ote-val" class="metric-val">88%</div>
-                            <div class="metric-lbl">Oxygen Transfer (OTE)</div>
+                <div class="sim-right-text">
+                    <div class="sim-info-card">
+                        <span class="hero-badge" style="margin-bottom:12px;">Fluid Dynamics</span>
+                        <h2 style="font-family: var(--font-heading); font-size: 34px; font-weight: 800; margin-bottom: 20px; line-height: 1.2;">Nanobubble Gas Solubility Engineering</h2>
+                        <p style="color: var(--color-text-muted); margin-bottom: 24px; font-size: 15px;">
+                            Standard MBBR systems generate bubble sizes exceeding 2mm, rising rapidly and losing 85% of active oxygen to the atmosphere. ECOVRY's Nanobubble generators inject gas cores under 200nm. Driven by Brownian motion, these bubbles remain suspended indefinitely, scaling oxygen transfer efficiency (OTE) up to 88% and cutting blower power requirements by 35%.
+                        </p>
+                        
+                        <div class="metrics-row">
+                            <div class="metric-box">
+                                <div id="ote-val" class="metric-val">88%</div>
+                                <div class="metric-lbl">Oxygen Transfer (OTE)</div>
+                            </div>
+                            <div class="metric-box">
+                                <div id="energy-save-val" class="metric-val">35%</div>
+                                <div class="metric-lbl">Blower Energy Saved</div>
+                            </div>
                         </div>
-                        <div class="metric-box">
-                            <div id="energy-save-val" class="metric-val">35%</div>
-                            <div class="metric-lbl">Blower Energy Saved</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Photocatalytic AOP Violet Shredder Section -->
+    <section class="shredder-section" id="aop-shredder">
+        <div class="container">
+            <div class="shredder-grid">
+                <!-- Left side: Interactive simulator container -->
+                <div class="shredder-left-interactive">
+                    <div class="shredder-card">
+                        <div class="shredder-canvas-container">
+                            <canvas id="shredder-canvas" class="shredder-canvas"></canvas>
+                        </div>
+                        <div class="shredder-toggle-panel">
+                            <div class="shredder-toggle-container state-a" id="shredder-mode-toggle">
+                                <div class="shredder-toggle-slider"></div>
+                                <div class="shredder-toggle-btn btn-a">Standard UV</div>
+                                <div class="shredder-toggle-btn btn-b">ECOVRY™ Shredder</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="shredder-right-content">
+                    <div class="shredder-info-card">
+                        <span class="hero-badge" style="margin-bottom:12px;">Photocatalysis</span>
+                        <h2 style="font-family: var(--font-heading); font-size: 34px; font-weight: 800; margin-bottom: 20px; line-height: 1.2;">Photocatalytic Advanced Oxidation (AOP)</h2>
+                        <p style="color: var(--color-text-muted); margin-bottom: 28px; font-size: 15px; line-height: 1.6;">
+                            Complex industrial molecules and recalcitrant organic carbon bonds are highly resistant to standard UV disinfection. By exciting a nanostructured titanium dioxide (\(TiO_2\)) catalyst bed with intense ultraviolet light, the ECOVRY™ Violet Shredder triggers photocatalysis, generating massive quantities of highly reactive Hydroxyl Radicals (\(OH^\bullet\)) that instantly shatter carbon bonds into pure water (\(H_2O\)) and carbon dioxide (\(CO_2\)).
+                        </p>
+                        
+                        <!-- Live Metrics Dashboard -->
+                        <div class="shredder-metrics-grid">
+                            <div class="shredder-metric-card" id="shredder-card-breakdown">
+                                <div class="shredder-metric-lbl">Complex Organics Destruction</div>
+                                <div class="shredder-metric-val status-danger" id="shredder-val-breakdown">0% (Pass-through)</div>
+                            </div>
+                            <div class="shredder-metric-card" id="shredder-card-radicals">
+                                <div class="shredder-metric-lbl">Hydroxyl Radical (\(OH^\bullet\)) Generation</div>
+                                <div class="shredder-metric-val status-off" id="shredder-val-radicals">INACTIVE</div>
+                            </div>
+                            <div class="shredder-metric-card" id="shredder-card-spectrum">
+                                <div class="shredder-metric-lbl">Photonic Interaction</div>
+                                <div class="shredder-metric-val text-blue" id="shredder-val-spectrum">Standard 254nm</div>
+                            </div>
+                            <div class="shredder-metric-card border-danger" id="shredder-card-effluent">
+                                <div class="shredder-metric-lbl">Effluent Toxicity Profile</div>
+                                <div class="shredder-metric-val status-danger" id="shredder-val-effluent">Toxic Organics Remain</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -336,6 +392,29 @@
                             <span id="lbl-opex" class="accent-text">₹ 8 / kWh</span>
                         </div>
                         <input type="range" id="calc-opex" min="5" max="15" step="0.5" value="8.0" class="range-slider">
+                    </div>
+                    
+                    <!-- Reference Metrics / Assumptions Card inside Inputs Panel to balance height -->
+                    <div class="calc-assumptions-card" style="margin-top: 40px; padding: 24px; background: var(--bg-white); border: 1px solid var(--color-border); border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.01);">
+                        <h4 style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px; color: var(--color-text); font-family: var(--font-heading);">Simulation Assumptions</h4>
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: 12px; line-height: 1.8; color: var(--color-text-muted);">
+                            <li style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid var(--color-border); padding-bottom: 8px;">
+                                <span>Tanker Water Purchase Rate:</span>
+                                <span style="font-weight: 600; color: var(--color-text);">₹110 / KL</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid var(--color-border); padding-bottom: 8px;">
+                                <span>Treatment Process Efficiency:</span>
+                                <span style="font-weight: 600; color: var(--color-text);">98.0% (Circularity)</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid var(--color-border); padding-bottom: 8px;">
+                                <span>Aeration Energy Offset:</span>
+                                <span style="font-weight: 600; color: var(--color-text);">35% Efficiency Gain</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between;">
+                                <span>Carbon Footprint Offset:</span>
+                                <span style="font-weight: 600; color: var(--color-text);">2.4 kg CO₂ / KL</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 
@@ -420,6 +499,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <!-- App Script -->

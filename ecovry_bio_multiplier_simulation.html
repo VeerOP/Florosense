@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECOVRY™ Bio-Multiplier: The Digestion Race</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Rajdhani:wght@500;700&display=swap');
+        
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #050810;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            user-select: none;
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .ui-layer {
+            position: absolute;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .interactive-element {
+            pointer-events: auto;
+        }
+
+        .counter-font {
+            font-family: 'Rajdhani', sans-serif;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .glass-panel {
+            background: rgba(11, 15, 25, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .toggle-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.5);
+            padding: 8px;
+            border-radius: 99px;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .toggle-option {
+            z-index: 2;
+            padding: 12px 24px;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+            width: 220px; /* Slightly wider for new name */
+            text-align: center;
+        }
+
+        .toggle-option.active-trad { color: #fff; text-shadow: 0 0 10px rgba(255, 65, 108, 0.5); }
+        .toggle-option.active-eco { color: #000; text-shadow: 0 0 10px rgba(0, 255, 170, 0.5); }
+        .toggle-option.inactive { color: #64748b; }
+
+        .toggle-slider {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 220px;
+            height: calc(100% - 16px);
+            border-radius: 99px;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), background 0.4s ease;
+            z-index: 1;
+        }
+
+        .slider-trad {
+            background: linear-gradient(135deg, #ff4b2b, #ff416c);
+            transform: translateX(0);
+            box-shadow: 0 0 20px rgba(255, 65, 108, 0.4);
+        }
+
+        .slider-eco {
+            background: linear-gradient(135deg, #00ffaa, #00cc88);
+            transform: translateX(220px);
+            box-shadow: 0 0 20px rgba(0, 255, 170, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <div class="ui-layer w-full top-0 left-0 p-8 flex flex-col items-center gap-6">
+        <div class="text-center">
+            <h1 class="text-4xl font-black tracking-tight text-white mb-2 uppercase">The Digestion Race</h1>
+            <p class="text-slate-400 text-sm max-w-2xl mx-auto">Toggle between standard biological treatment and our proprietary engineered culture. Observe how traditional cultures fail to break down complex recalcitrant solids.</p>
+        </div>
+        
+        <!-- Master State Toggle -->
+        <div class="interactive-element" onclick="toggleSystem()">
+            <div class="toggle-wrapper">
+                <div id="toggle-slider" class="toggle-slider slider-trad"></div>
+                <div id="text-trad" class="toggle-option active-trad">Standard (24h)</div>
+                <div id="text-eco" class="toggle-option inactive">Omni-Vorx™ (8h)</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui-layer w-full bottom-0 left-0 p-8 flex flex-col md:flex-row justify-center gap-8 items-end">
+        
+        <!-- Culture Dynamics Panel -->
+        <div class="glass-panel p-6 rounded-2xl flex-1 max-w-lg border-t-4" id="border-culture" style="border-color: #ff416c;">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center justify-between">
+                <span>Microbial Dynamics</span>
+                <span id="icon-container">
+                    <svg id="icon-culture" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff416c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path></svg>
+                </span>
+            </h3>
+            <div id="culture-desc" class="text-sm text-slate-300 min-h-[60px]">
+                <strong class="text-[#ff416c]">Sluggish Cow-Dung Culture.</strong> Floats aimlessly. Can only digest simple organics (green). Complex, recalcitrant pollutants (red) remain completely untouched.
+            </div>
+        </div>
+
+        <!-- HRT Panel -->
+        <div class="glass-panel p-6 rounded-2xl flex-1 max-w-xs border-t-4" id="border-hrt" style="border-color: #ff416c;">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Required HRT</h3>
+            <p class="text-[10px] text-slate-500 mb-2 uppercase">Hydraulic Retention Time</p>
+            <div class="counter-font text-5xl font-black text-white flex items-baseline">
+                <span id="counter-hrt">24.0</span><span class="text-xl font-medium text-slate-500 ml-2">Hrs</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let scene, camera, renderer, controls;
+        let tankGroup, waterMesh;
+        
+        let isEcovry = false;
+        
+        // Environment visual targets
+        let waterColor = new THREE.Color(0x3a2e1d); // Murky Brown Start
+        let targetWaterColor = new THREE.Color(0x3a2e1d);
+        
+        // Microbe Arrays & Settings
+        const NUM_CONTAMINANTS = 90;
+        const NUM_TRAD_MICROBES = 35;
+        const NUM_ECO_MICROBES = 180; // High-density swarm
+        
+        let contaminants = [];
+        let tradMicrobes = [];
+        let ecoMicrobes = [];
+
+        // UI DOM Elements
+        const toggleSlider = document.getElementById('toggle-slider');
+        const textTrad = document.getElementById('text-trad');
+        const textEco = document.getElementById('text-eco');
+        const counterHrt = document.getElementById('counter-hrt');
+        const borderCulture = document.getElementById('border-culture');
+        const borderHrt = document.getElementById('border-hrt');
+        const cultureDesc = document.getElementById('culture-desc');
+        const iconContainer = document.getElementById('icon-container');
+
+        // Tank Dimensions
+        const TANK_W = 6;
+        const TANK_H = 5;
+        const TANK_D = 6;
+        const BOUNDS = 2.7; // Internal boundary for movement
+
+        function init() {
+            const container = document.getElementById('canvas-container');
+            
+            // Scene Setup
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x050810, 0.015);
+
+            // Camera Setup
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(12, 10, 16);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.2;
+            container.appendChild(renderer.domElement);
+
+            // Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxPolarAngle = Math.PI / 2 - 0.1;
+            controls.target.set(0, 2, 0);
+            controls.autoRotate = true;
+            controls.autoRotateSpeed = 0.5;
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+            dirLight.position.set(10, 20, 10);
+            scene.add(dirLight);
+
+            const backLight = new THREE.PointLight(0xffffff, 0.8, 50);
+            backLight.position.set(-10, 5, -10);
+            scene.add(backLight);
+
+            // Internal Tank Light (Will change color dynamically)
+            scene.internalLight = new THREE.PointLight(0xff416c, 1.5, 10);
+            scene.internalLight.position.set(0, 2.5, 0);
+            scene.add(scene.internalLight);
+
+            createEnvironment();
+            createTank();
+            createBiologicalEntities();
+            
+            window.addEventListener('resize', onWindowResize);
+            animate();
+        }
+
+        function createEnvironment() {
+            const gridHelper = new THREE.GridHelper(60, 60, 0x1e293b, 0x0f172a);
+            gridHelper.position.y = -0.01;
+            scene.add(gridHelper);
+
+            const planeGeo = new THREE.PlaneGeometry(100, 100);
+            const planeMat = new THREE.MeshStandardMaterial({ 
+                color: 0x03050a, 
+                roughness: 0.9,
+                metalness: 0.1
+            });
+            const groundPlane = new THREE.Mesh(planeGeo, planeMat);
+            groundPlane.rotation.x = -Math.PI / 2;
+            scene.add(groundPlane);
+        }
+
+        function createTank() {
+            tankGroup = new THREE.Group();
+            
+            // Premium Glass Material
+            const glassMat = new THREE.MeshPhysicalMaterial({
+                color: 0xffffff,
+                metalness: 0.1,
+                roughness: 0.05,
+                transmission: 0.95, // Glass transparency
+                thickness: 0.5,
+                transparent: true,
+                side: THREE.DoubleSide,
+                clearcoat: 1.0,
+                clearcoatRoughness: 0.1
+            });
+
+            // Outer Shell - Square Box
+            const glassGeo = new THREE.BoxGeometry(TANK_W, TANK_H, TANK_D);
+            const glassShell = new THREE.Mesh(glassGeo, glassMat);
+            glassShell.position.y = TANK_H/2;
+            tankGroup.add(glassShell);
+
+            // Top rim and bottom base
+            const rimMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8, roughness: 0.2 });
+            const baseMesh = new THREE.Mesh(new THREE.BoxGeometry(TANK_W + 0.2, 0.2, TANK_D + 0.2), rimMat);
+            baseMesh.position.y = 0.1;
+            tankGroup.add(baseMesh);
+            
+            const topMesh = new THREE.Mesh(new THREE.BoxGeometry(TANK_W + 0.2, 0.2, TANK_D + 0.2), rimMat);
+            topMesh.position.y = TANK_H;
+            tankGroup.add(topMesh);
+
+            // Water Volume - Square Box
+            const waterGeo = new THREE.BoxGeometry(TANK_W - 0.1, TANK_H - 0.2, TANK_D - 0.1);
+            const waterMat = new THREE.MeshPhysicalMaterial({
+                color: waterColor,
+                transmission: 0.7,
+                opacity: 0.85,
+                transparent: true,
+                roughness: 0.2,
+                depthWrite: false
+            });
+            waterMesh = new THREE.Mesh(waterGeo, waterMat);
+            waterMesh.position.y = TANK_H/2;
+            tankGroup.add(waterMesh);
+
+            scene.add(tankGroup);
+        }
+
+        function createBiologicalEntities() {
+            // 1. Contaminants (BOD/COD) - Two distinct types
+            
+            // Type A: Simple Organics (Green, roundish) - Digestible by all
+            const contSimpleGeo = new THREE.DodecahedronGeometry(0.12, 1);
+            const contSimpleMat = new THREE.MeshStandardMaterial({ 
+                color: 0x88cc00, 
+                emissive: 0x335500,
+                roughness: 0.8 
+            });
+
+            // Type B: Complex Solids (Red, jagged) - Digestible ONLY by Omni-Vorx
+            const contComplexGeo = new THREE.IcosahedronGeometry(0.12, 0); 
+            const contComplexMat = new THREE.MeshStandardMaterial({ 
+                color: 0xff0033, 
+                emissive: 0xaa0000,
+                roughness: 0.8 
+            });
+
+            for(let i=0; i<NUM_CONTAMINANTS; i++) {
+                let isSimple = i % 2 === 0;
+                let mesh = new THREE.Mesh(
+                    isSimple ? contSimpleGeo : contComplexGeo, 
+                    isSimple ? contSimpleMat : contComplexMat
+                );
+                
+                mesh.position.set(
+                    (Math.random() - 0.5) * (BOUNDS * 2), 
+                    Math.random() * (TANK_H - 0.4) + 0.2, 
+                    (Math.random() - 0.5) * (BOUNDS * 2)
+                );
+                
+                tankGroup.add(mesh);
+                contaminants.push({ 
+                    mesh: mesh, 
+                    active: true, 
+                    type: isSimple ? 'simple' : 'complex',
+                    baseY: mesh.position.y,
+                    offset: Math.random() * 10 
+                });
+            }
+
+            // 2. Traditional Microbes - Sluggish, muddy, blobby
+            const tradGeo = new THREE.DodecahedronGeometry(0.22, 1);
+            const tradMat = new THREE.MeshStandardMaterial({ 
+                color: 0x4a3c31, 
+                roughness: 1.0,
+                bumpScale: 0.05
+            });
+
+            for(let i=0; i<NUM_TRAD_MICROBES; i++) {
+                let mesh = new THREE.Mesh(tradGeo, tradMat);
+                mesh.position.set(
+                    (Math.random() - 0.5) * (BOUNDS * 2), 
+                    Math.random() * (TANK_H - 0.4) + 0.2, 
+                    (Math.random() - 0.5) * (BOUNDS * 2)
+                );
+                
+                tankGroup.add(mesh);
+                // Active by default
+                tradMicrobes.push({ mesh: mesh, velocity: new THREE.Vector3(), target: null });
+            }
+
+            // 3. Omni-Vorx Microbes - Fast, sleek, glowing nanobots
+            const ecoGeo = new THREE.CapsuleGeometry(0.05, 0.18, 4, 8);
+            ecoGeo.rotateX(Math.PI / 2); 
+            
+            const ecoMat = new THREE.MeshPhysicalMaterial({ 
+                color: 0x00ffaa, 
+                emissive: 0x00ffaa, 
+                emissiveIntensity: 1.8,
+                roughness: 0.1,
+                clearcoat: 1.0
+            });
+
+            for(let i=0; i<NUM_ECO_MICROBES; i++) {
+                let mesh = new THREE.Mesh(ecoGeo, ecoMat);
+                mesh.position.set(
+                    (Math.random() - 0.5) * (BOUNDS * 2), 
+                    Math.random() * (TANK_H - 0.4) + 0.2, 
+                    (Math.random() - 0.5) * (BOUNDS * 2)
+                );
+                
+                mesh.visible = false; // Hidden by default
+                tankGroup.add(mesh);
+                ecoMicrobes.push({ 
+                    mesh: mesh, 
+                    velocity: new THREE.Vector3(), 
+                    target: null 
+                });
+            }
+        }
+
+        function toggleSystem() {
+            isEcovry = !isEcovry;
+
+            // 1. Update UI Toggle Styling
+            if(isEcovry) {
+                toggleSlider.className = 'toggle-slider slider-eco';
+                textTrad.className = 'toggle-option inactive';
+                textEco.className = 'toggle-option active-eco';
+                targetWaterColor.setHex(0x0a1a2a); // Transition to clearer/bluish water
+                scene.internalLight.color.setHex(0x00ffaa);
+            } else {
+                toggleSlider.className = 'toggle-slider slider-trad';
+                textTrad.className = 'toggle-option active-trad';
+                textEco.className = 'toggle-option inactive';
+                targetWaterColor.setHex(0x3a2e1d); // Transition back to murky brown
+                scene.internalLight.color.setHex(0xff416c);
+            }
+
+            // 2. Toggle Microbe Visibility & Reset Behaviors
+            tradMicrobes.forEach(m => {
+                m.mesh.visible = !isEcovry;
+                m.target = null;
+            });
+            
+            ecoMicrobes.forEach(m => {
+                m.mesh.visible = isEcovry;
+                m.target = null;
+                if(isEcovry) {
+                    // Give them an initial aggressive burst
+                    m.velocity.set(
+                        (Math.random() - 0.5) * 0.5,
+                        (Math.random() - 0.5) * 0.5,
+                        (Math.random() - 0.5) * 0.5
+                    );
+                }
+            });
+
+            // 3. Reset Contaminants (Inject fresh batch)
+            contaminants.forEach(c => {
+                c.active = true;
+                c.mesh.visible = true;
+                c.mesh.scale.set(1,1,1);
+                // Scatter them randomly again to show immediate effect
+                c.mesh.position.set(
+                    (Math.random() - 0.5) * (BOUNDS * 2), 
+                    Math.random() * (TANK_H - 0.4) + 0.2, 
+                    (Math.random() - 0.5) * (BOUNDS * 2)
+                );
+                c.baseY = c.mesh.position.y;
+            });
+
+            // 4. Animate UI Counters
+            animateCounter(counterHrt, parseFloat(counterHrt.innerText), isEcovry ? 8.0 : 24.0, 1);
+
+            // 5. Update Dashboard Styling
+            updateDashboardCards();
+        }
+
+        function updateDashboardCards() {
+            if(isEcovry) {
+                borderCulture.style.borderColor = '#00ffaa';
+                borderHrt.style.borderColor = '#00ffaa';
+                
+                iconContainer.innerHTML = `<svg id="icon-culture" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00ffaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`;
+                cultureDesc.innerHTML = `<strong class="text-[#00ffaa]">Omni-Vorx™ Bio-Catalyst.</strong> Aggressive, hyper-active swarm. Rapidly hunts and devours BOTH simple (green) and complex recalcitrant pollutants (red).`;
+            } else {
+                borderCulture.style.borderColor = '#ff416c';
+                borderHrt.style.borderColor = '#ff416c';
+                
+                iconContainer.innerHTML = `<svg id="icon-culture" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff416c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path></svg>`;
+                cultureDesc.innerHTML = `<strong class="text-[#ff416c]">Sluggish Cow-Dung Culture.</strong> Floats aimlessly. Can only digest simple organics (green). Complex, recalcitrant pollutants (red) remain completely untouched.`;
+            }
+        }
+
+        function animateCounter(element, start, end, decimals) {
+            let current = start;
+            const duration = 1000;
+            const steps = 30;
+            const stepTime = duration / steps;
+            const increment = (end - start) / steps;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                element.innerText = current.toFixed(decimals);
+            }, stepTime);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const time = Date.now() * 0.001;
+
+            // Smoothly transition water color based on state
+            waterColor.lerp(targetWaterColor, 0.02);
+            waterMesh.material.color.copy(waterColor);
+
+            if(!isEcovry) {
+                // BEHAVIOR A: TRADITIONAL MICROBES
+                // Sluggish, random wandering. They only hunt simple (green) organics.
+                tradMicrobes.forEach((m, idx) => {
+                    if(!m.target || !m.target.active) {
+                        let actives = contaminants.filter(c => c.active && c.type === 'simple');
+                        if(actives.length > 0 && Math.random() > 0.8) { // Slow to acquire target
+                            m.target = actives[Math.floor(Math.random() * actives.length)];
+                        } else {
+                            m.target = null;
+                        }
+                    }
+
+                    if(m.target) {
+                        let dir = new THREE.Vector3().subVectors(m.target.mesh.position, m.mesh.position).normalize();
+                        m.velocity.lerp(dir.multiplyScalar(0.012), 0.02); // Very slow steering
+                        
+                        // Slow eating
+                        if(m.mesh.position.distanceTo(m.target.mesh.position) < 0.35) {
+                            m.target.active = false;
+                            m.target.mesh.visible = false;
+                            m.target = null;
+                        }
+                    } else {
+                        // Drift aimlessly
+                        m.velocity.lerp(new THREE.Vector3(
+                            Math.sin(time + idx) * 0.01,
+                            Math.cos(time * 0.8 + idx) * 0.01,
+                            Math.sin(time * 1.2 + idx) * 0.01
+                        ), 0.05);
+                    }
+
+                    m.mesh.position.add(m.velocity);
+                    
+                    // Keep inside square boundaries
+                    if(Math.abs(m.mesh.position.x) > BOUNDS) { m.mesh.position.x = Math.sign(m.mesh.position.x) * BOUNDS; m.velocity.x *= -0.5; }
+                    if(Math.abs(m.mesh.position.z) > BOUNDS) { m.mesh.position.z = Math.sign(m.mesh.position.z) * BOUNDS; m.velocity.z *= -0.5; }
+                    if(m.mesh.position.y > TANK_H - 0.2 || m.mesh.position.y < 0.2) { 
+                        m.mesh.position.y = Math.max(0.2, Math.min(TANK_H - 0.2, m.mesh.position.y)); 
+                        m.velocity.y *= -0.5;
+                    }
+                    
+                    m.mesh.rotation.x += 0.01;
+                    m.mesh.rotation.y += 0.02;
+                });
+            } else {
+                // BEHAVIOR B: OMNI-VORX CULTURE
+                // Highly aggressive, fast, targeted hunting. Devours ALL contaminants.
+                ecoMicrobes.forEach((m, idx) => {
+                    if(!m.target || !m.target.active) {
+                        let actives = contaminants.filter(c => c.active);
+                        if(actives.length > 0) {
+                            // Find closest or random
+                            m.target = actives[Math.floor(Math.random() * actives.length)];
+                        } else {
+                            m.target = null;
+                        }
+                    }
+
+                    if(m.target) {
+                        let dir = new THREE.Vector3().subVectors(m.target.mesh.position, m.mesh.position).normalize();
+                        m.velocity.lerp(dir.multiplyScalar(0.18), 0.15); // Fast, aggressive steering
+                        
+                        // Fast Eat logic
+                        if(m.mesh.position.distanceTo(m.target.mesh.position) < 0.3) {
+                            m.target.active = false;
+                            m.target.mesh.visible = false;
+                            m.target = null;
+                        }
+                    } else {
+                        // Aggressive Swarm Idle - creating a vortex effect
+                        let vortexDir = new THREE.Vector3(
+                            -m.mesh.position.z,
+                            Math.sin(time * 5 + idx) * 0.5,
+                            m.mesh.position.x
+                        ).normalize();
+                        
+                        // Pull towards center
+                        vortexDir.add(new THREE.Vector3(-m.mesh.position.x, 0, -m.mesh.position.z).multiplyScalar(0.5));
+                        
+                        m.velocity.lerp(vortexDir.multiplyScalar(0.08), 0.1);
+                    }
+
+                    m.mesh.position.add(m.velocity);
+                    
+                    // Point capsule in direction of travel
+                    if(m.velocity.lengthSq() > 0.001) {
+                        let lookPos = m.mesh.position.clone().add(m.velocity);
+                        m.mesh.lookAt(lookPos);
+                    }
+                    
+                    // Bounce strictly off boundaries
+                    if(Math.abs(m.mesh.position.x) > BOUNDS) { m.velocity.x *= -1; m.mesh.position.x += m.velocity.x; }
+                    if(Math.abs(m.mesh.position.z) > BOUNDS) { m.velocity.z *= -1; m.mesh.position.z += m.velocity.z; }
+                    if(m.mesh.position.y > TANK_H - 0.2 || m.mesh.position.y < 0.2) { 
+                        m.velocity.y *= -1; 
+                        m.mesh.position.y = Math.max(0.2, Math.min(TANK_H - 0.2, m.mesh.position.y));
+                    }
+                });
+            }
+
+            // Animate surviving contaminants
+            contaminants.forEach(c => {
+                if(c.active) {
+                    c.mesh.position.y = c.baseY + Math.sin(time*2 + c.offset) * 0.1;
+                    c.mesh.rotation.x += 0.02;
+                    c.mesh.rotation.y += 0.03;
+                }
+            });
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // Initialize App
+        window.onload = init;
+    </script>
+</body>
+</html>

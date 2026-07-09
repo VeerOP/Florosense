@@ -407,12 +407,20 @@ body[data-theme="dark"] .p-metric-card {
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
     gap: 48px;
-    align-items: flex-start;
+    align-items: stretch;
+}
+
+.sim-right-text {
+    padding-left: 0;
 }
 
 @media (max-width: 992px) {
     .sim-grid {
         grid-template-columns: 1fr;
+    }
+    .sim-right-text {
+        padding-left: 0;
+        margin-top: 32px;
     }
 }
 
@@ -514,9 +522,12 @@ body[data-theme="dark"] .p-metric-card {
     margin-top: 4px;
 }
 
-/* Calculator CSS */
+/* Calculator CSS - Alternating section background and borders */
 .calc-section {
     padding: 100px 0;
+    background: var(--bg-light);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .calc-grid {
@@ -678,3 +689,239 @@ body[data-theme="dark"] .p-metric-card {
     transform: translateY(-3px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
+
+/* =========================================================================
+   AOP VIOLET SHREDDER SIMULATOR STYLING
+   ========================================================================= */
+.shredder-section {
+    padding: 100px 0;
+    background: var(--bg-white); /* Alternating to white */
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.shredder-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 48px;
+    align-items: stretch;
+}
+
+.shredder-right-content {
+    padding-left: 0;
+}
+
+@media (max-width: 992px) {
+    .shredder-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+    .shredder-right-content {
+        padding-left: 0 !important;
+        margin-top: 32px;
+    }
+}
+
+.shredder-card {
+    background: var(--bg-white);
+    border: 1px solid var(--color-border);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+}
+
+body[data-theme="dark"] .shredder-card {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.shredder-canvas-container {
+    height: 380px;
+    background: #05050A; /* Enforce dark space black inside canvas card */
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.shredder-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.shredder-toggle-panel {
+    display: flex;
+    justify-content: center;
+}
+
+.shredder-toggle-container {
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 99px;
+    padding: 6px;
+    display: flex;
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.shredder-toggle-slider {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: calc(50% - 6px);
+    height: calc(100% - 12px);
+    border-radius: 99px;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), background 0.4s, box-shadow 0.4s;
+    z-index: 1;
+}
+
+.shredder-toggle-btn {
+    flex: 1;
+    text-align: center;
+    padding: 12px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    z-index: 2;
+    transition: color 0.3s, text-shadow 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    white-space: nowrap;
+}
+
+/* Toggle Switch States */
+.shredder-toggle-container.state-a .shredder-toggle-slider {
+    background: #1e3a8a;
+    transform: translateX(0);
+    box-shadow: 0 0 12px rgba(30, 58, 138, 0.5);
+}
+
+.shredder-toggle-container.state-b .shredder-toggle-slider {
+    background: #8b5cf6;
+    transform: translateX(100%);
+    box-shadow: 0 0 18px rgba(139, 92, 246, 0.6);
+}
+
+.shredder-toggle-container.state-a .btn-a {
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.shredder-toggle-container.state-a .btn-b {
+    color: #4b5563;
+}
+
+.shredder-toggle-container.state-b .btn-a {
+    color: #4b5563;
+}
+
+.shredder-toggle-container.state-b .btn-b {
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+/* Metrics Dashboard */
+.shredder-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+}
+
+@media (max-width: 576px) {
+    .shredder-metrics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.shredder-metric-card {
+    background: var(--bg-light);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sim-info-card, .shredder-info-card {
+    background: var(--bg-white);
+    border: 1px solid var(--color-border);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+body[data-theme="dark"] .sim-info-card,
+body[data-theme="dark"] .shredder-info-card {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.shredder-metric-card:hover {
+    transform: scale(1.02);
+}
+
+.shredder-metric-lbl {
+    font-size: 10px;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+.shredder-metric-val {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* Toxin status classes */
+.shredder-metric-val.status-danger {
+    color: #ef4444;
+    text-shadow: 0 0 6px rgba(239, 68, 68, 0.2);
+}
+
+.shredder-metric-val.status-safe {
+    color: #10b981;
+    text-shadow: 0 0 6px rgba(16, 185, 129, 0.2);
+}
+
+.shredder-metric-val.status-violet {
+    color: #c084fc;
+    text-shadow: 0 0 10px rgba(192, 132, 252, 0.4);
+}
+
+.shredder-metric-val.status-off {
+    color: var(--color-text-muted);
+}
+
+.shredder-metric-val.text-blue {
+    color: #3b82f6;
+}
+
+.shredder-metric-card.border-danger {
+    border-top: 3px solid #ef4444;
+}
+
+.shredder-metric-card.border-safe {
+    border-top: 3px solid #10b981;
+}
+

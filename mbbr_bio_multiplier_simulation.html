@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBBR Bio-Multiplier Lens</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Rajdhani:wght@500;700&display=swap');
+        
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #0b0f19; /* Corporate Dark Theme */
+            color: white;
+            font-family: 'Inter', sans-serif;
+            user-select: none;
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .ui-layer {
+            position: absolute;
+            z-index: 10;
+            pointer-events: none; /* Let clicks pass through to 3D canvas */
+        }
+
+        .interactive-element {
+            pointer-events: auto;
+        }
+
+        .counter-font {
+            font-family: 'Rajdhani', sans-serif;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Tooltip Styles */
+        #tooltip {
+            position: absolute;
+            background: rgba(11, 15, 25, 0.95);
+            border: 1px solid #ff6b00; /* Orange border */
+            box-shadow: 0 4px 20px rgba(255, 107, 0, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            max-width: 250px;
+            transform: translate(-50%, -120%);
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+        }
+
+        #tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+            width: 12px;
+            height: 12px;
+            background: rgba(11, 15, 25, 0.95);
+            border-right: 1px solid #ff6b00;
+            border-bottom: 1px solid #ff6b00;
+        }
+
+        /* Custom Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #ff6b00;
+            cursor: pointer;
+            margin-top: -10px;
+            box-shadow: 0 0 10px rgba(255, 107, 0, 0.5);
+            transition: transform 0.1s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #334155;
+            border-radius: 2px;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+        
+        .glowing-text {
+            text-shadow: 0 0 10px rgba(0, 255, 170, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 3D Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- Header -->
+    <div class="ui-layer w-full top-0 left-0 p-6 flex justify-between items-start">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight text-white mb-1">MBBR Bio-Multiplier Lens</h1>
+            <p class="text-slate-400 text-sm max-w-md">Demonstrating active surface area and biological colonization density in identical volumes.</p>
+        </div>
+        <div class="interactive-element">
+            <button id="btn-volume" class="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-sm transition-colors text-slate-200">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                Toggle Volume Match (1m³)
+            </button>
+        </div>
+    </div>
+
+    <!-- Data Counters -->
+    <div class="ui-layer w-full top-1/2 left-0 transform -translate-y-1/2 flex justify-between px-16 pointer-events-none">
+        <!-- Standard Data -->
+        <div class="text-left w-64 bg-slate-900/50 p-4 rounded-xl border border-slate-700 backdrop-blur-sm">
+            <h2 class="text-slate-300 text-xs uppercase tracking-widest mb-1">Standard Media</h2>
+            <div class="counter-font text-4xl font-bold text-slate-100 flex items-baseline gap-1">
+                <span id="counter-std">0</span>
+                <span class="text-lg font-normal text-slate-400">m²/m³</span>
+            </div>
+            <p class="text-[10px] text-slate-500 mt-2">Active Surface Area</p>
+        </div>
+
+        <!-- ECOVRY Data -->
+        <div class="text-right w-64 bg-slate-900/50 p-4 rounded-xl border border-[#ff6b00]/30 backdrop-blur-sm">
+            <h2 class="text-[#ff6b00] text-xs uppercase tracking-widest mb-1">ECOVRY™ Engineered</h2>
+            <div class="counter-font text-4xl font-bold text-[#00ffaa] glowing-text flex items-baseline justify-end gap-1">
+                <span id="counter-eco">0</span>
+                <span class="text-lg font-normal text-[#00ffaa]/70">m²/m³</span>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-2">Active Surface Area</p>
+        </div>
+    </div>
+
+    <!-- Interactive Bottom Bar -->
+    <div class="ui-layer w-full bottom-0 left-0 p-8 flex flex-col items-center justify-center bg-gradient-to-t from-[#050810] to-transparent pt-24">
+        <div class="w-full max-w-2xl interactive-element bg-slate-900/80 p-6 rounded-2xl border border-slate-700/50 backdrop-blur-md">
+            <div class="flex justify-between items-end mb-4">
+                <div>
+                    <h3 class="text-sm font-semibold text-white">Media Density & Colonization</h3>
+                    <p class="text-xs text-slate-400 mt-1">Drag to multiply internal geometry and attract microbe swarm.</p>
+                </div>
+                <div class="text-xs font-bold text-[#ff6b00]" id="density-label">Low Density</div>
+            </div>
+            
+            <div class="relative w-full">
+                <input type="range" id="density-slider" min="0" max="100" value="0" class="w-full">
+            </div>
+            
+            <div class="flex justify-between text-[10px] text-slate-500 font-medium uppercase tracking-wider mt-3">
+                <span>Standard Flow</span>
+                <span>Max Capacity (ECOVRY)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tooltip -->
+    <div id="tooltip" class="ui-layer">
+        <h4 class="text-[#ff6b00] font-bold text-sm mb-2">The ECOVRY Advantage</h4>
+        <p class="text-slate-200 text-xs leading-relaxed">4x the bacterial workforce in the exact same tank volume. Treat more capacity, shrink your civil footprint, and accelerate project handover.</p>
+    </div>
+
+    <script>
+        // Global Variables
+        let scene, camera, renderer, controls;
+        let standardGroup, ecovryGroup, ecovryInnerGroup;
+        let boxHelperStd, boxHelperEco;
+        let particleSystem;
+        let raycaster, mouse;
+        
+        // Data & State
+        const TOTAL_PARTICLES = 2000;
+        const STD_MAX_AREA = 300;
+        const ECO_MAX_AREA = 1200;
+        
+        let currentDensity = 0; // 0 to 1
+        let showVolume = false;
+        
+        // Arrays to hold particle target positions
+        let stdTargets = [];
+        let ecoTargets = [];
+        let particlesData = []; // State of each particle
+
+        // DOM Elements
+        const slider = document.getElementById('density-slider');
+        const densityLabel = document.getElementById('density-label');
+        const counterStd = document.getElementById('counter-std');
+        const counterEco = document.getElementById('counter-eco');
+        const btnVolume = document.getElementById('btn-volume');
+        const tooltip = document.getElementById('tooltip');
+
+        function init() {
+            // 1. Scene Setup
+            const container = document.getElementById('canvas-container');
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x0b0f19, 0.02);
+
+            // 2. Camera
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.set(0, 4, 15);
+
+            // 3. Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            container.appendChild(renderer.domElement);
+
+            // 4. Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxDistance = 25;
+            controls.minDistance = 5;
+            controls.target.set(0, 0, 0);
+
+            // 5. Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(5, 10, 5);
+            scene.add(dirLight);
+
+            const blueLight = new THREE.PointLight(0x00aaff, 1, 20);
+            blueLight.position.set(-5, -2, 5);
+            scene.add(blueLight);
+
+            // Raycaster for Hover
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+
+            createMediaModels();
+            createParticleSystem();
+
+            // Event Listeners
+            window.addEventListener('resize', onWindowResize);
+            window.addEventListener('mousemove', onMouseMove);
+            
+            slider.addEventListener('input', (e) => {
+                currentDensity = e.target.value / 100;
+                updateSimulation();
+            });
+
+            btnVolume.addEventListener('click', () => {
+                showVolume = !showVolume;
+                boxHelperStd.visible = showVolume;
+                boxHelperEco.visible = showVolume;
+                btnVolume.classList.toggle('bg-[#ff6b00]/20', showVolume);
+                btnVolume.classList.toggle('border-[#ff6b00]', showVolume);
+                btnVolume.classList.toggle('text-[#ff6b00]', showVolume);
+            });
+
+            // Start Loop
+            updateSimulation(); // Init state
+            animate();
+        }
+
+        // --- Model Generation ---
+        function createMediaModels() {
+            // Materials
+            const stdMaterial = new THREE.MeshStandardMaterial({
+                color: 0x94a3b8, // Slate 400
+                roughness: 0.7,
+                metalness: 0.1,
+                side: THREE.DoubleSide
+            });
+
+            const ecoMaterial = new THREE.MeshStandardMaterial({
+                color: 0xff6b00, // Corporate Orange
+                roughness: 0.6,
+                metalness: 0.2,
+                side: THREE.DoubleSide
+            });
+
+            // Shared Dimensions
+            const radius = 2;
+            const height = 2;
+            const tubeThickness = 0.2;
+            const spokeThickness = 0.1;
+
+            // --- Model A: Standard Media (Left) ---
+            standardGroup = new THREE.Group();
+            standardGroup.position.x = -4;
+
+            // Outer Tube
+            const stdTubeGeom = new THREE.CylinderGeometry(radius, radius, height, 32, 1, true);
+            const stdTube = new THREE.Mesh(stdTubeGeom, stdMaterial);
+            standardGroup.add(stdTube);
+
+            // Simple Internal Cross (4 spokes)
+            const crossGeom = new THREE.PlaneGeometry(radius * 2, height);
+            const cross1 = new THREE.Mesh(crossGeom, stdMaterial);
+            cross1.rotation.y = Math.PI / 4;
+            const cross2 = new THREE.Mesh(crossGeom, stdMaterial);
+            cross2.rotation.y = -Math.PI / 4;
+            standardGroup.add(cross1, cross2);
+
+            scene.add(standardGroup);
+
+            // --- Model B: ECOVRY Media (Right) ---
+            ecovryGroup = new THREE.Group();
+            ecovryGroup.position.x = 4;
+            
+            // Outer Tube (Always visible)
+            const ecoTubeGeom = new THREE.CylinderGeometry(radius, radius, height, 32, 1, true);
+            const ecoTube = new THREE.Mesh(ecoTubeGeom, ecoMaterial);
+            ecovryGroup.add(ecoTube);
+
+            // Inner Dynamic Group (Controlled by slider)
+            ecovryInnerGroup = new THREE.Group();
+            
+            // Generate Honeycomb/Fins
+            const numRings = 3;
+            const numSpokes = 24;
+
+            // Inner Rings
+            for(let i=1; i<=numRings; i++) {
+                let r = (radius / (numRings + 1)) * i;
+                let ringGeom = new THREE.CylinderGeometry(r, r, height, 32, 1, true);
+                let ring = new THREE.Mesh(ringGeom, ecoMaterial);
+                ecovryInnerGroup.add(ring);
+            }
+
+            // Radial Spokes
+            for(let i=0; i<numSpokes; i++) {
+                let angle = (i / numSpokes) * Math.PI * 2;
+                let spokeGeom = new THREE.PlaneGeometry(radius, height);
+                // Translate plane so it starts from center
+                spokeGeom.translate(radius/2, 0, 0);
+                let spoke = new THREE.Mesh(spokeGeom, ecoMaterial);
+                spoke.rotation.y = angle;
+                ecovryInnerGroup.add(spoke);
+            }
+
+            ecovryGroup.add(ecovryInnerGroup);
+            
+            // Invisible hit box for raycasting (hover tooltip)
+            const hitBoxGeom = new THREE.CylinderGeometry(radius+0.2, radius+0.2, height+0.2, 16);
+            const hitBoxMat = new THREE.MeshBasicMaterial({visible: false});
+            const hitBox = new THREE.Mesh(hitBoxGeom, hitBoxMat);
+            hitBox.name = "ecovryHitBox";
+            ecovryGroup.add(hitBox);
+
+            scene.add(ecovryGroup);
+
+            // --- Bounding Boxes (Phase 1 Requirement) ---
+            const boxGeom = new THREE.BoxGeometry(radius*2.1, height*1.1, radius*2.1);
+            const boxMat = new THREE.MeshBasicMaterial({color: 0x00ffaa, wireframe: true, transparent: true, opacity: 0.3});
+            
+            boxHelperStd = new THREE.Mesh(boxGeom, boxMat);
+            standardGroup.add(boxHelperStd);
+            boxHelperStd.visible = false;
+
+            boxHelperEco = new THREE.Mesh(boxGeom, boxMat);
+            ecovryGroup.add(boxHelperEco);
+            boxHelperEco.visible = false;
+
+            // Generate Target points for particles based on geometries
+            generateTargetPoints();
+        }
+
+        function generateTargetPoints() {
+            // Helper to get random point on a cylinder
+            const getCylPoint = (r, h) => {
+                const theta = Math.random() * Math.PI * 2;
+                const y = (Math.random() - 0.5) * h;
+                return new THREE.Vector3(r * Math.cos(theta), y, r * Math.sin(theta));
+            };
+
+            // Standard Targets (~300 capacity)
+            for(let i=0; i<400; i++) {
+                if(i < 200) {
+                    stdTargets.push(getCylPoint(2, 2)); // Outer shell
+                } else {
+                    // Spokes (rough approx)
+                    let p = new THREE.Vector3((Math.random()-0.5)*4, (Math.random()-0.5)*2, 0);
+                    let angle = Math.random() > 0.5 ? Math.PI/4 : -Math.PI/4;
+                    p.applyAxisAngle(new THREE.Vector3(0,1,0), angle);
+                    stdTargets.push(p);
+                }
+            }
+
+            // ECOVRY Targets (~1200 capacity)
+            for(let i=0; i<1600; i++) {
+                // Distribute heavily inside
+                let r = Math.random() * 2; 
+                stdTargets.push(getCylPoint(r, 2)); // Just random cylindrical distribution for dense honeycomb
+                ecoTargets.push(getCylPoint(r, 2));
+            }
+        }
+
+        function createParticleSystem() {
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(TOTAL_PARTICLES * 3);
+            
+            for(let i = 0; i < TOTAL_PARTICLES; i++) {
+                // Start scattered far above/behind
+                positions[i*3] = (Math.random() - 0.5) * 30;
+                positions[i*3+1] = Math.random() * 20 + 10;
+                positions[i*3+2] = (Math.random() - 0.5) * 30;
+
+                particlesData.push({
+                    id: i,
+                    startX: positions[i*3],
+                    startY: positions[i*3+1],
+                    startZ: positions[i*3+2],
+                    targetIndex: -1, // -1 means wandering
+                    isECOVRY: false, // which model it belongs to
+                    speed: 0.02 + Math.random() * 0.04,
+                    attached: false
+                });
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+            // Custom shader material for glowing dots
+            const material = new THREE.PointsMaterial({
+                color: 0x00ffaa, // Neon Green/Blue
+                size: 0.15,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+
+            particleSystem = new THREE.Points(geometry, material);
+            scene.add(particleSystem);
+        }
+
+        function updateSimulation() {
+            // Update UI Labels
+            if(currentDensity < 0.3) densityLabel.innerText = "Standard Density";
+            else if(currentDensity < 0.8) densityLabel.innerText = "Engineered Fins";
+            else densityLabel.innerText = "Max Honeycomb (ECOVRY)";
+
+            // 1. Update 3D Geometry of ECOVRY model
+            // Scale inner complexity based on slider (Y scale stays 1, XZ scale changes)
+            ecovryInnerGroup.scale.set(currentDensity, 1, currentDensity);
+            // Opacity effect for appearing walls
+            ecovryInnerGroup.children.forEach(child => {
+                if(child.material) {
+                    child.material.transparent = true;
+                    child.material.opacity = 0.2 + (currentDensity * 0.8);
+                }
+            });
+
+            // 2. Calculate Capacities
+            // Standard is fixed
+            const activeStdCount = STD_MAX_AREA;
+            // ECOVRY scales from Standard up to Max based on density
+            const activeEcoCount = Math.floor(STD_MAX_AREA + (ECO_MAX_AREA - STD_MAX_AREA) * currentDensity);
+
+            // 3. Assign Targets to particles
+            // Reset all
+            particlesData.forEach(p => p.targetIndex = -1);
+
+            let stdAssigned = 0;
+            let ecoAssigned = 0;
+
+            for(let i=0; i<TOTAL_PARTICLES; i++) {
+                let p = particlesData[i];
+                
+                if (stdAssigned < activeStdCount) {
+                    p.targetIndex = stdAssigned;
+                    p.isECOVRY = false;
+                    stdAssigned++;
+                } else if (ecoAssigned < activeEcoCount) {
+                    p.targetIndex = ecoAssigned;
+                    p.isECOVRY = true;
+                    ecoAssigned++;
+                }
+            }
+
+            // Animate Counters (Simple tween)
+            animateCounter(counterStd, parseInt(counterStd.innerText), activeStdCount);
+            animateCounter(counterEco, parseInt(counterEco.innerText), activeEcoCount);
+        }
+
+        function animateCounter(element, start, end) {
+            let current = start;
+            const increment = (end - start) / 20; // 20 frames duration
+            
+            const update = () => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    element.innerText = end;
+                } else {
+                    element.innerText = Math.floor(current);
+                    requestAnimationFrame(update);
+                }
+            };
+            update();
+        }
+
+        function onMouseMove(event) {
+            // Calculate mouse position in normalized device coordinates
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            // Update Tooltip position
+            tooltip.style.left = event.clientX + 'px';
+            tooltip.style.top = event.clientY + 'px';
+        }
+
+        function handleRaycasting() {
+            raycaster.setFromCamera(mouse, camera);
+            
+            // Intersect with the invisible hit box on ECOVRY model
+            const intersects = raycaster.intersectObject(scene.getObjectByName("ecovryHitBox"), true);
+            
+            if (intersects.length > 0 && currentDensity > 0.8) {
+                // Show tooltip if hovering and density is high
+                tooltip.style.opacity = '1';
+                document.body.style.cursor = 'help';
+            } else {
+                tooltip.style.opacity = '0';
+                document.body.style.cursor = 'default';
+            }
+        }
+
+        // Main Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // 1. Slow Rotation of Models (Phase 1 requirement)
+            if (standardGroup) standardGroup.rotation.y += 0.005;
+            if (standardGroup) standardGroup.rotation.x = 0.2; // Slight tilt
+            
+            if (ecovryGroup) ecovryGroup.rotation.y += 0.005;
+            if (ecovryGroup) ecovryGroup.rotation.x = 0.2;
+
+            // 2. Particle Swarm Logic (Phase 2 requirement)
+            if (particleSystem) {
+                const positions = particleSystem.geometry.attributes.position.array;
+                const time = Date.now() * 0.001;
+
+                // We need the world matrices to properly place particles relative to rotating models
+                standardGroup.updateMatrixWorld();
+                ecovryGroup.updateMatrixWorld();
+
+                for (let i = 0; i < TOTAL_PARTICLES; i++) {
+                    let p = particlesData[i];
+                    let idx = i * 3;
+
+                    if (p.targetIndex !== -1) {
+                        // Has a target (Microbes attaching)
+                        let targetLocal = p.isECOVRY ? ecoTargets[p.targetIndex] : stdTargets[p.targetIndex];
+                        if(!targetLocal) continue;
+
+                        // Convert local target to world space based on parent rotation
+                        let targetWorld = targetLocal.clone();
+                        targetWorld.applyMatrix4(p.isECOVRY ? ecovryGroup.matrixWorld : standardGroup.matrixWorld);
+
+                        // Lerp towards target
+                        positions[idx] += (targetWorld.x - positions[idx]) * p.speed;
+                        positions[idx+1] += (targetWorld.y - positions[idx+1]) * p.speed;
+                        positions[idx+2] += (targetWorld.z - positions[idx+2]) * p.speed;
+
+                    } else {
+                        // Unassigned (Wandering / bouncing off)
+                        // Create a slow swirling motion in the background
+                        positions[idx] += Math.sin(time + p.id) * 0.02;
+                        positions[idx+1] += Math.cos(time * 0.8 + p.id) * 0.02;
+                        positions[idx+2] += Math.sin(time * 1.2 + p.id) * 0.02;
+
+                        // Keep them somewhat near the center but above
+                        if(positions[idx+1] < 4) positions[idx+1] += 0.1;
+                    }
+                }
+                particleSystem.geometry.attributes.position.needsUpdate = true;
+            }
+
+            // 3. Raycasting for Tooltip
+            handleRaycasting();
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // Initialize App
+        window.onload = init;
+    </script>
+</body>
+</html>

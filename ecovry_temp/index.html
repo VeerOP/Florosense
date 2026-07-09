@@ -39,6 +39,7 @@
                     <li><a href="#nanobubble-section" class="nav-link">Nanobubbles & ROI</a></li>
                     <li><a href="#digestion-section" class="nav-link">Digestion Race</a></li>
                     <li><a href="#mbbr-section" class="nav-link">MBBR Multiplier</a></li>
+                    <li><a href="#shredder-section" class="nav-link">Violet Shredder</a></li>
                     <li><a href="#circular-section" class="nav-link">Bioreactor System</a></li>
                 </ul>
                 <button class="btn btn-primary btn-cta-nav">
@@ -328,12 +329,78 @@
         </div>
     </section>
 
-    <!-- Section 4: Bioreactor Aeration System (3D Sketchfab Iframe) -->
-    <section class="hub-section section-alt" id="circular-section">
+    <!-- Section 4: Photocatalytic AOP: The Violet Shredder -->
+    <section class="hub-section section-alt" id="shredder-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="hub-badge">Photocatalytic AOP</span>
+                <h2>4. Photocatalytic AOP: The Violet Shredder</h2>
+                <p>Observe how standard UV fails against complex industrial molecules, while ECOVRY™ TiO₂ excitation instantly shatters carbon bonds.</p>
+            </div>
+            
+            <div class="animation-grid shadow-grid">
+                <!-- Left: 2D Canvas Simulator -->
+                <div class="left-column">
+                    <div class="grid-card canvas-card">
+                        <div class="card-header">
+                            <span class="status-dot green-dot"></span>
+                            <span>AOP SHREDDER SIMULATOR</span>
+                        </div>
+                        <div class="canvas-wrapper" style="background: radial-gradient(circle at center, #0a1122 0%, #050810 100%);">
+                            <canvas id="shredder-physics-canvas"></canvas>
+                        </div>
+                        <div class="canvas-footer-hint" style="display: flex; justify-content: center; background: rgba(0,0,0,0.2); padding: 16px;">
+                            <!-- State Toggle inside simulator frame matching layout -->
+                            <div class="shredder-toggle-container state-a interactive" id="shredder-mode-toggle" style="width: 360px;">
+                                <div class="shredder-toggle-slider"></div>
+                                <div class="shredder-toggle-btn btn-a">Standard UV</div>
+                                <div class="shredder-toggle-btn btn-b">ECOVRY™ Shredder</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Metrics Dashboard -->
+                <div class="right-column">
+                    <div class="grid-card payback-card" style="padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+                        <div class="card-header" style="border: 0; padding: 0 0 10px 0; border-bottom: 1px solid var(--color-border); font-family: 'Space Grotesk', sans-serif;">
+                            <i data-lucide="activity" style="color: var(--color-orange); width: 18px; height: 18px;"></i>
+                            <span>Photocatalytic Reactor Telemetry</span>
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            <div class="compare-card" id="shredder-card-breakdown" style="border-left: 4px solid #ef4444; background: rgba(0, 0, 0, 0.15); padding: 16px;">
+                                <span class="lbl" style="font-size: 8px; text-transform: uppercase; color: var(--color-text-muted); letter-spacing: 0.5px;">COMPLEX ORGANICS DESTRUCTION</span>
+                                <span class="val status-danger" id="shredder-val-breakdown" style="font-family: 'Rajdhani', sans-serif; font-size: 24px; font-weight: 900; margin-top: 4px; display: block;">0% (Pass-through)</span>
+                            </div>
+                            
+                            <div class="compare-card" id="shredder-card-radicals" style="border-left: 4px solid var(--color-border); background: rgba(0, 0, 0, 0.15); padding: 16px;">
+                                <span class="lbl" style="font-size: 8px; text-transform: uppercase; color: var(--color-text-muted); letter-spacing: 0.5px;">HYDROXYL RADICAL (OH•) GENERATION</span>
+                                <span class="val status-off" id="shredder-val-radicals" style="font-family: 'Rajdhani', sans-serif; font-size: 24px; font-weight: 900; margin-top: 4px; display: block;">INACTIVE</span>
+                            </div>
+                            
+                            <div class="compare-card" id="shredder-card-spectrum" style="border-left: 4px solid #3b82f6; background: rgba(0, 0, 0, 0.15); padding: 16px;">
+                                <span class="lbl" style="font-size: 8px; text-transform: uppercase; color: var(--color-text-muted); letter-spacing: 0.5px;">PHOTONIC INTERACTION</span>
+                                <span class="val text-blue" id="shredder-val-spectrum" style="font-family: 'Rajdhani', sans-serif; font-size: 24px; font-weight: 900; margin-top: 4px; display: block; color: #3b82f6;">Standard 254nm</span>
+                            </div>
+                            
+                            <div class="compare-card border-danger" id="shredder-card-effluent" style="border-left: 4px solid #ef4444; background: rgba(0, 0, 0, 0.15); padding: 16px;">
+                                <span class="lbl" style="font-size: 8px; text-transform: uppercase; color: var(--color-text-muted); letter-spacing: 0.5px;">EFFLUENT TOXICITY PROFILE</span>
+                                <span class="val status-danger" id="shredder-val-effluent" style="font-family: 'Rajdhani', sans-serif; font-size: 24px; font-weight: 900; margin-top: 4px; display: block;">Toxic Organics Remain</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Bioreactor Aeration System (3D Sketchfab Iframe) -->
+    <section class="hub-section" id="circular-section">
         <div class="container">
             <div class="section-header">
                 <span class="hub-badge">Core Architecture</span>
-                <h2>4. Bioreactor Aeration System Design</h2>
+                <h2>5. Bioreactor Aeration System Design</h2>
                 <p>Engineered for high biological efficiency. Inspect the circular concrete tank design with modular aeration layouts.</p>
             </div>
 
@@ -439,6 +506,7 @@
                         <li><a href="#nanobubble-section" style="color: inherit; text-decoration: none;">Nanobubble Simulator</a></li>
                         <li><a href="#digestion-section" style="color: inherit; text-decoration: none;">Digestion Race</a></li>
                         <li><a href="#mbbr-section" style="color: inherit; text-decoration: none;">MBBR Bio-Multiplier</a></li>
+                        <li><a href="#shredder-section" style="color: inherit; text-decoration: none;">Violet Shredder</a></li>
                         <li><a href="#circular-section" style="color: inherit; text-decoration: none;">Circular Bioreactor</a></li>
                     </ul>
                 </div>
