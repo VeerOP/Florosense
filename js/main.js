@@ -49,14 +49,17 @@ function initMobileNav() {
     });
 
     // Update active state in navbar links on scroll
-    const sections = document.querySelectorAll("header, section");
+    const sections = document.querySelectorAll("header, section, #coesc-solution");
     window.addEventListener("scroll", () => {
         let currentSectionId = "";
         const scrollPosition = window.scrollY + 100; // Offset
 
         sections.forEach(sec => {
-            const top = sec.offsetTop;
-            const height = sec.offsetHeight;
+            // Handle GSAP pinned sections wrapped in a spacer
+            const spacer = sec.closest('.pin-spacer');
+            const targetEl = spacer || sec;
+            const top = targetEl.getBoundingClientRect().top + window.scrollY;
+            const height = targetEl.offsetHeight;
             if (scrollPosition >= top && scrollPosition < top + height) {
                 currentSectionId = sec.getAttribute("id");
             }
@@ -191,12 +194,35 @@ function initModalControls() {
     form.addEventListener("submit", (e) => {
         e.preventDefault();
         
-        // Grab inputs (For production, this would make an AJAX POST)
+        // Grab inputs
         const name = document.getElementById("lead-name").value;
         const email = document.getElementById("lead-email").value;
-        const division = document.getElementById("lead-division").value;
+        const phone = document.getElementById("lead-phone").value;
+        const company = document.getElementById("lead-company").value;
+        const divisionEl = document.getElementById("lead-division");
+        const divisionText = divisionEl.options[divisionEl.selectedIndex].text;
+        const message = document.getElementById("lead-message").value || "No additional requirements provided.";
         
-        console.log(`Lead Generated: Name=${name}, Email=${email}, Target=${division}`);
+        console.log(`Lead Generated: Name=${name}, Email=${email}, Target=${divisionText}`);
+
+        // Construct email body text
+        const emailSubject = `Project Discussion Request - ${name} (${company})`;
+        const emailBody = `Florosense Project Discussion Lead:\n\n` +
+                          `• Full Name: ${name}\n` +
+                          `• Business Email: ${email}\n` +
+                          `• Phone Number: ${phone}\n` +
+                          `• Company Name: ${company}\n` +
+                          `• Interest Area: ${divisionText}\n\n` +
+                          `Requirements / Description:\n` +
+                          `${message}\n\n` +
+                          `Sent from Florosense Homepage.`;
+
+        // Format mailto link and redirect/trigger client
+        const mailtoLink = `mailto:info@florosense.com` + 
+                           `?subject=${encodeURIComponent(emailSubject)}` + 
+                           `&body=${encodeURIComponent(emailBody)}`;
+                           
+        window.location.href = mailtoLink;
 
         // Animate success screen transition
         form.style.display = "none";
