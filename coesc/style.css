@@ -71,16 +71,35 @@
 
 .hero-title {
     font-family: var(--font-heading);
-    font-size: 54px;
+    font-size: clamp(34px, 5.5vw, 54px);
     font-weight: 800;
     line-height: 1.15;
     margin-bottom: 24px;
 }
 
-@media (max-width: 576px) {
-    .hero-title {
-        font-size: 40px;
-    }
+.hero-ctas {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.hero-btn-main {
+    padding: 14px 28px;
+    font-weight: 600;
+}
+
+.hero-btn-sub {
+    border: 1.5px solid var(--accent-color) !important;
+    padding: 14px 28px;
+    font-weight: 600;
+    color: var(--color-primary) !important;
+    background: transparent;
+}
+
+.hero-btn-sub:hover {
+    background: var(--accent-bg-soft) !important;
+    color: var(--accent-color) !important;
 }
 
 .hero-desc {
@@ -307,6 +326,7 @@ body[data-theme="dark"] .canvas-card-3d {
     align-items: center;
     justify-content: center;
     transition: var(--transition-quick);
+    flex-shrink: 0;
 }
 
 .wizard-option.selected .wizard-option-radio {
@@ -469,4 +489,120 @@ body[data-theme="dark"] .canvas-card-3d {
 .cta-banner .btn:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* =========================================================================
+   COESC RESPONSIVE ENHANCEMENTS
+   ========================================================================= */
+.wizard-nav-btn {
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.checklist-cta-box {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.checklist-consult-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    font-weight: 600;
+    text-align: center;
+    width: 100%;
+}
+
+@media (max-width: 992px) {
+    .coesc-hero {
+        padding: 140px 0 60px;
+    }
+
+    .canvas-card-3d {
+        height: 380px;
+    }
+
+    .hero-ctas {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .coesc-hero {
+        padding: 120px 0 50px;
+    }
+
+    .canvas-card-3d {
+        height: 320px;
+    }
+
+    .serv-section,
+    .wizard-section {
+        padding: 60px 0;
+    }
+
+    .serv-card {
+        padding: 24px 20px;
+    }
+
+    .wizard-card,
+    .checklist-card {
+        padding: 24px 18px;
+    }
+
+    .wizard-option {
+        padding: 14px 16px;
+        font-size: 14px;
+    }
+
+    .cta-banner {
+        padding: 48px 24px;
+        margin-top: 50px;
+        border-radius: 24px;
+    }
+
+    .cta-banner h2 {
+        font-size: clamp(24px, 5vw, 32px);
+    }
+
+    .cta-banner p {
+        font-size: 15px;
+    }
+
+    .cta-banner .btn {
+        width: 100%;
+        padding: 14px 24px;
+    }
+
+    .hero-ctas {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .hero-ctas .btn {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .serv-title {
+        font-size: 19px;
+    }
+
+    .checklist-info h4 {
+        font-size: 15px;
+    }
+
+    .checklist-info p {
+        font-size: 13px;
+    }
 }

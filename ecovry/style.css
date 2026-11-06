@@ -71,16 +71,35 @@
 
 .hero-title {
     font-family: var(--font-heading);
-    font-size: 54px;
+    font-size: clamp(34px, 5.5vw, 54px);
     font-weight: 800;
     line-height: 1.15;
     margin-bottom: 24px;
 }
 
-@media (max-width: 576px) {
-    .hero-title {
-        font-size: 40px;
-    }
+.hero-ctas {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.hero-btn-main {
+    padding: 14px 28px;
+    font-weight: 600;
+}
+
+.hero-btn-sub {
+    border: 1.5px solid var(--accent-color) !important;
+    padding: 14px 28px;
+    font-weight: 600;
+    color: var(--color-primary) !important;
+    background: transparent;
+}
+
+.hero-btn-sub:hover {
+    background: var(--accent-bg-soft) !important;
+    color: var(--accent-color) !important;
 }
 
 .hero-desc {
@@ -460,13 +479,28 @@ body[data-theme="dark"] .p-metric-card {
 
 .range-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background: var(--accent-color);
     cursor: pointer;
     transition: var(--transition-quick);
     box-shadow: 0 0 10px var(--accent-glow-strong);
+}
+
+.range-slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-quick);
+    box-shadow: 0 0 10px var(--accent-glow-strong);
+}
+
+.range-slider::-moz-range-thumb:hover {
+    transform: scale(1.15);
 }
 
 .range-slider::-webkit-slider-thumb:hover {
@@ -923,5 +957,122 @@ body[data-theme="dark"] .shredder-info-card {
 
 .shredder-metric-card.border-safe {
     border-top: 3px solid #10b981;
+}
+
+/* =========================================================================
+   ECOVRY RESPONSIVE ENHANCEMENTS
+   ========================================================================= */
+@media (max-width: 992px) {
+    .ecovry-hero {
+        padding: 140px 0 60px;
+    }
+
+    .canvas-card-3d {
+        height: 380px;
+    }
+
+    .hero-ctas {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .ecovry-hero {
+        padding: 120px 0 50px;
+    }
+
+    .canvas-card-3d {
+        height: 340px;
+    }
+
+    .reactor-telemetry-overlay {
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        padding: 12px;
+    }
+
+    .telemetry-val {
+        font-size: 13px;
+    }
+
+    .telemetry-lbl {
+        font-size: 8.5px;
+    }
+
+    .cap-section,
+    .sim-section,
+    .shredder-section,
+    .calc-section {
+        padding: 60px 0;
+    }
+
+    .timeline-content-panel,
+    .sim-card,
+    .sim-info-card,
+    .shredder-card,
+    .shredder-info-card,
+    .calc-inputs,
+    .calc-results {
+        padding: 24px 18px;
+    }
+
+    .calc-assumptions-card {
+        padding: 16px !important;
+        margin-top: 24px !important;
+    }
+
+    .bubble-canvas-container,
+    .shredder-canvas-container {
+        height: 280px;
+    }
+
+    .cta-banner {
+        padding: 48px 24px;
+        margin-top: 50px;
+        border-radius: 24px;
+    }
+
+    .cta-banner h2 {
+        font-size: clamp(24px, 5vw, 32px);
+    }
+
+    .cta-banner p {
+        font-size: 15px;
+    }
+
+    .cta-banner .btn {
+        width: 100%;
+        padding: 14px 24px;
+    }
+
+    .hero-ctas {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .hero-ctas .btn {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .p-metric-val {
+        font-size: 22px;
+    }
+
+    .result-card-val {
+        font-size: 24px;
+    }
+
+    .phase-title {
+        font-size: 20px;
+    }
+
+    .phase-deliverables li {
+        font-size: 13px;
+    }
 }
 

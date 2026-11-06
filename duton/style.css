@@ -71,16 +71,36 @@
 
 .hero-title {
     font-family: var(--font-heading);
-    font-size: 54px;
+    font-size: clamp(34px, 5.5vw, 54px);
     font-weight: 800;
     line-height: 1.15;
     margin-bottom: 24px;
 }
 
-@media (max-width: 576px) {
-    .hero-title {
-        font-size: 40px;
-    }
+.hero-ctas {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.hero-btn-main {
+    padding: 14px 28px;
+    font-weight: 700;
+    color: #121212 !important;
+}
+
+.hero-btn-sub {
+    border: 1.5px solid var(--accent-color) !important;
+    padding: 14px 28px;
+    font-weight: 600;
+    color: var(--color-primary) !important;
+    background: transparent;
+}
+
+.hero-btn-sub:hover {
+    background: var(--accent-bg-soft) !important;
+    color: var(--accent-color) !important;
 }
 
 .hero-desc {
@@ -746,4 +766,222 @@ body[data-theme="dark"] .prod-illustration-box {
 .cta-banner .btn:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* =========================================================================
+   DUTON RESPONSIVE ENHANCEMENTS & UI UTILITIES
+   ========================================================================= */
+.sound-card {
+    background: var(--bg-light);
+    border: 1px solid var(--color-border);
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+}
+
+.scada-btn-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.scada-ctrl-btn {
+    flex: 1 1 calc(33.333% - 12px);
+    min-width: 130px;
+    padding: 12px 16px;
+    font-size: 13.5px;
+    font-weight: 700;
+}
+
+/* Status dot pulse animation */
+.status-dot.animate-ping {
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+    75%, 100% {
+        transform: scale(1.6);
+        opacity: 0;
+    }
+}
+
+/* Interactive BOM Toast Notification */
+.bom-toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+    max-width: 380px;
+    width: calc(100% - 48px);
+}
+
+.bom-toast {
+    background: #0F172A;
+    color: #F8FAFC;
+    border: 1.5px solid var(--accent-color);
+    border-radius: 14px;
+    padding: 14px 18px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+    pointer-events: auto;
+    animation: toastSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes toastSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.bom-toast-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bom-toast-icon {
+    color: var(--accent-color);
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.bom-toast-btn {
+    background: var(--accent-color);
+    color: #121212;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+/* Media Queries for DUTON */
+@media (max-width: 992px) {
+    .duton-hero {
+        padding: 140px 0 60px;
+    }
+
+    .canvas-card-3d {
+        height: 380px;
+    }
+
+    .scada-right-text {
+        padding-left: 0;
+        margin-top: 32px;
+    }
+
+    .hero-ctas {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .duton-hero {
+        padding: 120px 0 50px;
+    }
+
+    .canvas-card-3d {
+        height: 340px;
+    }
+
+    .prod-section,
+    .scada-section,
+    .sound-section {
+        padding: 60px 0;
+    }
+
+    .catalog-content-panel {
+        padding: 24px 18px;
+    }
+
+    .prod-illustration-box {
+        height: 220px;
+    }
+
+    .sound-card {
+        padding: 24px 18px;
+    }
+
+    .scada-dashboard {
+        padding: 20px 16px;
+    }
+
+    .cta-banner {
+        padding: 48px 24px;
+        margin-top: 50px;
+        border-radius: 24px;
+    }
+
+    .cta-banner h2 {
+        font-size: clamp(24px, 5vw, 32px);
+    }
+
+    .cta-banner p {
+        font-size: 15px;
+    }
+
+    .cta-banner .btn {
+        width: 100%;
+        padding: 14px 24px;
+    }
+
+    .hero-ctas {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .hero-ctas .btn {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .prod-actions .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .specs-table td {
+        padding: 8px 0;
+        font-size: 13px;
+    }
+
+    .specs-table td:first-child {
+        width: 115px;
+    }
+
+    .sound-spec-table td {
+        padding: 10px 0;
+        font-size: 13px;
+    }
+
+    .sound-spec-table td:first-child {
+        width: 42%;
+    }
+
+    .scada-ctrl-btn {
+        flex: 1 1 100%;
+    }
+
+    .scada-chart-container {
+        height: 200px;
+    }
 }

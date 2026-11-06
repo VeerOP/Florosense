@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initRoiCalculator();
     initVioletShredderSimulator();
     initScrollAnimations();
+    initScrollspy();
 });
 
 /* =========================================================================
@@ -18,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
    ========================================================================= */
 function initThemeManager() {
     const themeSwitcher = document.getElementById("theme-switcher-btn");
-    const logoImg = document.querySelector(".navbar-logo-img");
     const footerLogo = document.querySelector(".footer-logo-img");
 
     // Retrieve active theme from localStorage or default to light
@@ -36,11 +36,7 @@ function initThemeManager() {
         document.body.setAttribute("data-theme", theme);
         localStorage.setItem("theme", theme);
 
-        if (logoImg) {
-            logoImg.src = theme === "dark" 
-                ? "../assets/logo_florosense_light.png" 
-                : "../assets/logo_florosense.png";
-        }
+        // Retain ECOVRY logo in navbar; update footer Florosense logo only
         if (footerLogo) {
             footerLogo.src = theme === "dark" 
                 ? "../assets/logo_florosense_light.png" 
@@ -73,6 +69,11 @@ function initThreeDModel() {
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Allow single-finger touch scrolling past 3D canvas on mobile devices
+    if (renderer.domElement) {
+        renderer.domElement.style.touchAction = "pan-y";
+    }
 
     // Controls
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -386,10 +387,23 @@ function initNanobubbleSimulator() {
     const oteVal = document.getElementById("ote-val");
     const energySaveVal = document.getElementById("energy-save-val");
 
-    // Canvas size sync using parent boundaries to prevent static size clamping
+    // Canvas size sync using parent boundaries and High-DPI support
+    let dpr = window.devicePixelRatio || 1;
+    let cssW = 0;
+    let cssH = 0;
+
     function resizeCanvas() {
-        canvas.width = canvas.parentElement.clientWidth;
-        canvas.height = canvas.parentElement.clientHeight || 380;
+        dpr = window.devicePixelRatio || 1;
+        const parent = canvas.parentElement;
+        cssW = parent ? parent.clientWidth : (canvas.clientWidth || 400);
+        cssH = parent ? parent.clientHeight : 380;
+        canvas.width = Math.round(cssW * dpr);
+        canvas.height = Math.round(cssH * dpr);
+        canvas.style.width = cssW + "px";
+        canvas.style.height = cssH + "px";
+        if (ctx.resetTransform) ctx.resetTransform();
+        else ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(dpr, dpr);
     }
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
@@ -402,10 +416,10 @@ function initNanobubbleSimulator() {
         }
 
         reset() {
-            this.x = Math.random() * canvas.width;
+            this.x = Math.random() * cssW;
             this.y = this.isNanobubble 
-                ? Math.random() * canvas.height 
-                : canvas.height + Math.random() * 20;
+                ? Math.random() * cssH 
+                : cssH + Math.random() * 20;
             
             if (this.isNanobubble) {
                 this.r = 0.5 + Math.random() * 1.0;
@@ -473,12 +487,12 @@ function initNanobubbleSimulator() {
             this.y += this.vy + flowStrength.y;
 
             // Boundaries
-            if (this.x < -10) this.x = canvas.width + 10;
-            if (this.x > canvas.width + 10) this.x = -10;
+            if (this.x < -10) this.x = cssW + 10;
+            if (this.x > cssW + 10) this.x = -10;
 
             if (this.isNanobubble) {
-                if (this.y < -10) this.y = canvas.height + 10;
-                if (this.y > canvas.height + 10) this.y = -10;
+                if (this.y < -10) this.y = cssH + 10;
+                if (this.y > cssH + 10) this.y = -10;
             } else {
                 if (this.y < -15) this.reset();
             }
@@ -560,7 +574,7 @@ function initNanobubbleSimulator() {
 
     // Simulation loop
     function loop(time) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, cssW, cssH);
 
         // Natural decay of fluid current
         flowStrength.x *= 0.95;
@@ -599,7 +613,7 @@ function initNanobubbleSimulator() {
         const retention = parseFloat(retentionSlider.value);
 
         bubbleSizeVal.innerText = size >= 1000 
-            ? `${(size/1000).toFixed(1)} mm` 
+            ? `${(size/1000).toFixed(1)} µm` 
             : `${size.toFixed(0)} nm`;
 
         retentionVal.innerText = retention === 3600
@@ -713,7 +727,7 @@ function initScrollAnimations() {
     );
 
     // Scroll reveal cards
-    gsap.utils.toArray(".cap-card").forEach((card, index) => {
+    gsap.utils.toArray(".timeline-content-panel, .shredder-card, .calc-inputs, .calc-results").forEach((card, index) => {
         gsap.from(card, {
             scrollTrigger: {
                 trigger: card,
@@ -723,7 +737,7 @@ function initScrollAnimations() {
             opacity: 0,
             y: 30,
             duration: 0.6,
-            delay: index * 0.15,
+            delay: (index % 3) * 0.1,
             ease: "power2.out"
         });
     });
@@ -808,11 +822,21 @@ function initVioletShredderSimulator() {
     
     const TOXIN_COLORS = ['#ef4444', '#f97316', '#a3e635', '#ec4899'];
 
-    // Init Canvas & Resize
+    // Init Canvas & Resize with High-DPI support
+    let dpr = window.devicePixelRatio || 1;
+
     function resize() {
         if (!canvas.parentElement) return;
-        W = canvas.width = canvas.parentElement.clientWidth;
-        H = canvas.height = canvas.parentElement.clientHeight || 380;
+        dpr = window.devicePixelRatio || 1;
+        W = canvas.parentElement.clientWidth;
+        H = canvas.parentElement.clientHeight || 380;
+        canvas.width = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+        canvas.style.width = W + "px";
+        canvas.style.height = H + "px";
+        if (ctx.resetTransform) ctx.resetTransform();
+        else ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(dpr, dpr);
         
         // Define Reactor Zone (Center 40% of screen)
         reactorBounds.x1 = W * 0.3;
@@ -843,6 +867,14 @@ function initVioletShredderSimulator() {
             this.points = Math.floor(Math.random() * 4) + 5; // 5 to 8 sided polygons
             this.color = TOXIN_COLORS[Math.floor(Math.random() * TOXIN_COLORS.length)];
             
+            // Pre-calculate vertex radii factors so shape rotates smoothly without jitter
+            this.vertices = [];
+            for (let i = 0; i < this.points; i++) {
+                const angle = (i / this.points) * Math.PI * 2;
+                const radFactor = 0.8 + Math.random() * 0.3;
+                this.vertices.push({ angle, radFactor });
+            }
+
             this.shattered = false;
         }
 
@@ -885,11 +917,10 @@ function initVioletShredderSimulator() {
             ctx.rotate(this.rotation);
             
             ctx.beginPath();
-            for (let i = 0; i < this.points; i++) {
-                let angle = (i / this.points) * Math.PI * 2;
-                let rad = this.size * (0.8 + Math.random() * 0.3); 
-                let px = Math.cos(angle) * rad;
-                let py = Math.sin(angle) * rad;
+            for (let i = 0; i < this.vertices.length; i++) {
+                const v = this.vertices[i];
+                const px = Math.cos(v.angle) * this.size * v.radFactor;
+                const py = Math.sin(v.angle) * this.size * v.radFactor;
                 if (i === 0) ctx.moveTo(px, py);
                 else ctx.lineTo(px, py);
             }
@@ -1138,4 +1169,33 @@ function initVioletShredderSimulator() {
     }
 
     animate();
+}
+
+/* =========================================================================
+   7. SCROLLSPY ACTIVE NAV INDICATOR
+   ========================================================================= */
+function initScrollspy() {
+    const sections = document.querySelectorAll("section[id]");
+    const navLinks = document.querySelectorAll(".nav-link[href^='#']");
+
+    if (!sections.length || !navLinks.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.getAttribute("id");
+                navLinks.forEach(link => {
+                    if (link.getAttribute("href") === `#${id}`) {
+                        link.classList.add("active");
+                    } else {
+                        link.classList.remove("active");
+                    }
+                });
+            }
+        });
+    }, {
+        rootMargin: "-20% 0px -70% 0px"
+    });
+
+    sections.forEach(sec => observer.observe(sec));
 }

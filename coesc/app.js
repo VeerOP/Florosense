@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initThreeDModel();
     initComplianceWizard();
     initScrollAnimations();
+    initScrollspy();
 });
 
 /* =========================================================================
@@ -15,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
    ========================================================================= */
 function initThemeManager() {
     const themeSwitcher = document.getElementById("theme-switcher-btn");
-    const logoImg = document.querySelector(".navbar-logo-img");
     const footerLogo = document.querySelector(".footer-logo-img");
 
     let activeTheme = localStorage.getItem("theme") || "light";
@@ -32,11 +32,7 @@ function initThemeManager() {
         document.body.setAttribute("data-theme", theme);
         localStorage.setItem("theme", theme);
 
-        if (logoImg) {
-            logoImg.src = theme === "dark" 
-                ? "../assets/logo_florosense_light.png" 
-                : "../assets/logo_florosense.png";
-        }
+        // Retain the division-specific COESC logo in navbar; update footer Florosense logo only
         if (footerLogo) {
             footerLogo.src = theme === "dark" 
                 ? "../assets/logo_florosense_light.png" 
@@ -55,8 +51,9 @@ function initThreeDModel() {
     const canvas = document.getElementById("coesc-3d-canvas");
     if (!canvas) return;
 
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
+    const parent = canvas.parentElement;
+    const width = parent ? parent.clientWidth : (canvas.clientWidth || 400);
+    const height = parent ? parent.clientHeight : (canvas.clientHeight || 400);
 
     const scene = new THREE.Scene();
     scene.background = null;
@@ -66,7 +63,12 @@ function initThreeDModel() {
 
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+    // Allow touch scrolling past canvas on mobile devices
+    if (renderer.domElement) {
+        renderer.domElement.style.touchAction = "pan-y";
+    }
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
@@ -157,8 +159,9 @@ function initThreeDModel() {
     animate();
 
     window.addEventListener("resize", () => {
-        const w = canvas.clientWidth;
-        const h = canvas.clientHeight;
+        const p = canvas.parentElement;
+        const w = p ? p.clientWidth : canvas.clientWidth;
+        const h = p ? p.clientHeight : canvas.clientHeight;
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
         renderer.setSize(w, h);
@@ -183,6 +186,7 @@ function initComplianceWizard() {
     
     const btnPrev = document.getElementById("wizard-btn-prev");
     const btnNext = document.getElementById("wizard-btn-next");
+    const btnReset = document.getElementById("wizard-btn-reset");
     const checklistItems = document.getElementById("checklist-items");
 
     // Category options binding
@@ -233,28 +237,45 @@ function initComplianceWizard() {
         });
     }
 
+    if (btnReset) {
+        btnReset.addEventListener("click", () => {
+            currentStep = 1;
+            showStep(currentStep);
+        });
+    }
+
     function showStep(stepNum) {
         steps.forEach(step => step.classList.remove("active"));
-        document.getElementById(`step-${stepNum}`).classList.add("active");
+        const targetStep = document.getElementById(`step-${stepNum}`);
+        if (targetStep) targetStep.classList.add("active");
 
         // Progress bar width
-        progressBar.style.width = (stepNum === 1 ? 33 : (stepNum === 2 ? 66 : 100)) + "%";
+        if (progressBar) {
+            progressBar.style.width = (stepNum === 1 ? 33 : (stepNum === 2 ? 66 : 100)) + "%";
+        }
 
         // Navigation labels
         if(stepNum === 1) {
-            btnPrev.style.visibility = "hidden";
+            if (btnPrev) btnPrev.style.visibility = "hidden";
+            if (btnReset) btnReset.style.display = "none";
         } else {
-            btnPrev.style.visibility = "visible";
+            if (btnPrev) btnPrev.style.visibility = "visible";
         }
 
         if(stepNum === 3) {
-            btnNext.innerText = "Completed";
-            btnNext.disabled = true;
-            btnNext.style.opacity = 0.5;
+            if (btnNext) {
+                btnNext.innerText = "Completed ✓";
+                btnNext.disabled = true;
+                btnNext.style.opacity = 0.6;
+            }
+            if (btnReset) btnReset.style.display = "inline-block";
         } else {
-            btnNext.innerText = "Next Step";
-            btnNext.disabled = false;
-            btnNext.style.opacity = 1.0;
+            if (btnNext) {
+                btnNext.innerText = "Next Step";
+                btnNext.disabled = false;
+                btnNext.style.opacity = 1.0;
+            }
+            if (btnReset) btnReset.style.display = "none";
         }
     }
 
@@ -267,14 +288,14 @@ function initComplianceWizard() {
         // 1. SPCB CTE/CTO Consent (Base item)
         let catColorText = selections.category.toUpperCase();
         let catTimeline = selections.category === "red" ? "90-120 Days" : (selections.category === "orange" ? "60-90 Days" : "30-45 Days");
-        let feeLevel = selections.category === "red" ? "High Regulatory CTE/CTO filing fee structure applies." : "Standard state consent fees apply.";
+        let feeLevel = selections.category === "red" ? "High Regulatory CTE/CTO filing fee structure applies." : (selections.category === "orange" ? "Standard state consent fees apply with medium audit index." : "Fast-track green consent schedule.");
 
         html += `
             <div class="checklist-item">
                 <i data-lucide="file-text" class="checklist-icon"></i>
                 <div class="checklist-info">
                     <h4>SPCB Consent CTE & CTO (${catColorText} Category)</h4>
-                    <p>State Pollution Control Board Consent to Establish and Consent to Operate applications. Required prior to site construction and plant setup. ${feeLevel}</p>
+                    <p>State Pollution Control Board Consent to Establish (CTE) before site mobilization and Consent to Operate (CTO) before plant commissioning. ${feeLevel}</p>
                     <span class="checklist-time">Processing: ${catTimeline}</span>
                 </div>
             </div>
@@ -287,8 +308,30 @@ function initComplianceWizard() {
                     <i data-lucide="droplet" class="checklist-icon"></i>
                     <div class="checklist-info">
                         <h4>CGWA / SGWA Ground Water NOC</h4>
-                        <p>Central or State Ground Water Authority clearance certification. Legally mandatory for industrial units withdrawing water from groundwater aquifers.</p>
+                        <p>Central or State Ground Water Authority clearance certification. Legally mandatory for industrial units withdrawing water from groundwater aquifers, requiring hydrogeological impact reports.</p>
                         <span class="checklist-time">Processing: 120-180 Days</span>
+                    </div>
+                </div>
+            `;
+        } else if (selections.water === "recycle") {
+            html += `
+                <div class="checklist-item">
+                    <i data-lucide="refresh-cw" class="checklist-icon"></i>
+                    <div class="checklist-info">
+                        <h4>Zero Liquid Discharge (ZLD) Certification</h4>
+                        <p>Validation of 100% water recovery closed loop, online electromagnetic flow meters calibration, and RO reject crystallization compliance audit.</p>
+                        <span class="checklist-time">Processing: 45-60 Days</span>
+                    </div>
+                </div>
+            `;
+        } else if (selections.water === "municipal") {
+            html += `
+                <div class="checklist-item">
+                    <i data-lucide="building" class="checklist-icon"></i>
+                    <div class="checklist-info">
+                        <h4>Municipal Industrial Quota Sanction</h4>
+                        <p>Water utility abstraction entitlement NOC and municipal drain connection sanction with pre-treatment discharge limits.</p>
+                        <span class="checklist-time">Processing: 30-45 Days</span>
                     </div>
                 </div>
             `;
@@ -336,8 +379,20 @@ function initComplianceWizard() {
             `;
         }
 
+        // Consultation callout in checklist
+        html += `
+            <div class="checklist-cta-box">
+                <a href="../index.html#contact" class="btn btn-primary checklist-consult-btn">
+                    <span>Liaise with COESC for This Setup</span>
+                    <i data-lucide="arrow-right" style="width:16px; height:16px;"></i>
+                </a>
+            </div>
+        `;
+
         checklistItems.innerHTML = html;
-        lucide.createIcons(); // render icons inside dynamically loaded DOM content
+        if (window.lucide) {
+            window.lucide.createIcons();
+        }
     }
 
     // Initial show/renders
@@ -438,4 +493,33 @@ function initMobileNav() {
             }
         });
     });
+}
+
+/* =========================================================================
+   6. SCROLLSPY ACTIVE NAV INDICATOR
+   ========================================================================= */
+function initScrollspy() {
+    const sections = document.querySelectorAll("section[id]");
+    const navLinks = document.querySelectorAll(".nav-link[href^='#']");
+
+    if (!sections.length || !navLinks.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.getAttribute("id");
+                navLinks.forEach(link => {
+                    if (link.getAttribute("href") === `#${id}`) {
+                        link.classList.add("active");
+                    } else {
+                        link.classList.remove("active");
+                    }
+                });
+            }
+        });
+    }, {
+        rootMargin: "-20% 0px -70% 0px"
+    });
+
+    sections.forEach(sec => observer.observe(sec));
 }

@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initCatalog();
     initScadaSimulator();
     initScrollAnimations();
+    initScrollspy();
 });
 
 /* =========================================================================
@@ -16,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
    ========================================================================= */
 function initThemeManager() {
     const themeSwitcher = document.getElementById("theme-switcher-btn");
-    const logoImg = document.querySelector(".navbar-logo-img");
     const footerLogo = document.querySelector(".footer-logo-img");
 
     let activeTheme = localStorage.getItem("theme") || "light";
@@ -33,11 +33,7 @@ function initThemeManager() {
         document.body.setAttribute("data-theme", theme);
         localStorage.setItem("theme", theme);
 
-        if (logoImg) {
-            logoImg.src = theme === "dark" 
-                ? "../assets/logo_florosense_light.png" 
-                : "../assets/logo_florosense.png";
-        }
+        // Retain DUTON logo in navbar; swap footer Florosense logo only
         if (footerLogo) {
             footerLogo.src = theme === "dark" 
                 ? "../assets/logo_florosense_light.png" 
@@ -56,8 +52,9 @@ function initThreeDModel() {
     const canvas = document.getElementById("duton-3d-canvas");
     if (!canvas) return;
 
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
+    const parent = canvas.parentElement;
+    const width = parent ? parent.clientWidth : (canvas.clientWidth || 400);
+    const height = parent ? parent.clientHeight : (canvas.clientHeight || 400);
 
     const scene = new THREE.Scene();
     scene.background = null;
@@ -67,7 +64,12 @@ function initThreeDModel() {
 
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+    // Allow single-finger touch scrolling past 3D canvas on mobile devices
+    if (renderer.domElement) {
+        renderer.domElement.style.touchAction = "pan-y";
+    }
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
@@ -243,6 +245,8 @@ function initThreeDModel() {
         }
     ];
 
+    const moduleCatalogMap = ["cpu", "cpu", "cpu", "nodex", "scada"];
+
     function onCanvasClick(event) {
         const rect = renderer.domElement.getBoundingClientRect();
         mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -276,6 +280,11 @@ function initThreeDModel() {
                     bomBtn.setAttribute("data-item", data.title);
                 }
 
+                const catalogBtn = tooltip.querySelector(".spec-view-catalog");
+                if (catalogBtn) {
+                    catalogBtn.setAttribute("data-target-prod", moduleCatalogMap[idx] || "cpu");
+                }
+
                 tooltip.classList.add("active");
                 tooltip.style.opacity = "1";
                 tooltip.style.transform = "translateY(0)";
@@ -283,7 +292,18 @@ function initThreeDModel() {
         }
     }
 
-    renderer.domElement.addEventListener("click", onCanvasClick);
+    // Pointer movement threshold to avoid triggering tooltip on 3D view drag
+    let pointerDownPos = { x: 0, y: 0 };
+    renderer.domElement.addEventListener("pointerdown", (e) => {
+        pointerDownPos = { x: e.clientX, y: e.clientY };
+    });
+
+    renderer.domElement.addEventListener("pointerup", (e) => {
+        const dist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
+        if (dist < 6) {
+            onCanvasClick(e);
+        }
+    });
 
     if (tooltipClose) {
         tooltipClose.addEventListener("click", () => {
@@ -292,8 +312,9 @@ function initThreeDModel() {
     }
 
     window.addEventListener("resize", () => {
-        const w = canvas.clientWidth;
-        const h = canvas.clientHeight;
+        const p = canvas.parentElement;
+        const w = p ? p.clientWidth : canvas.clientWidth;
+        const h = p ? p.clientHeight : canvas.clientHeight;
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
         renderer.setSize(w, h);
@@ -301,8 +322,39 @@ function initThreeDModel() {
 }
 
 /* =========================================================================
-   2B. PRODUCT CATALOG NAVIGATION
+   2B. PRODUCT CATALOG NAVIGATION & INTERACTIVE BOM TOAST
    ========================================================================= */
+function showBomToast(itemName) {
+    let container = document.querySelector(".bom-toast-container");
+    if (!container) {
+        container = document.createElement("div");
+        container.className = "bom-toast-container";
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement("div");
+    toast.className = "bom-toast";
+    toast.innerHTML = `
+        <div class="bom-toast-info">
+            <span class="bom-toast-icon">✓</span>
+            <div>
+                <strong>${itemName}</strong>
+                <div style="font-size: 11px; color: #94A3B8;">Added to custom Spec BOM</div>
+            </div>
+        </div>
+        <a href="../index.html#contact" class="bom-toast-btn">Request Quote</a>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+        toast.style.opacity = "0";
+        toast.style.transform = "translateY(15px)";
+        setTimeout(() => toast.remove(), 400);
+    }, 3800);
+}
+
 function initCatalog() {
     const tabButtons = document.querySelectorAll(".catalog-tab-btn");
     const productContents = document.querySelectorAll(".catalog-product-details");
@@ -325,21 +377,29 @@ function initCatalog() {
         });
     });
 
-    // Mock Spec BOM additions & inquires
+    // Spec BOM additions & inquires
     document.body.addEventListener("click", (e) => {
-        if (e.target && (e.target.classList.contains("btn-add-bom") || e.target.classList.contains("spec-add-bom"))) {
-            const itemName = e.target.getAttribute("data-item") || "Selected Module";
-            alert(`Success: "${itemName}" added to your custom Bill of Materials spec sheet!`);
+        const bomBtn = e.target.closest(".btn-add-bom, .spec-add-bom");
+        if (bomBtn) {
+            const itemName = bomBtn.getAttribute("data-item") || "DUTON Industrial Module";
+            showBomToast(itemName);
+            return;
         }
 
-        if (e.target && e.target.classList.contains("btn-inquire")) {
-            const itemName = e.target.getAttribute("data-item");
-            const contactSection = document.querySelector("#contact");
-            if (contactSection) {
-                contactSection.scrollIntoView({ behavior: "smooth" });
-            } else {
-                window.location.href = "../index.html#contact";
-            }
+        const viewCatalogBtn = e.target.closest(".spec-view-catalog");
+        if (viewCatalogBtn) {
+            e.preventDefault();
+            const targetProd = viewCatalogBtn.getAttribute("data-target-prod") || "cpu";
+            const targetBtn = document.querySelector(`.catalog-tab-btn[data-prod="${targetProd}"]`);
+            if (targetBtn) targetBtn.click();
+            const catSection = document.getElementById("portfolio");
+            if (catSection) catSection.scrollIntoView({ behavior: "smooth" });
+            return;
+        }
+
+        const inquireBtn = e.target.closest(".btn-inquire");
+        if (inquireBtn) {
+            window.location.href = "../index.html#contact";
         }
     });
 }
@@ -371,10 +431,26 @@ function initScadaSimulator() {
     let temperature = 42.6;
     let vibrationHz = 12.5;
 
-    // Resizing
+    // Resizing with High-DPI support
+    let dpr = window.devicePixelRatio || 1;
+    let cssW = 0;
+    let cssH = 0;
+
     function resizeCanvas() {
-        canvas.width = canvas.parentElement.clientWidth;
-        canvas.height = canvas.parentElement.clientHeight;
+        dpr = window.devicePixelRatio || 1;
+        const parent = canvas.parentElement;
+        cssW = parent ? parent.clientWidth : canvas.clientWidth;
+        cssH = parent ? parent.clientHeight : 260;
+        canvas.width = Math.round(cssW * dpr);
+        canvas.height = Math.round(cssH * dpr);
+        canvas.style.width = cssW + "px";
+        canvas.style.height = cssH + "px";
+        if (ctx.resetTransform) {
+            ctx.resetTransform();
+        } else {
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+        }
+        ctx.scale(dpr, dpr);
     }
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
@@ -406,8 +482,10 @@ function initScadaSimulator() {
 
     function setActiveButton(activeBtn) {
         [btnNormal, btnSpike, btnAnomaly].forEach(btn => {
-            if (btn) btn.classList.remove("btn-primary");
-            if (btn) btn.classList.add("btn-outline-accent");
+            if (btn) {
+                btn.classList.remove("btn-primary");
+                btn.classList.add("btn-outline-accent");
+            }
         });
         activeBtn.classList.remove("btn-outline-accent");
         activeBtn.classList.add("btn-primary");
@@ -431,7 +509,6 @@ function initScadaSimulator() {
         // Fluctuating variables depending on mode
         let targetTemp = 42.6;
         let targetVib = 12.5;
-        let jitter = 0.5;
 
         if (mode === "normal") {
             targetTemp = 42.6 + Math.sin(Date.now() * 0.001) * 0.8;
@@ -484,11 +561,11 @@ function initScadaSimulator() {
 
     // Draw Line Chart in Canvas
     function drawChart() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, cssW, cssH);
 
         const padding = 10;
-        const graphWidth = canvas.width - padding * 2;
-        const graphHeight = canvas.height - padding * 2;
+        const graphWidth = cssW - padding * 2;
+        const graphHeight = cssH - padding * 2;
 
         // Draw grids
         ctx.strokeStyle = "rgba(30, 41, 59, 0.4)";
@@ -497,7 +574,7 @@ function initScadaSimulator() {
             const y = padding + (graphHeight / 4) * i;
             ctx.beginPath();
             ctx.moveTo(padding, y);
-            ctx.lineTo(canvas.width - padding, y);
+            ctx.lineTo(cssW - padding, y);
             ctx.stroke();
         }
 
@@ -524,7 +601,7 @@ function initScadaSimulator() {
         ctx.stroke();
 
         // Draw gradient area under line
-        const grad = ctx.createLinearGradient(0, padding, 0, canvas.height);
+        const grad = ctx.createLinearGradient(0, padding, 0, cssH);
         if (mode === "anomaly") {
             grad.addColorStop(0, "rgba(239, 68, 68, 0.25)");
             grad.addColorStop(1, "rgba(239, 68, 68, 0.0)");
@@ -575,8 +652,8 @@ function initScrollAnimations() {
         { opacity: 1, scale: 1.0, duration: 1, delay: 0.5, ease: "power2.out" }
     );
 
-    // Products reveal
-    gsap.utils.toArray(".prod-card").forEach((card, index) => {
+    // Products and panels reveal
+    gsap.utils.toArray(".catalog-content-panel, .sound-card").forEach((card, index) => {
         gsap.from(card, {
             scrollTrigger: {
                 trigger: card,
@@ -637,4 +714,33 @@ function initMobileNav() {
             }
         });
     });
+}
+
+/* =========================================================================
+   6. SCROLLSPY ACTIVE NAV INDICATOR
+   ========================================================================= */
+function initScrollspy() {
+    const sections = document.querySelectorAll("section[id]");
+    const navLinks = document.querySelectorAll(".nav-link[href^='#']");
+
+    if (!sections.length || !navLinks.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.getAttribute("id");
+                navLinks.forEach(link => {
+                    if (link.getAttribute("href") === `#${id}`) {
+                        link.classList.add("active");
+                    } else {
+                        link.classList.remove("active");
+                    }
+                });
+            }
+        });
+    }, {
+        rootMargin: "-20% 0px -70% 0px"
+    });
+
+    sections.forEach(sec => observer.observe(sec));
 }
