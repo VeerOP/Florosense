@@ -320,14 +320,18 @@ table.specs-matrix td b{font-family:var(--m)}
 
 /* Clients Showcase */
 .client-section{padding:56px 0 24px;border-top:1px solid var(--line)}
-.client-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;margin-top:20px}
-.client-card{
-  background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;
-  display:flex;align-items:center;justify-content:center;height:72px;transition:all .15s ease;
+.client-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}
+@media (max-width:768px){
+  .client-grid{grid-template-columns:repeat(2,1fr);gap:10px}
 }
-.client-card:hover{border-color:var(--ours);box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.client-card img{max-height:44px;max-width:100%;object-fit:contain;filter:grayscale(100%);opacity:0.8;transition:all .2s ease}
-.client-card:hover img{filter:grayscale(0%);opacity:1}
+.client-card{
+  background:#FFFFFF;border:1px solid var(--line);border-radius:10px;padding:12px 16px;
+  display:flex;align-items:center;justify-content:center;height:78px;box-shadow:0 1px 3px rgba(0,0,0,.03);
+  transition:all .2s cubic-bezier(0.16,1,0.3,1);
+}
+.client-card:hover{border-color:var(--ours);transform:translateY(-2px);box-shadow:0 6px 16px rgba(45,122,62,.12)}
+.client-card img{max-height:48px;max-width:92%;width:auto;height:auto;object-fit:contain;filter:none;opacity:1;transition:transform .2s ease}
+.client-card:hover img{transform:scale(1.05)}
 
 /* Mobile Stage Bar */
 .mobile-stage-bar{
@@ -1114,18 +1118,22 @@ footer b{color:var(--ink)}
   </div>
 
   <div class="client-grid">
-    <div class="client-card" title="Maruti Suzuki"><img src="assets/clients/client_9.png" alt="Maruti Suzuki"></div>
-    <div class="client-card" title="Sheraton Hotels"><img src="assets/clients/client_1.png" alt="Sheraton"></div>
-    <div class="client-card" title="ITC Hotels"><img src="assets/clients/client_2.png" alt="ITC Hotels"></div>
-    <div class="client-card" title="L&T Realty"><img src="assets/clients/client_23.jpeg" alt="L&T Realty"></div>
-    <div class="client-card" title="Oberoi Realty"><img src="assets/clients/client_13.jpeg" alt="Oberoi Realty"></div>
-    <div class="client-card" title="Le Meridien"><img src="assets/clients/client_3.png" alt="Le Meridien"></div>
-    <div class="client-card" title="Powerica"><img src="assets/clients/client_7.jpeg" alt="Powerica"></div>
-    <div class="client-card" title="Kauvery Hospital"><img src="assets/clients/client_14.jpeg" alt="Kauvery Hospital"></div>
-    <div class="client-card" title="Aequs Aerospace"><img src="assets/clients/client_2.png" alt="Aequs"></div>
-    <div class="client-card" title="Bharat Electronics Ltd"><img src="assets/clients/client_18.jpeg" alt="BEL"></div>
-    <div class="client-card" title="BBMP"><img src="assets/clients/client_20.png" alt="BBMP"></div>
-    <div class="client-card" title="CPWD"><img src="assets/clients/client_10.png" alt="CPWD"></div>
+    <div class="client-card" title="Maruti Suzuki"><img src="assets/clients/maruti_suzuki.png" alt="Maruti Suzuki"></div>
+    <div class="client-card" title="Sheraton Hotels & Resorts"><img src="assets/clients/sheraton.png" alt="Sheraton Hotels"></div>
+    <div class="client-card" title="ITC Hotels & Maurya"><img src="assets/clients/itc_hotels.png" alt="ITC Hotels"></div>
+    <div class="client-card" title="L&T Realty"><img src="assets/clients/lt_realty.png" alt="L&T Realty"></div>
+    <div class="client-card" title="Oberoi Realty"><img src="assets/clients/oberoi_realty.png" alt="Oberoi Realty"></div>
+    <div class="client-card" title="Le Méridien"><img src="assets/clients/le_meridien.png" alt="Le Méridien"></div>
+    <div class="client-card" title="Powerica"><img src="assets/clients/powerica.png" alt="Powerica"></div>
+    <div class="client-card" title="Kauvery Hospital"><img src="assets/clients/kauvery_hospital.png" alt="Kauvery Hospital"></div>
+    <div class="client-card" title="Aequs Aerospace"><img src="assets/clients/aequs.png" alt="Aequs Aerospace"></div>
+    <div class="client-card" title="Bharat Electronics Limited (BEL)"><img src="assets/clients/bharat_electronics.png" alt="Bharat Electronics"></div>
+    <div class="client-card" title="Casagrand"><img src="assets/clients/casagrand.png" alt="Casagrand"></div>
+    <div class="client-card" title="Central Public Works Department (CPWD)"><img src="assets/clients/cpwd.png" alt="CPWD"></div>
+    <div class="client-card" title="CapitaLand Investment"><img src="assets/clients/capitaland.png" alt="CapitaLand"></div>
+    <div class="client-card" title="The Leela Palaces, Hotels & Resorts"><img src="assets/clients/the_leela.png" alt="The Leela"></div>
+    <div class="client-card" title="Government of Karnataka & BBMP"><img src="assets/clients/client_20.png" alt="Government of Karnataka & BBMP"></div>
+    <div class="client-card" title="Turbosteel"><img src="assets/clients/turbosteel.png" alt="Turbosteel"></div>
   </div>
 </section>
 
